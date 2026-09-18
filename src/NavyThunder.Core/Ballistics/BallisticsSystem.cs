@@ -6,6 +6,13 @@ using NavyThunder.Core.World;
 
 namespace NavyThunder.Core.Ballistics;
 
+/// <summary>Anything a VT (radio) proximity fuse can detect; aircraft qualify, ships do not.</summary>
+public interface IProximityTarget
+{
+    string ProximityTargetId { get; }
+    Vec3 ProximityPosition { get; }
+}
+
 /// <summary>
 /// Minimal projectile state for external ballistics. When <see cref="Shell"/> is set the
 /// system additionally resolves armor hits and the shell's fuze; otherwise it is a pure
@@ -32,6 +39,7 @@ public struct BallisticProjectile
 
     /// <summary>Target id of the most recent armor interaction (empty = none).</summary>
     public string LastTargetId = "";
+    public double TravelledM;
 
     public readonly double Speed => Velocity.Length;
 }
@@ -137,6 +145,9 @@ public sealed class BallisticsSystem : ISimulationSystem
     /// <summary>Null disables armor resolution (bare-ballistics mode).</summary>
     public ArmorResolver? Armor { get; set; }
 
+    /// <summary>Air targets detectable by VT proximity fuses (MDR-0003: air-only).</summary>
+    public List<IProximityTarget> ProximityTargets { get; } = [];
+
     public IReadOnlyList<BallisticProjectile> Projectiles => _projectiles;
 
     public string Name => "ballistics";
@@ -165,9 +176,26 @@ public sealed class BallisticsSystem : ISimulationSystem
             {
                 Vec3 before = p.Position;
                 _integrator.Step(ref p, h);
+                p.TravelledM += (p.Position - before).Length;
+
                 if (Armor is not null && p.Shell is not null && Targets.Count > 0)
                 {
                     HandleArmorHits(ref p, world, before);
+                }
+
+                if (p.Alive && p.Shell?.ProximityFuse is { } pf && p.TravelledM >= pf.ArmDistanceM)
+                {
+                    // VT: air-only detection within the trigger radius (MDR-0003).
+                    foreach (var t in ProximityTargets)
+                    {
+                        if (Vec3.Distance(t.ProximityPosition, p.Position) <= pf.RadiusM)
+                        {
+                            p.Alive = false;
+                            RecordDetonation(world, p, p.Position, p.Velocity,
+                                afterPenetration: false, onWaterSurface: false);
+                            break;
+                        }
+                    }
                 }
             }
 

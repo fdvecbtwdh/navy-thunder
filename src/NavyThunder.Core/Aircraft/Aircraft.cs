@@ -1,3 +1,4 @@
+using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Damage;
 using NavyThunder.Core.Mathematics;
 using NavyThunder.Core.Model;
@@ -30,8 +31,15 @@ public readonly record struct FlightFeedback(
 /// rack (both instantly fatal), and the damage-to-flight-model feedback loop.
 /// Pure state — world consequences run in <see cref="AircraftAdjudicatorSystem"/>.
 /// </summary>
-public sealed class Aircraft : Entity, IDamageSink
+public sealed class Aircraft : Entity, IDamageSink, IProximityTarget
 {
+    /// <summary>World placement (aircraft move in the Phase 5 scenario layer).</summary>
+    public Vec3 WorldPosition { get; set; } = Vec3.Zero;
+    public Vec3 Velocity { get; set; } = Vec3.Zero;
+
+    public string ProximityTargetId => TargetId;
+    public Vec3 ProximityPosition => WorldPosition;
+
     private readonly Dictionary<string, AircraftPartState> _partsById = [];
 
     public AircraftDefinition Definition { get; }
