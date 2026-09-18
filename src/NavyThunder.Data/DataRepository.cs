@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using NavyThunder.Data.Schema;
+using NavyThunder.Core.Model;
 
 namespace NavyThunder.Data;
 

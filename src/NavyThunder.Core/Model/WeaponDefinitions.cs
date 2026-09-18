@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace NavyThunder.Data.Schema;
+namespace NavyThunder.Core.Model;
 
 /// <summary>Provenance for every data entry: where a value came from and when it was captured.</summary>
 public sealed record SourceInfo

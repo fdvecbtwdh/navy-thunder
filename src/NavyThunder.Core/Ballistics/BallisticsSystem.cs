@@ -1,11 +1,15 @@
+using NavyThunder.Core.Armor;
+using NavyThunder.Core.Geometry;
 using NavyThunder.Core.Mathematics;
+using NavyThunder.Core.Model;
 using NavyThunder.Core.World;
 
 namespace NavyThunder.Core.Ballistics;
 
 /// <summary>
-/// Minimal projectile state for external-ballistics integration.
-/// Phase 1 adds fuze state and payload references on top of this struct.
+/// Minimal projectile state for external ballistics. When <see cref="Shell"/> is set the
+/// system additionally resolves armor hits and the shell's fuze; otherwise it is a pure
+/// ballistic body (used by drag/trajectory tests).
 /// </summary>
 public struct BallisticProjectile
 {
@@ -15,6 +19,11 @@ public struct BallisticProjectile
     public double MassKg;
     public double AgeSeconds;
     public bool Alive;
+    public ShellDefinition? Shell;
+
+    /// <summary>Set when the fuze has fired and the shell detonates after its delay.</summary>
+    public bool FuzePending;
+    public double FuzeDetonationAtTime;
 
     public readonly double Speed => Velocity.Length;
 }
@@ -58,13 +67,52 @@ public sealed record ProjectileGroundImpact : SimulationEvent
     public override string Kind => "projectile_ground_impact";
 }
 
+public sealed record ProjectileArmorImpact : SimulationEvent
+{
+    public int ProjectileId { get; init; }
+    public string ShellId { get; init; } = "";
+    public string TargetId { get; init; } = "";
+    public string PlateId { get; init; } = "";
+    public double ImpactSpeedMs { get; init; }
+    public double ImpactAngleDeg { get; init; }
+    public double PlateThicknessMm { get; init; }
+    public double EffectiveThicknessMm { get; init; }
+    public double PenetrationMm { get; init; }
+    public required PlateResolution Outcome { get; init; }
+    public bool FuzeTriggered { get; init; }
+    public bool OvermatchApplied { get; init; }
+    public double ResidualEnergyFraction { get; init; }
+
+    public override string Kind => "projectile_armor_impact";
+}
+
+public sealed record ShellDetonation : SimulationEvent
+{
+    public int ProjectileId { get; init; }
+    public string ShellId { get; init; } = "";
+    public Vec3 Position { get; init; }
+
+    /// <summary>Velocity at detonation — the fragment cone axis (MDR-0005).</summary>
+    public Vec3 Velocity { get; init; }
+
+    /// <summary>True when the shell detonated after passing a plate (internal burst path).</summary>
+    public bool AfterPenetration { get; init; }
+
+    /// <summary>True when triggered by fuseOnWater at the surface rather than an armor plate.</summary>
+    public bool OnWaterSurface { get; init; }
+
+    public override string Kind => "shell_detonation";
+}
+
 /// <summary>
 /// Integrates projectiles with fixed-substep RK4 under constant gravity and an
-/// injectable drag model. Deterministic: no wall clock, ordered iteration, no RNG use.
+/// injectable drag model, resolving armor hits and fuzes along the way.
+/// Deterministic: no wall clock, ordered iteration, RNG only from the "armor" stream.
 /// </summary>
 public sealed class BallisticsSystem : ISimulationSystem
 {
     private readonly List<BallisticProjectile> _projectiles = [];
+    private readonly Rk4Integrator _integrator = new();
 
     public Vec3 Gravity { get; init; } = new(0, -9.80665, 0);
     public IDragModel DragModel { get; init; } = new VacuumDrag();
@@ -72,12 +120,20 @@ public sealed class BallisticsSystem : ISimulationSystem
     public double GroundLevelY { get; init; } = 0.0;
     public int NextProjectileId { get; private set; }
 
+    /// <summary>Armor targets checked for hits; empty = pure ballistics.</summary>
+    public List<ArmorTarget> Targets { get; } = [];
+
+    /// <summary>Null disables armor resolution (bare-ballistics mode).</summary>
+    public ArmorResolver? Armor { get; set; }
+
     public IReadOnlyList<BallisticProjectile> Projectiles => _projectiles;
 
     public string Name => "ballistics";
 
     public void Initialize(SimulationWorld world)
     {
+        _integrator.Gravity = Gravity;
+        _integrator.DragModel = DragModel;
     }
 
     public int Spawn(BallisticProjectile projectile)
@@ -94,58 +150,176 @@ public sealed class BallisticsSystem : ISimulationSystem
         for (int i = _projectiles.Count - 1; i >= 0; i--)
         {
             var p = _projectiles[i];
-            for (int s = 0; s < IntegrationSubsteps; s++)
+            for (int s = 0; s < IntegrationSubsteps && p.Alive; s++)
             {
-                Integrate(ref p, h);
+                Vec3 before = p.Position;
+                _integrator.Step(ref p, h);
+                if (Armor is not null && p.Shell is not null && Targets.Count > 0)
+                {
+                    HandleArmorHits(ref p, world, before);
+                }
+            }
+
+            if (!p.Alive)
+            {
+                _projectiles[i] = p;
+                continue;
             }
 
             p.AgeSeconds += deltaTime;
 
-            if (p.Position.Y <= GroundLevelY)
+            if (p.FuzePending && world.Time >= p.FuzeDetonationAtTime)
             {
-                p.Alive = false;
-                _projectiles[i] = p;
-                world.Record(new ProjectileGroundImpact
+                Detonate(ref p, world, afterPenetration: true);
+            }
+            else if (p.Position.Y <= GroundLevelY)
+            {
+                // fuseOnWater = true for all naval shells: surface contact detonates (MDR-0003).
+                if (p.Shell is not null)
                 {
-                    ProjectileId = p.Id,
-                    Position = p.Position,
-                    Velocity = p.Velocity,
-                    AgeSeconds = p.AgeSeconds,
-                });
+                    Detonate(ref p, world, afterPenetration: false, onWaterSurface: true);
+                }
+                else
+                {
+                    p.Alive = false;
+                    _projectiles[i] = p;
+                    world.Record(new ProjectileGroundImpact
+                    {
+                        ProjectileId = p.Id,
+                        Position = p.Position,
+                        Velocity = p.Velocity,
+                        AgeSeconds = p.AgeSeconds,
+                    });
+                    continue;
+                }
             }
-            else
-            {
-                _projectiles[i] = p;
-            }
+
+            _projectiles[i] = p;
         }
 
         _projectiles.RemoveAll(p => !p.Alive);
     }
 
-    private void Integrate(ref BallisticProjectile p, double h)
+    private void HandleArmorHits(ref BallisticProjectile p, SimulationWorld world, Vec3 segmentStart)
     {
-        Vec3 v = p.Velocity;
-        Vec3 x = p.Position;
+        Vec3 segment = p.Position - segmentStart;
+        double segmentLength = segment.Length;
+        if (segmentLength < 1e-9)
+        {
+            return;
+        }
 
-        Vec3 a1 = Gravity + DragModel.Acceleration(p);
-        Vec3 k1x = v;
+        Vec3 dir = segment / segmentLength;
+        ArmorPlate? bestPlate = null;
+        ArmorTarget? bestTarget = null;
+        RayHit bestHit = default;
+        foreach (var target in Targets)
+        {
+            foreach (var (plate, hit) in target.Trace(segmentStart, dir))
+            {
+                if (hit.Distance > segmentLength)
+                {
+                    break; // sorted by distance — rest are further away
+                }
 
-        var mid1 = p;
-        mid1.Velocity = v + a1 * (h / 2);
-        Vec3 a2 = Gravity + DragModel.Acceleration(mid1);
-        Vec3 k2x = v + a1 * (h / 2);
+                if (bestPlate is null || hit.Distance < bestHit.Distance)
+                {
+                    bestPlate = plate;
+                    bestTarget = target;
+                    bestHit = hit;
+                }
+            }
+        }
 
-        var mid2 = p;
-        mid2.Velocity = v + a2 * (h / 2);
-        Vec3 a3 = Gravity + DragModel.Acceleration(mid2);
-        Vec3 k3x = v + a2 * (h / 2);
+        if (bestPlate is not { } hitPlate || bestTarget is not { } hitTarget)
+        {
+            return;
+        }
 
-        var end = p;
-        end.Velocity = v + a3 * h;
-        Vec3 a4 = Gravity + DragModel.Acceleration(end);
-        Vec3 k4x = v + a3 * h;
+        var resolver = Armor!;
+        double impactAngleDeg = Math.Acos(Math.Clamp(Math.Abs(dir.Dot(hitPlate.Normal)), 0.0, 1.0)) * 180.0 / Math.PI;
+        var result = resolver.Resolve(p.Shell!, p.Speed, impactAngleDeg, hitPlate, world.Rng("armor"));
 
-        p.Velocity = v + (a1 + (a2 + a3) * 2.0 + a4) * (h / 6);
-        p.Position = x + (k1x + (k2x + k3x) * 2.0 + k4x) * (h / 6);
+        world.Record(new ProjectileArmorImpact
+        {
+            ProjectileId = p.Id,
+            ShellId = p.Shell!.Id,
+            TargetId = hitTarget.Id,
+            PlateId = result.PlateId,
+            ImpactSpeedMs = result.ImpactSpeedMs,
+            ImpactAngleDeg = result.ImpactAngleDeg,
+            PlateThicknessMm = result.PlateThicknessMm,
+            EffectiveThicknessMm = result.EffectiveThicknessMm,
+            PenetrationMm = result.PenetrationMm,
+            Outcome = result.Outcome,
+            FuzeTriggered = result.FuzeTriggered,
+            OvermatchApplied = result.OvermatchApplied,
+            ResidualEnergyFraction = result.ResidualEnergyFraction,
+        });
+
+        switch (result.Outcome)
+        {
+            case PlateResolution.Ricocheted:
+            {
+                // Reflect about the face normal; the fuze does not fire on ricochet.
+                Vec3 n = bestHit.Normal;
+                p.Position = bestHit.Point - dir * 0.01;
+                p.Velocity = p.Velocity - n * (2.0 * p.Velocity.Dot(n));
+                break;
+            }
+
+            case PlateResolution.Penetrated:
+            {
+                // Advance to just past the slab so multi-plate layouts resolve layer by layer.
+                double slab = hitPlate.SlabPathLength(dir);
+                p.Position = bestHit.Point + dir * (slab + 0.001);
+                if (result.FuzeTriggered && !p.FuzePending)
+                {
+                    p.FuzePending = true;
+                    p.FuzeDetonationAtTime = world.Time + p.Shell!.FuseDelayS;
+                }
+
+                break;
+            }
+
+            case PlateResolution.Stopped:
+            {
+                p.Position = bestHit.Point;
+                p.Alive = false;
+                if (result.FuzeTriggered)
+                {
+                    RecordDetonation(world, p, p.Position, p.Velocity, afterPenetration: false, onWaterSurface: false);
+                }
+
+                // No fuze fire on too-thin plates: inert stop (kinetic-only damage in Phase 2).
+                break;
+            }
+        }
     }
+
+    private void Detonate(ref BallisticProjectile p, SimulationWorld world, bool afterPenetration, bool onWaterSurface = false)
+    {
+        p.Alive = false;
+        RecordDetonation(world, p, p.Position, p.Velocity, afterPenetration, onWaterSurface);
+    }
+
+    private static void RecordDetonation(
+        SimulationWorld world,
+        in BallisticProjectile p,
+        Vec3 position,
+        Vec3 velocity,
+        bool afterPenetration,
+        bool onWaterSurface)
+    {
+        world.Record(new ShellDetonation
+        {
+            ProjectileId = p.Id,
+            ShellId = p.Shell?.Id ?? "",
+            Position = position,
+            Velocity = velocity,
+            AfterPenetration = afterPenetration,
+            OnWaterSurface = onWaterSurface,
+        });
+    }
+
 }

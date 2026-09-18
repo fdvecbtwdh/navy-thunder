@@ -1,5 +1,5 @@
 using NavyThunder.Data;
-using NavyThunder.Data.Schema;
+using NavyThunder.Core.Model;
 using Xunit;
 using Xunit.Abstractions;
 

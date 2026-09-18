@@ -45,6 +45,116 @@
       "unknown": "The absolute constant; calibrated against WT stat-card penetration points.",
       "sourceUrl": "https://warthunder.com/en/news/6010-development-improved-calculation-of-armour-penetration-in-the-game-en",
       "mdr": "MDR-0001"
+    },
+    {
+      "id": "blast_ref_radius_m",
+      "value": 4.0,
+      "unit": "m per cbrt(kg TNT)",
+      "approximation": true,
+      "confidence": "low",
+      "known": "WT blast effect exists with distance falloff; composition (shockwave+brisant+fragments) is official.",
+      "unknown": "Radius-to-TNT relation and damage falloff curve are unpublished.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "blast_ref_damage",
+      "value": 220.0,
+      "unit": "HP per cbrt(kg TNT)",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Same as blast_ref_radius_m.",
+      "unknown": "Damage scale is engine-internal; tuned against recorded WT behaviors in Phase 7.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "punch_mm_per_cbrt_tnt",
+      "value": 30.0,
+      "unit": "mm per cbrt(kg TNT)",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Brisant effect can breach thin plates at the burst point; breach-vs-blast-pressure rule is official.",
+      "unknown": "Punch-to-TNT mapping unpublished.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "fragments_per_kg_tnt",
+      "value": 20.0,
+      "unit": "1/kg TNT",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Fragment counts are visible per-shell in stat cards but the generating formula is not public.",
+      "unknown": "Count/mass distribution formulas.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "fragment_speed_ms",
+      "value": 1200.0,
+      "unit": "m/s",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Fragment velocity raises fragment penetration with shell residual speed (official statement).",
+      "unknown": "Per-shell fragment velocity values.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "fragment_max_range_m",
+      "value": 60.0,
+      "unit": "m",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Fragments have limited effective range.",
+      "unknown": "Range-to-mass relation.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "fragment_pen_mm_per_cbrt_tnt",
+      "value": 8.0,
+      "unit": "mm per cbrt(kg TNT)",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Fragments penetrate thin plates; WT fragment vs armor resolution exists (Alpha Strike rework 2024-03).",
+      "unknown": "Per-fragment penetration model.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "overpressure_radius_m_per_cbrt_tnt",
+      "value": 2.0,
+      "unit": "m per cbrt(kg TNT)",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Overpressure acts with distance falloff per compartment; ships: open modules only (official).",
+      "unknown": "Radius and falloff numbers.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0005"
+    },
+    {
+      "id": "fire_ignition_base_probability",
+      "value": 0.05,
+      "unit": "probability",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Ignition is an independent roll not tied to remaining HP (official); compartments highly flammable.",
+      "unknown": "Probability table by shell type x module.",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "mdr": "MDR-0010"
+    },
+    {
+      "id": "fire_compartment_burn_dps",
+      "value": 15.0,
+      "unit": "HP/s",
+      "approximation": true,
+      "confidence": "low",
+      "known": "Fires kill compartment crew over time until extinguished (official direction, no numbers).",
+      "unknown": "Burn DPS and natural extinguish duration.",
+      "sourceUrl": "https://wiki.warthunder.com/640-ship-crew-mechanics",
+      "mdr": "MDR-0010"
     }
   ]
 }

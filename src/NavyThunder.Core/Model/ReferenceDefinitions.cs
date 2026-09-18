@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace NavyThunder.Data.Schema;
+namespace NavyThunder.Core.Model;
 
 /// <summary>
 /// A reference value extracted from War Thunder's public resources (official wiki pages,

@@ -1,4 +1,4 @@
-using NavyThunder.Data.Schema;
+using NavyThunder.Core.Model;
 
 namespace NavyThunder.Data;
 
