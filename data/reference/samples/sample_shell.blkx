@@ -1,0 +1,21 @@
+"_name": "406mm Mk 8 Mod 6 APCBC"
+"bulletType": "APCBC"
+"caliber": 0.406
+"mass": 1225.0
+"speed": 762.0
+"Cx": 1.02746
+"explosiveType": "exp_d"
+"explosiveMass": 18.55
+"ballisticsModel": "LAW_1943"
+"damage"{
+ "kinetic"{
+  "demarrePenetrationK": 1.0
+  "demarreSpeedPow": 1.43
+  "demarreMassPow": 0.71
+  "demarreCaliberPow": 1.07
+ }
+}
+"weaponCommon"{
+ "explodeTreshold": 38.0
+ "fuseDelayTime": 0.035
+}

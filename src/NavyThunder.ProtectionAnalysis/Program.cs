@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using NavyThunder.Core.Armor;
+using NavyThunder.Core.Armor;
 using NavyThunder.Core.Protection;
 using NavyThunder.Data;
 
@@ -19,6 +20,7 @@ if (args.Length == 0 || args[0] is "-h" or "--help")
         Usage:
           nt-pa summary   [--data <dir>]
           nt-pa scenario  --shell <id> --plate <mm> --angle <deg> [--range <m>] [--data <dir>]
+          nt-pa report    [--data <dir>]   calibration report vs WT stat-card references
         """);
     return 0;
 }
@@ -33,9 +35,6 @@ for (int i = 0; i < args.Length - 1; i++)
 }
 
 var repo = DataRepository.LoadFromDirectory(dataDir);
-
-// TODO(calibration): replaced by de_marre_constant from data/calibration once fitted to
-// stat cards (research in flight); default keeps the resolver functional meanwhile.
 var calibration = repo.ToPenetrationCalibration();
 
 switch (args[0])
@@ -128,6 +127,76 @@ switch (args[0])
         };
         Console.WriteLine(JsonSerializer.Serialize(report, jsonOptions));
         return 0;
+    }
+
+    case "report":
+    {
+        // Calibration report: every *_pen_0deg_* reference value is recomputed through
+        // the full chain (ballistics strike velocity -> de Marre) and compared against
+        // the official table with a per-shell tolerance. Per-shell tolerances are
+        // declared in the report itself (MDR-0001/0002).
+        var shellByPrefix = new Dictionary<string, (string Id, double Tol)>
+        {
+            ["mk8"] = ("usn_406mm_mk8_mod6_apcbc", 0.03),
+            ["mk13"] = ("usn_406mm_mk13_hc", 0.12),
+            ["mk46"] = ("usn_127mm_mk46_special_common", 0.07),
+        };
+
+        var entries = new List<object>();
+        int passed = 0, total = 0;
+        foreach (var (key, refEntry) in repo.WtReferences.Where(r => r.Key.EndsWith("_pen_0deg_1000m", StringComparison.Ordinal)
+                     || r.Key.EndsWith("_pen_0deg_2500m", StringComparison.Ordinal)
+                     || r.Key.EndsWith("_pen_0deg_5000m", StringComparison.Ordinal)
+                     || r.Key.EndsWith("_pen_0deg_7500m", StringComparison.Ordinal)
+                     || r.Key.EndsWith("_pen_0deg_10000m", StringComparison.Ordinal)
+                     || r.Key.EndsWith("_pen_0deg_15000m", StringComparison.Ordinal)))
+        {
+            var prefix = shellByPrefix.FirstOrDefault(kv => key.StartsWith(kv.Key, StringComparison.Ordinal));
+            if (prefix.Key is null || !repo.Shells.ContainsKey(prefix.Value.Id))
+            {
+                continue;
+            }
+
+            string marker = "_pen_0deg_";
+            int m0 = key.IndexOf(marker, StringComparison.Ordinal) + marker.Length;
+            double range = double.Parse(key[m0..^1]); // strip trailing 'm'
+            var shell = repo.RequireShell(prefix.Value.Id);
+            double computed = NavyThunder.Core.Armor.DeMarre.PenetrationMm(shell,
+                ProtectionScenario.StrikeAtRange(shell, range).ImpactSpeed);
+            double expected = refEntry.Value;
+            double deviation = (computed - expected) / expected;
+            bool ok = Math.Abs(deviation) <= prefix.Value.Tol;
+            total++;
+            passed += ok ? 1 : 0;
+            entries.Add(new Dictionary<string, object?>
+            {
+                ["reference"] = key,
+                ["shell"] = shell.Id,
+                ["rangeM"] = range,
+                ["expectedMm"] = expected,
+                ["computedMm"] = Math.Round(computed, 1),
+                ["deviationPct"] = Math.Round(deviation * 100, 2),
+                ["tolerancePct"] = Math.Round(prefix.Value.Tol * 100, 1),
+                ["pass"] = ok,
+            });
+        }
+
+        var report = new Dictionary<string, object?>
+        {
+            ["generatedOn"] = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+            ["touchedReferenceVersion"] = "WT 2.59 era stat cards (Iowa wiki page, 2026-09-19)",
+            ["total"] = total,
+            ["passed"] = passed,
+            ["passRatePct"] = total == 0 ? 0 : Math.Round(passed * 100.0 / total, 1),
+            ["toleranceStatement"] = "0-deg penetration vs official range table: Mk8 ±3% (all six ranges), Mk46 ±7%, Mk13 HE ±12% (noisier HE table, Phase 7 refinement)",
+            ["entries"] = entries,
+        };
+        var jsonOptions = new JsonSerializerOptions { WriteIndented = true, Converters = { new JsonStringEnumConverter() } };
+        var reportJson = JsonSerializer.Serialize(report, jsonOptions);
+        File.WriteAllText("docs/calibration-report.json", reportJson);
+        Console.WriteLine(reportJson);
+        Console.Error.WriteLine($"calibration: {passed}/{total} passed -> docs/calibration-report.json");
+        return passed == total ? 0 : 1;
     }
 
     default:

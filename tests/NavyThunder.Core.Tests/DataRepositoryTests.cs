@@ -17,10 +17,12 @@ public class DataRepositoryTests(ITestOutputHelper output)
                          "references=" + repo.WtReferences.Count + " calibration=" + repo.Calibration.Count);
 
         // The Phase 0 baseline dataset must be present and coherent.
-        Assert.True(repo.Shells.Count >= 6, "expected the 6 baseline USN naval shells");
+        Assert.True(repo.Shells.Count >= 8, "expected the baseline naval + air-gun shells");
         Assert.True(repo.Torpedoes.Count >= 1, "expected the Type 93 baseline torpedo");
-        Assert.True(repo.WtReferences.Count >= 10, "expected the WT reference table");
-        Assert.True(repo.Calibration.Count >= 4, "expected calibration parameters");
+        Assert.True(repo.WtReferences.Count >= 20, "expected the WT reference table");
+        Assert.True(repo.Calibration.Count >= 10, "expected calibration parameters");
+        Assert.True(repo.Ships.Count >= 30, "expected the generated fleet (Tier-2 templates)");
+        Assert.True(repo.Aircraft.Count >= 1, "expected the baseline test fighter");
 
         var mk8 = repo.RequireShell("usn_406mm_mk8_mod6_apcbc");
         Assert.Equal(1225, mk8.MassKg);

@@ -50,9 +50,17 @@ docs/mechanisms/                    # MDR 机制决策记录（行为/历史/证
 
 ## 开发阶段
 
-Phase 0 骨架与数据基线 → **Phase 1 弹道+穿甲（de Marre/转正/跳弹/引信）** → Phase 2 爆炸/破片/超压 → Phase 3 舰船伤害模型 → Phase 4 飞机与空战 → Phase 5 防空/雷达/火控 → Phase 6 导弹与现代层 → Phase 7 大规模数据录入与校准收束。
+Phase 0 骨架与数据基线 → Phase 1 弹道+穿甲 → Phase 2 爆炸/破片/超压 → Phase 3 舰船伤害模型 → Phase 4 飞机与空战 → Phase 5 防空/雷达/火控 → Phase 6 导弹与现代层 → Phase 7 数据管线与校准收束 —— **全部完成**。
 
-详细机制依据见 [docs/mechanisms/README.md](docs/mechanisms/README.md)。
+数据扩充工作流（持续）：
+
+```bash
+python tools/extract_datamine.py --dir <datamine>/gamedata/weapons --selftest  # WT 数值提取
+python tools/generate_ships.py                                                 # 模板舰队扩充
+dotnet run --project src/NavyThunder.ProtectionAnalysis -- report              # 校准报告
+```
+
+详细机制依据见 [docs/mechanisms/README.md](docs/mechanisms/README.md)。校准状态见 [docs/calibration-report.json](docs/calibration-report.json)。
 
 ## License
 

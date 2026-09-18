@@ -7,3 +7,4 @@ artifacts/
 TestResults/
 *.DotSettings
 .zcode/
+wt_extracted.json
