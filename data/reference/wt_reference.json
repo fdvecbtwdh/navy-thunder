@@ -123,6 +123,150 @@
       "sourceKind": "wt_official_changelog",
       "sourceUrl": "https://warthunder.com/en/game/changelog/current/1749",
       "retrievedOn": "2026-09-18"
+    },
+    {
+      "id": "de_marre_ref_speed",
+      "value": 1900.0,
+      "unit": "m/s",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/jacob_de_marre",
+      "retrievedOn": "2026-09-19",
+      "notes": "Absolute constant of the official calculator JS: pen = 100*v^1.43*m^0.71/(1900^1.43*(d/100)^1.07)*K[*knap]. APCR family uses 3000."
+    },
+    {
+      "id": "mk8_pen_0deg_1000m",
+      "value": 857,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": "0 deg column"
+    },
+    {
+      "id": "mk8_pen_0deg_2500m",
+      "value": 821,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk8_pen_0deg_5000m",
+      "value": 765,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk8_pen_0deg_7500m",
+      "value": 714,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk8_pen_0deg_10000m",
+      "value": 666,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk8_pen_0deg_15000m",
+      "value": 578,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk8_pen_30deg_1000m",
+      "value": 657,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": "30 deg: plate thickness penetrable at that angle"
+    },
+    {
+      "id": "mk8_pen_60deg_1000m",
+      "value": 300,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk13_pen_0deg_1000m",
+      "value": 106,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk13_pen_0deg_5000m",
+      "value": 90,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk13_pen_0deg_10000m",
+      "value": 73,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk46_pen_0deg_1000m",
+      "value": 146,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk46_pen_0deg_5000m",
+      "value": 79,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk46_pen_0deg_10000m",
+      "value": 40,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": ""
+    },
+    {
+      "id": "mk34_pen_card_mm",
+      "value": 35.6,
+      "unit": "mm",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/unit/us_battleship_iowa_class_iowa",
+      "retrievedOn": "2026-09-19",
+      "notes": "Fixed HE card value at all ranges (kinetic component 21 mm at 1 km)"
     }
   ]
 }

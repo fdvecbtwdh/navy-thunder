@@ -8,7 +8,7 @@ namespace NavyThunder.Core.Tests;
 
 public static class TestShells
 {
-    public static readonly PenetrationCalibration Calibration = new() { DeMarreConstant = 1.0 };
+    public static readonly PenetrationCalibration Calibration = new();
 
     public static readonly ShellDefinition Mk8 = new()
     {
@@ -22,6 +22,8 @@ public static class TestShells
         FuseDelayS = 0.035,
         ExplodeThresholdMm = 38,
         DemarrePenetrationK = 1.0,
+        DragCoefficient = 1.02746,
+        DragCoefficientScale = 0.302, // fitted to the official range table (MDR-0002)
     };
 
     public static readonly ShellDefinition Mk32Sap = new()
@@ -51,6 +53,22 @@ public static class TestShells
         DemarrePenetrationK = 1.0,
     };
 
+    public static readonly ShellDefinition Mk13He = new()
+    {
+        Id = "usn_406mm_mk13_hc",
+        DisplayName = "406mm Mk13 HC",
+        Category = ShellCategory.HE,
+        CaliberMm = 406,
+        MassKg = 862,
+        MuzzleVelocityMs = 803,
+        ExplosiveMassKg = 69.67,
+        FuseDelayS = 0.001,
+        ExplodeThresholdMm = 0.1,
+        DemarrePenetrationK = 0.18,
+        DragCoefficient = 1.02223,
+        DragCoefficientScale = 0.27,
+    };
+
     public static ArmorPlate Plate(double thicknessMm, string id = "plate") => new()
     {
         Id = id,
@@ -69,21 +87,19 @@ public class DeMarreTests
     [Fact]
     public void Penetration_Scales_With_Velocity_To_The_Datamined_Exponent()
     {
-        double pen100 = DeMarre.PenetrationMm(1.0, TestShells.Mk8, 100);
-        double pen200 = DeMarre.PenetrationMm(1.0, TestShells.Mk8, 200);
+        double pen100 = DeMarre.PenetrationMm(TestShells.Mk8, 100);
+        double pen200 = DeMarre.PenetrationMm(TestShells.Mk8, 200);
 
         Assert.Equal(Math.Pow(2, DeMarre.SpeedPow), pen200 / pen100, 12);
     }
 
     [Fact]
-    public void Penetration_Scales_With_Shell_K()
+    public void Penetration_Scales_Linearly_With_Shell_K()
     {
-        double mk8 = DeMarre.PenetrationMm(1.0, TestShells.Mk8, 762);
-        double sap = DeMarre.PenetrationMm(1.0, TestShells.Mk32Sap, 762);
+        double withK = DeMarre.PenetrationMm(TestShells.Mk32Sap, 762);
+        double withoutK = DeMarre.PenetrationMm(TestShells.Mk32Sap with { DemarrePenetrationK = 1.0 }, 762);
 
-        // K=1.0 vs K=0.87 — identical speed/mass window is handled by K ratio alone.
-        Assert.Equal(0.87, sap / DeMarre.PenetrationMm(1.0, TestShells.Mk32Sap with { DemarrePenetrationK = 1.0 }, 762), 12);
-        Assert.True(mk8 > 0);
+        Assert.Equal(0.87, withK / withoutK, 12);
     }
 }
 

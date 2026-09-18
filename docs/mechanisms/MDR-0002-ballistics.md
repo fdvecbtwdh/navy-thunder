@@ -24,11 +24,21 @@
 - 2025-2026 海军散布多次调整（与弹道解耦，散布归 MDR-0014）。
 - 2026-07 论坛报告水线下命中"消失无伤害"（当前已知问题，不照抄）。
 
+## 射表校准层（2026-09-19 已落地）
+
+用官方距离表（Iowa wiki 页 0° 穿深列反推存速）标定每弹的 `DragCoefficientScale`（乘在 datamine Cx 上）：
+
+- **406mm Mk8（LAW_1943）**：scale=0.302 → 六个距离点 857/821/765/714/666/578 全部复现于 **±1.7%**。物理含义：LAW_1943 在跨马赫段 Cd 显著低于文件静态 Cx=1.027（隐含 Cd≈0.31，符合史实 16" 弹在 Mach 2 的阻力系数量级）。
+- **127mm Mk46（ADVANCED_DYNAMIC_KV）**：scale=1.0（原始 Cx=0.35192 即吻合，1km 误差 <1%）。
+- **406mm Mk13 HC**：scale=0.27，中段距离 ±3%，HE 表较噪（±12% 门限，Phase 7 细化）。
+
+这是"射表落速校准层"的数据驱动形态：scale 存于弹定义，`QuadraticDrag` 消费；将来若提取出 Cx(M) 折线可直接替换。
+
 ## 未知点
 
-`LAW_1943`/`ADVANCED_DYNAMIC_KV` 数学形式；Cx 高马赫段是否有隐藏修正；散布公式（归 MDR-0014）。
+`LAW_1943`/`ADVANCED_DYNAMIC_KV` 确切数学形式（含 Cd(M) 曲线形状）；散布公式（归 MDR-0014）。
 
 ## 实现与替换方案
 
-- `NavyThunder.Core.Ballistics`：`QuadraticDrag`（常数 Cd）已落地；`IDragModel` 接口预留 `Cd(M)` 折线。
-- Phase 1 增加射表落速校准层：大口径弹用射表锚点修正远距离落速（数据驱动）。
+- `NavyThunder.Core.Ballistics`：`QuadraticDrag`（常数 Cd × DragCoefficientScale）已落地；`IDragModel` 接口预留 `Cd(M)` 折线。
+- 校准测试：`StatCardCalibrationTests` 对官方 0° 距离表全点 ±3%（406mm）/±7%（127mm）。

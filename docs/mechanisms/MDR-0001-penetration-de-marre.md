@@ -1,43 +1,45 @@
 # MDR-0001: 舰炮穿深模型（de Marre）
 
-- 状态: 已决议
-- 置信度: **高**（公式与系数公开可复刻；绝对常数为近似）
+- 状态: 已决议（官方公式已完整还原）
+- 置信度: **高**（官方计算器 JS 源码 + datamine 逐弹系数 + 官方距离表三点互证）
 - 参考优先级: War Thunder（战斗计算）
 
 ## 决议
 
-采用 de Marre 体系，与 WT 相同的全局指数 + 逐弹 K 系数：
+采用**官方 calculator 的精确实现**（wiki.warthunder.com/jacob_de_marre 页面内嵌 JS，2026-09-19 抓取源码逐字还原）：
 
 ```
-penetration = C · K_shell · v_impact^1.43 · m^0.71 / d^1.07
+pen_mm = 100 · v^1.43 · m^0.71 / (1900^1.43 · (d_mm/100)^1.07) · K_shell · knap(炸药%)
 ```
 
-- `v_impact` 为弹着点存速（弹道积分输出）→ 距离衰减仅由落速产生，**无隐藏距离项**（官方 2019 公告明确大口径 AP 落速按真实射表重设）。
-- 炸药占比惩罚：炸药质量/弹重比越高穿深越低（官方规则；具体函数未公开 → 校准参数 `de_marre_he_penalty`，Phase 1 定义形状）。
-- `C`（绝对归一化常数）官方未公开 → `calibration/de_marre_constant`，用 WT 数据卡 0m 穿深点反解校准。
+- 绝对常数 = 参考速度 **1900 m/s**（APCR 家族为 3000）。此前"绝对常数未知待校准"的占位方案被此发现取代。
+- 幂指数 1.43/0.71/1.07：官方 JS = datamine 逐弹字段 = 多个社区实现，四处一致。
+- **knap（炸药占比惩罚）全弹种适用**：官方分段函数
+  - 炸药% < 0.65 → 1.0；< 1.6 → 线性降到 0.93；< 2.0 → 0.90；< 3.0 → 0.85；< 4.0 → 0.75（线性）；≥ 4 → 0.75
+- 验证锚点：
+  - 75mm M61 数据卡 10m/0° = 104mm，公式（含 knap）= 103.95 ✓（0.05mm 误差）
+  - Mk8 炮口 882mm（官方计算器口径）；127mm Mk46 计算值 170 ≈ 社区口径
+  - **406mm Mk8 官方距离表 0° 列（1000/2500/5000/7500/10000/15000m = 857/821/765/714/666/578）全部在 ±1.7% 内复现**（配合 MDR-0002 的阻力缩放）
 
 ## WT 行为与证据
 
-- 2019-01-30 官方公告《Improved Calculation of Armour Penetration》：AP/APC/APBC/APCBC 与 APCR/HVAP 使用 **Jacob de Marre 公式**；APFSDS 用 Lanz-Odermatt；动机是"让玩家可自行复现穿深"。（warthunder.com/en/news/6010）
-- datamine（gszabi99/War-Thunder-Datamine，2026-09 抓取）：海军弹 blk 携带 `demarrePenetrationK`（Mk8=1.0、Mk32 SAP=0.87、Mk34 HE=0.15）与全局 `demarreSpeedPow=1.43 / demarreMassPow=0.71 / demarreCaliberPow=1.07`。海军与坦克共用同一体系，**不存在第二套保密舰炮公式**。
-- 官方 wiki 计算器页：wiki.warthunder.com/jacob_de_marre。
-- Stat card 0° 值为实际穿深；30°/60° 列为"该角度可击穿的板厚"（非 LoS 厚度）。
+- 官方公式页（内嵌 JS）：wiki.warthunder.com/jacob_de_marre（"All calculations are given for a distance of 0 meters and at a right angle"）
+- datamine：每弹 `demarrePenetrationK`（Mk8=1.0、Mk32 SAP=0.87、Mk46=1.0、Mk13 HC=0.18、Mk34=0.15）+ 全局幂指数字段
+- 官方距离表（Iowa wiki 页，Gaijin 生成）：0°/30°/60° 三列 × 1000–15000m 六档
+- 社区互证：JareelSkaj/wt-wiki-tools（精确移植）、wt_datamine_extractor/demarre.rs（同一参考点）
 
-## NavalArt 参考
+## 历史与冲突记录
 
-有 AP 穿深概念与 ModTool 穿深修正/弹重参数（1.53），但公式未公开。建造侧借鉴其"分列 HE/AP 伤害显示"的编辑器体验；战斗侧不采用。
-
-## 历史变化
-
-- 2019-01 公告 → 1.85/1.87 落地；此前为各弹各算的旧制。
-- 2021-03 Ixwa Strike（2.5）配合 HE/超压改版微调穿深-伤害交互。
+- 2019-01-30 官方公告引入该体系（动机：玩家可复现穿深）。
+- 冲突一（已裁决）：早期调研读数 Mk13 K=0.15 vs 0.18 —— 以直接读取 blk 的 0.18 为准（与 460mm Type 0 HE 的 0.18 跨弹一致）。
+- 冲突二（已裁决）：调研中"海军 K 已含炸药折扣（不加 knap）"的候选被距离表全面拟合否定——knap 全弹适用 + 阻力缩放才能同时满足 127mm（两者都严格吻合）与 406mm。
+- 角度未解项：30°/60° 列无解析公式（游戏内 slope/ricochet preset 行为），只能查表/边界校验（MDR-0004）。
 
 ## 未知点
 
-绝对常数 C；炸药占比惩罚函数形状；`armorClass`（如 ship_structural_steel）内部修正系数。
+30°/60° 转正乘数表完整数值（官方只给机制与 0.5–2.5 比例窗）；`armorClass` 内部修正。
 
 ## 实现与替换方案
 
-- 实现：`NavyThunder.Core.Armor.DeMarrePenetration`，K 与指数来自数据，C 来自 calibration。
-- 校准：对 WT 数据卡抽样弹 0°/30°/60° 穿深点，CI 容差 ±5%（Phase 1 完成标准）。
-- 替换成本低：单文件公式 + 数据驱动参数。
+- `NavyThunder.Core.Armor.DeMarre`：官方公式 + knap；K 与炸药数据来自弹定义。
+- 校准测试：`StatCardCalibrationTests`（0° 距离表 ±3%，角度列上界）。替换成本低：单文件公式。

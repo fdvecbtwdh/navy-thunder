@@ -29,6 +29,9 @@ public sealed record DamageEvent
 
     public Vec3 Position { get; init; }
 
+    /// <summary>Radial extent of the damage (blast); 0 = point damage.</summary>
+    public double Radius { get; init; }
+
     public required double Amount { get; init; }
 
     public ulong Tick { get; init; }
@@ -44,7 +47,7 @@ public interface IDamageSink
 {
     string TargetId { get; }
 
-    void ApplyDamage(in DamageEvent e);
+    void ApplyDamage(DamageEvent e);
 }
 
 /// <summary>

@@ -66,6 +66,13 @@ public sealed record ShellDefinition
     /// <summary>Per-shell de Marre coefficient K (WT datamine demarrePenetrationK).</summary>
     public double DemarrePenetrationK { get; init; }
 
+    /// <summary>
+    /// Multiplier on the datamine Cx, fitted to the official range tables where the
+    /// shell's ballisticsModel deviates from constant drag (e.g. 406mm LAW_1943 needs
+    /// ~0.30; 127mm ADVANCED_DYNAMIC_KV fits at 1.0). Approximation, MDR-0002.
+    /// </summary>
+    public double DragCoefficientScale { get; init; } = 1.0;
+
     public double? DragCoefficient { get; init; }
 
     /// <summary>WT datamine ballisticsModel tag, e.g. "LAW_1943" or "ADVANCED_DYNAMIC_KV" (informational).</summary>

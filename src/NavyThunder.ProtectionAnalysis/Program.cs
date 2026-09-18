@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using NavyThunder.Core.Armor;
 using NavyThunder.Core.Protection;
 using NavyThunder.Data;
-using NavyThunder.Core.Model;
 
 // Protection Analysis CLI.
 // Commands:
@@ -37,8 +36,7 @@ var repo = DataRepository.LoadFromDirectory(dataDir);
 
 // TODO(calibration): replaced by de_marre_constant from data/calibration once fitted to
 // stat cards (research in flight); default keeps the resolver functional meanwhile.
-var calibration = PenetrationCalibration.FromRepository(
-    repo.WtReferences.TryGetValue("de_marre_constant_calibrated", out var c) ? c.Value : 1.0);
+var calibration = repo.ToPenetrationCalibration();
 
 switch (args[0])
 {

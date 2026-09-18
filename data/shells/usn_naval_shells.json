@@ -21,8 +21,9 @@
         "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/406mm_50_mk7_naval_user_cannon.blkx)",
         "versionStamp": "WT datamine 2026-09",
         "retrievedOn": "2026-09-18",
-        "notes": "Historical cross-check vs Navweaps: 1225 kg / 762 m/s / 18.4 kg Explosive D — consistent."
-      }
+        "notes": "Historical cross-check vs Navweaps consistent. DragCoefficientScale=0.302 fitted to the official range table (all six 0-deg points within ~1.7%); the datamine Cx=1.027 alone overshoots drag beyond 1 km (LAW_1943 transonic Cd drop) - MDR-0002."
+      },
+      "dragCoefficientScale": 0.302
     },
     {
       "id": "usn_406mm_mk13_hc",
@@ -35,7 +36,7 @@
       "explosiveMassKg": 69.67,
       "fuseDelayS": 0.001,
       "explodeThresholdMm": 0.1,
-      "demarrePenetrationK": 0.15,
+      "demarrePenetrationK": 0.18,
       "dragCoefficient": 1.02223,
       "ballisticsModel": "LAW_1943",
       "source": {
@@ -43,8 +44,9 @@
         "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/406mm_50_mk7_naval_user_cannon.blkx)",
         "versionStamp": "WT datamine 2026-09",
         "retrievedOn": "2026-09-18",
-        "notes": "Muzzle velocity reported as 803-820 m/s across sources; 803 (Navweaps full charge) used here."
-      }
+        "notes": "K=0.18 read directly from the blk (supersedes an earlier 0.15 reading). DragCoefficientScale=0.27 fitted to the HC range table (mid-range points within ~3%); HE tables are noisier - MDR-0002."
+      },
+      "dragCoefficientScale": 0.27
     },
     {
       "id": "usn_127mm_mk34_common_he",

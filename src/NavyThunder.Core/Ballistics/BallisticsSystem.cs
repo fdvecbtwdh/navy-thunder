@@ -25,6 +25,9 @@ public struct BallisticProjectile
     public bool FuzePending;
     public double FuzeDetonationAtTime;
 
+    /// <summary>Target id of the most recent armor interaction (empty = none).</summary>
+    public string LastTargetId;
+
     public readonly double Speed => Velocity.Length;
 }
 
@@ -73,6 +76,8 @@ public sealed record ProjectileArmorImpact : SimulationEvent
     public string ShellId { get; init; } = "";
     public string TargetId { get; init; } = "";
     public string PlateId { get; init; } = "";
+    public Vec3 Position { get; init; }
+    public Vec3 Direction { get; init; }
     public double ImpactSpeedMs { get; init; }
     public double ImpactAngleDeg { get; init; }
     public double PlateThicknessMm { get; init; }
@@ -90,6 +95,7 @@ public sealed record ShellDetonation : SimulationEvent
 {
     public int ProjectileId { get; init; }
     public string ShellId { get; init; } = "";
+    public string TargetId { get; init; } = "";
     public Vec3 Position { get; init; }
 
     /// <summary>Velocity at detonation — the fragment cone axis (MDR-0005).</summary>
@@ -240,11 +246,14 @@ public sealed class BallisticsSystem : ISimulationSystem
         double impactAngleDeg = Math.Acos(Math.Clamp(Math.Abs(dir.Dot(hitPlate.Normal)), 0.0, 1.0)) * 180.0 / Math.PI;
         var result = resolver.Resolve(p.Shell!, p.Speed, impactAngleDeg, hitPlate, world.Rng("armor"));
 
+        p.LastTargetId = hitTarget.Id;
         world.Record(new ProjectileArmorImpact
         {
             ProjectileId = p.Id,
             ShellId = p.Shell!.Id,
             TargetId = hitTarget.Id,
+            Position = bestHit.Point,
+            Direction = dir,
             PlateId = result.PlateId,
             ImpactSpeedMs = result.ImpactSpeedMs,
             ImpactAngleDeg = result.ImpactAngleDeg,
@@ -315,6 +324,7 @@ public sealed class BallisticsSystem : ISimulationSystem
         {
             ProjectileId = p.Id,
             ShellId = p.Shell?.Id ?? "",
+            TargetId = p.LastTargetId,
             Position = position,
             Velocity = velocity,
             AfterPenetration = afterPenetration,

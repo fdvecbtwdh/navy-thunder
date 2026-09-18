@@ -2,6 +2,7 @@ using NavyThunder.Core.Armor;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Geometry;
 using NavyThunder.Core.Mathematics;
+using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Model;
 
 namespace NavyThunder.Core.Protection;
@@ -63,10 +64,15 @@ public static class ProtectionScenario
         };
     }
 
+    internal static QuadraticDrag MakeDrag(ShellDefinition shell) => new(
+        (shell.DragCoefficient ?? 0.35) * shell.DragCoefficientScale,
+        shell.CaliberMm / 1000.0,
+        shell.MassKg);
+
     /// <summary>Strike velocity and fall angle of a shell at the given range (bisection firing solution).</summary>
     public static TrajectoryResult StrikeAtRange(ShellDefinition shell, double rangeM)
     {
-        var drag = new QuadraticDrag(shell.DragCoefficient ?? 0.35, shell.CaliberMm / 1000.0, shell.MassKg);
+        var drag = MakeDrag(shell);
         return Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs, drag, rangeM);
     }
 }

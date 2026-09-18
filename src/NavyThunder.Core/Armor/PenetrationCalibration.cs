@@ -11,8 +11,6 @@ namespace NavyThunder.Core.Armor;
 /// </summary>
 public sealed class PenetrationCalibration
 {
-    public double DeMarreConstant { get; init; } = 1.0;
-
     public double OvermatchRatio { get; init; } = 7.0;
 
     public double RicochetStartDeg { get; init; } = 65.0;
@@ -60,15 +58,13 @@ public sealed class PenetrationCalibration
         return 1.0 - t * (1.0 - min);
     }
 
-    public static PenetrationCalibration FromRepository(
-        double deMarreConstant,
+    public static PenetrationCalibration FromDefaults(
         double overmatchRatio = 7.0,
         double ricochetStartDeg = 65.0,
         double ricochetFullDeg = 75.0)
     {
         return new PenetrationCalibration
         {
-            DeMarreConstant = deMarreConstant,
             OvermatchRatio = overmatchRatio,
             RicochetStartDeg = ricochetStartDeg,
             RicochetFullDeg = ricochetFullDeg,

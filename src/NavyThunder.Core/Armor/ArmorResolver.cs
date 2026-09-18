@@ -66,7 +66,7 @@ public sealed class ArmorResolver(PenetrationCalibration calibration)
                 ImpactAngleDeg = impactAngleDeg,
                 PlateThicknessMm = plate.ThicknessMm,
                 EffectiveThicknessMm = plate.ThicknessMm,
-                PenetrationMm = DeMarre.PenetrationMm(Calibration.DeMarreConstant, shell, impactSpeedMs),
+                PenetrationMm = DeMarre.PenetrationMm(shell, impactSpeedMs),
                 Outcome = PlateResolution.Ricocheted,
                 FuzeTriggered = false, // fuseOnRicochet = false (MDR-0003)
                 OvermatchApplied = false,
@@ -79,7 +79,7 @@ public sealed class ArmorResolver(PenetrationCalibration calibration)
             ? plate.ThicknessMm // angle fully ignored
             : los * Calibration.NormalizationMultiplier(shell.Category, ratio);
 
-        double pen = DeMarre.PenetrationMm(Calibration.DeMarreConstant, shell, impactSpeedMs);
+        double pen = DeMarre.PenetrationMm(shell, impactSpeedMs);
         bool penetrated = pen >= effective;
         bool fuzeTriggered = plate.ThicknessMm >= shell.ExplodeThresholdMm;
 

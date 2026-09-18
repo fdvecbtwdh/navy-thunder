@@ -15,15 +15,8 @@ public static class CalibrationBinding
 {
     public static PenetrationCalibration ToPenetrationCalibration(this DataRepository repo)
     {
-        double constant = repo.WtReferences.TryGetValue("de_marre_constant_calibrated", out var c)
-            ? c.Value
-            : repo.Calibration.TryGetValue("de_marre_constant", out var approx)
-                ? approx.Value
-                : 1.0;
-
         return new PenetrationCalibration
         {
-            DeMarreConstant = constant,
             OvermatchRatio = repo.WtReferences.GetValueOrDefault("overmatch_thickness_ratio")?.Value ?? 7.0,
             RicochetStartDeg = repo.Calibration.GetValueOrDefault("ricochet_angle_start_deg")?.Value ?? 65.0,
             RicochetFullDeg = repo.Calibration.GetValueOrDefault("ricochet_angle_full_deg")?.Value ?? 75.0,
