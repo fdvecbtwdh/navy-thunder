@@ -53,3 +53,7 @@ docs/mechanisms/                    # MDR 机制决策记录（行为/历史/证
 Phase 0 骨架与数据基线 → **Phase 1 弹道+穿甲（de Marre/转正/跳弹/引信）** → Phase 2 爆炸/破片/超压 → Phase 3 舰船伤害模型 → Phase 4 飞机与空战 → Phase 5 防空/雷达/火控 → Phase 6 导弹与现代层 → Phase 7 大规模数据录入与校准收束。
 
 详细机制依据见 [docs/mechanisms/README.md](docs/mechanisms/README.md)。
+
+## License
+
+本项目以 [GPL-3.0](LICENSE) 协议开源。
