@@ -25,6 +25,7 @@ public sealed class DataRepository
     public IReadOnlyDictionary<string, ShellDefinition> Shells { get; }
     public IReadOnlyDictionary<string, TorpedoDefinition> Torpedoes { get; }
     public IReadOnlyDictionary<string, ShipDefinition> Ships { get; }
+    public IReadOnlyDictionary<string, AircraftDefinition> Aircraft { get; }
     public IReadOnlyDictionary<string, WtReferenceEntry> WtReferences { get; }
     public IReadOnlyDictionary<string, CalibrationEntry> Calibration { get; }
 
@@ -32,12 +33,14 @@ public sealed class DataRepository
         Dictionary<string, ShellDefinition> shells,
         Dictionary<string, TorpedoDefinition> torpedoes,
         Dictionary<string, ShipDefinition> ships,
+        Dictionary<string, AircraftDefinition> aircraft,
         Dictionary<string, WtReferenceEntry> wtReferences,
         Dictionary<string, CalibrationEntry> calibration)
     {
         Shells = shells;
         Torpedoes = torpedoes;
         Ships = ships;
+        Aircraft = aircraft;
         WtReferences = wtReferences;
         Calibration = calibration;
     }
@@ -68,6 +71,7 @@ public sealed class DataRepository
         var shells = new Dictionary<string, ShellDefinition>();
         var torpedoes = new Dictionary<string, TorpedoDefinition>();
         var ships = new Dictionary<string, ShipDefinition>();
+        var aircraftDict = new Dictionary<string, AircraftDefinition>();
         var wtReferences = new Dictionary<string, WtReferenceEntry>();
         var calibration = new Dictionary<string, CalibrationEntry>();
 
@@ -112,6 +116,17 @@ public sealed class DataRepository
                         {
                             DataValidator.Validate(ship, errors);
                             AddUnique(ships, ship.Id, ship, path, errors);
+                        }
+
+                        break;
+
+                    case "aircraftSet":
+                        var aircraftSet = Deserialize<AircraftSetDocument>(path, json);
+                        CheckSchemaVersion(path, aircraftSet.SchemaVersion, errors);
+                        foreach (var aircraft in aircraftSet.Aircraft)
+                        {
+                            DataValidator.Validate(aircraft, errors);
+                            AddUnique(aircraftDict, aircraft.Id, aircraft, path, errors);
                         }
 
                         break;
@@ -164,7 +179,7 @@ public sealed class DataRepository
             throw new DataValidationException(errors);
         }
 
-        return new DataRepository(shells, torpedoes, ships, wtReferences, calibration);
+        return new DataRepository(shells, torpedoes, ships, aircraftDict, wtReferences, calibration);
     }
 
     public CalibrationEntry RequireCalibration(string id)

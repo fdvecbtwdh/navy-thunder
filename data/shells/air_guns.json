@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "shellSet",
+  "shells": [
+    {
+      "id": "usn_127mm_m2_ap",
+      "displayName": "12.7mm M2 AP",
+      "category": "AP",
+      "caliberMm": 12.7,
+      "massKg": 0.046,
+      "muzzleVelocityMs": 890,
+      "fuseDelayS": 0,
+      "explodeThresholdMm": 999,
+      "demarrePenetrationK": 0.55,
+      "dragCoefficient": 0.28,
+      "source": {
+        "origin": "hand_authored",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (aero_guns, K not yet extracted)",
+        "versionStamp": "Tier-2 approximation 2026-09-19",
+        "retrievedOn": "2026-09-19",
+        "notes": "K fitted so 0 m penetration lands near community-observed ~19 mm for .50 cal AP (de Marre base 34.6 mm x 0.55); replace with datamined K in Phase 7. Inert AP: explodeThreshold above any plate = never detonates."
+      }
+    },
+    {
+      "id": "usn_20mm_an_m2_hefi",
+      "displayName": "20mm M97 HEFI",
+      "category": "HE",
+      "caliberMm": 20,
+      "massKg": 0.122,
+      "muzzleVelocityMs": 830,
+      "explosiveType": "tnt",
+      "explosiveMassKg": 0.01,
+      "fuseDelayS": 0.001,
+      "explodeThresholdMm": 0.5,
+      "demarrePenetrationK": 0.15,
+      "dragCoefficient": 0.3,
+      "source": {
+        "origin": "hand_authored",
+        "url": "https://wiki.warthunder.com/jacob_de_marre",
+        "versionStamp": "Tier-2 approximation 2026-09-19",
+        "retrievedOn": "2026-09-19",
+        "notes": "HEFI with ~10 g explosive: sensitive fuze (0.5 mm), pen ~5 mm — Minengeschoß-class behavior emerges from the shared fuze/fragment rules."
+      }
+    }
+  ]
+}

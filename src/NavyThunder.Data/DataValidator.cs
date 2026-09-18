@@ -165,6 +165,42 @@ public static class DataValidator
         }
     }
 
+    public static void Validate(AircraftDefinition aircraft, IList<string> errors)
+    {
+        if (string.IsNullOrWhiteSpace(aircraft.Id))
+        {
+            errors.Add("aircraft: Id is required");
+        }
+
+        if (aircraft.DesignG <= 0)
+        {
+            errors.Add($"aircraft '{aircraft.Id}': DesignG must be > 0");
+        }
+
+        if (aircraft.Parts.Length == 0)
+        {
+            errors.Add($"aircraft '{aircraft.Id}': at least one part is required");
+        }
+
+        if (!aircraft.Parts.Any(p => p.Kind == AircraftPartKind.Pilot))
+        {
+            errors.Add($"aircraft '{aircraft.Id}': a Pilot part is required");
+        }
+
+        if (!aircraft.Parts.Any(p => p.Kind == AircraftPartKind.WingSpar))
+        {
+            errors.Add($"aircraft '{aircraft.Id}': at least one WingSpar part is required");
+        }
+
+        foreach (var part in aircraft.Parts)
+        {
+            if (part.Hp <= 0 || part.SkinThicknessMm < 0)
+            {
+                errors.Add($"aircraft '{aircraft.Id}': part '{part.Id}' has invalid Hp/SkinThicknessMm");
+            }
+        }
+    }
+
     public static void Validate(WtReferenceEntry entry, IList<string> errors)
     {
         if (string.IsNullOrWhiteSpace(entry.Id))

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "aircraftSet",
+  "aircraft": [
+    {
+      "id": "test_fighter",
+      "displayName": "Test Fighter 1944",
+      "emptyMassKg": 3200,
+      "fuelKg": 400,
+      "designG": 8.0,
+      "parts": [
+        { "id": "fuselage_fwd", "kind": "Airframe", "section": "Fuselage", "hp": 400, "skinThicknessMm": 4, "xMinM": 1.5, "xMaxM": 5.5, "yMinM": -0.7, "yMaxM": 0.7, "zMinM": -0.7, "zMaxM": 0.7 },
+        { "id": "fuselage_aft", "kind": "Airframe", "section": "Fuselage", "hp": 300, "skinThicknessMm": 3, "xMinM": -3.5, "xMaxM": 1.5, "yMinM": -0.6, "yMaxM": 0.6, "zMinM": -0.6, "zMaxM": 0.6 },
+        { "id": "engine", "kind": "Engine", "section": "Fuselage", "hp": 250, "skinThicknessMm": 5, "xMinM": 5.5, "xMaxM": 7.0, "yMinM": -0.6, "yMaxM": 0.6, "zMinM": -0.6, "zMaxM": 0.6 },
+        { "id": "radiator", "kind": "Radiator", "section": "Fuselage", "hp": 120, "skinThicknessMm": 3, "xMinM": 4.0, "xMaxM": 5.5, "yMinM": -0.7, "yMaxM": -0.3, "zMinM": -0.5, "zMaxM": 0.5 },
+        { "id": "oil_tank", "kind": "OilSystem", "section": "Fuselage", "hp": 80, "skinThicknessMm": 3, "xMinM": 4.0, "xMaxM": 5.5, "yMinM": 0.3, "yMaxM": 0.7, "zMinM": -0.4, "zMaxM": 0.4 },
+        { "id": "fuel_fwd", "kind": "FuelTank", "section": "Fuselage", "hp": 150, "skinThicknessMm": 4, "xMinM": 2.5, "xMaxM": 4.0, "yMinM": -0.6, "yMaxM": 0.2, "zMinM": -0.5, "zMaxM": 0.5, "selfSealing": true },
+        { "id": "cockpit", "kind": "Airframe", "section": "Fuselage", "hp": 200, "skinThicknessMm": 6, "xMinM": 1.5, "xMaxM": 2.5, "yMinM": -0.5, "yMaxM": 0.8, "zMinM": -0.55, "zMaxM": 0.55 },
+        { "id": "pilot", "kind": "Pilot", "section": "Fuselage", "hp": 30, "skinThicknessMm": 0, "xMinM": 1.7, "xMaxM": 2.3, "yMinM": -0.3, "yMaxM": 0.4, "zMinM": -0.35, "zMaxM": 0.35 },
+        { "id": "ammo_rack", "kind": "AmmoRack", "section": "Fuselage", "hp": 100, "skinThicknessMm": 2, "xMinM": 3.0, "xMaxM": 4.0, "yMinM": 0.2, "yMaxM": 0.6, "zMinM": -0.4, "zMaxM": 0.4 },
+        { "id": "spar_left", "kind": "WingSpar", "section": "LeftWing", "hp": 300, "skinThicknessMm": 5, "xMinM": 1.8, "xMaxM": 3.2, "yMinM": -0.3, "yMaxM": 0.1, "zMinM": -5.5, "zMaxM": -0.7 },
+        { "id": "spar_right", "kind": "WingSpar", "section": "RightWing", "hp": 300, "skinThicknessMm": 5, "xMinM": 1.8, "xMaxM": 3.2, "yMinM": -0.3, "yMaxM": 0.1, "zMinM": 0.7, "zMaxM": 5.5 },
+        { "id": "wing_left", "kind": "Airframe", "section": "LeftWing", "hp": 350, "skinThicknessMm": 3, "xMinM": 1.5, "xMaxM": 3.5, "yMinM": -0.4, "yMaxM": 0.3, "zMinM": -5.5, "zMaxM": -0.7 },
+        { "id": "wing_right", "kind": "Airframe", "section": "RightWing", "hp": 350, "skinThicknessMm": 3, "xMinM": 1.5, "xMaxM": 3.5, "yMinM": -0.4, "yMaxM": 0.3, "zMinM": 0.7, "zMaxM": 5.5 },
+        { "id": "aileron_left", "kind": "ControlSurface", "section": "LeftWing", "hp": 60, "skinThicknessMm": 2, "xMinM": 2.2, "xMaxM": 3.4, "yMinM": -0.45, "yMaxM": -0.2, "zMinM": -5.4, "zMaxM": -3.2 },
+        { "id": "aileron_right", "kind": "ControlSurface", "section": "RightWing", "hp": 60, "skinThicknessMm": 2, "xMinM": 2.2, "xMaxM": 3.4, "yMinM": -0.45, "yMaxM": -0.2, "zMinM": 3.2, "zMaxM": 5.4 },
+        { "id": "elevator", "kind": "ControlSurface", "section": "Tail", "hp": 70, "skinThicknessMm": 2, "xMinM": -3.4, "xMaxM": -2.6, "yMinM": -0.3, "yMaxM": 0.3, "zMinM": -1.8, "zMaxM": 1.8 },
+        { "id": "rudder", "kind": "ControlSurface", "section": "Tail", "hp": 70, "skinThicknessMm": 2, "xMinM": -3.4, "xMaxM": -2.6, "yMinM": 0.0, "yMaxM": 1.1, "zMinM": -0.15, "zMaxM": 0.15 },
+        { "id": "cable_elevator", "kind": "ControlCable", "section": "Tail", "hp": 40, "skinThicknessMm": 0, "xMinM": -2.5, "xMaxM": 1.5, "yMinM": 0.3, "yMaxM": 0.45, "zMinM": -0.08, "zMaxM": 0.08 },
+        { "id": "hydraulics", "kind": "Hydraulics", "section": "Fuselage", "hp": 90, "skinThicknessMm": 3, "xMinM": 1.6, "xMaxM": 2.4, "yMinM": -0.6, "yMaxM": -0.3, "zMinM": -0.3, "zMaxM": 0.3 },
+        { "id": "gear_left", "kind": "LandingGear", "section": "LeftWing", "hp": 80, "skinThicknessMm": 4, "xMinM": 2.0, "xMaxM": 2.6, "yMinM": -0.75, "yMaxM": -0.35, "zMinM": -2.2, "zMaxM": -1.6 },
+        { "id": "gear_right", "kind": "LandingGear", "section": "RightWing", "hp": 80, "skinThicknessMm": 4, "xMinM": 2.0, "xMaxM": 2.6, "yMinM": -0.75, "yMaxM": -0.35, "zMinM": 1.6, "zMaxM": 2.2 }
+      ]
+    }
+  ]
+}
