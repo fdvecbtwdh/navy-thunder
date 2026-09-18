@@ -93,7 +93,8 @@ public sealed class Ship : Entity, IDamageSink
     private readonly Dictionary<string, int> _readyRacks = [];
     private readonly Dictionary<string, double> _resupplyProgress = [];
     public double LastFiredTime { get; internal set; } = double.NegativeInfinity;
-    public double ReadyRackReloadFactor { get; internal set; } = 1.0; // 1 = nominal; >1 when on main-magazine supply
+    /// <summary>Reload time multiplier while supplying from the main magazine (degraded).</summary>
+    public double ReadyRackReloadFactor { get; internal set; } = 2.5;
 
     public int CrewAlive => Math.Max(0, Definition.CrewTotal - (int)CrewDead);
     public double BuoyancyLossPct => Parts.Values.Sum(p =>
@@ -366,6 +367,19 @@ public sealed class Ship : Entity, IDamageSink
     {
         _readyRacks[turretGroup] = 0;
         ReadyRackReloadFactor = 2.5;
+    }
+
+    // ------------------------------------------------------- scripting/scene helpers
+
+    /// <summary>Forces crew losses (scripted attrition in scenarios/tests).</summary>
+    public void ForceCrewDead(double dead) => CrewDead = Math.Max(CrewDead, dead);
+
+    /// <summary>Forces a hull section to its destroyed state (scripted scenarios/tests).</summary>
+    public void ForceSectionDestroyed(string sectionId)
+    {
+        var section = Sections.First(s => s.Definition.Id == sectionId);
+        section.Hp = 0;
+        section.Destroyed = true;
     }
 
     internal void MarkDestroyed(ShipKillState state, string reason, double time)

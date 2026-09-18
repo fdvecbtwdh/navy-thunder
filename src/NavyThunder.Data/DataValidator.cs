@@ -113,6 +113,58 @@ public static class DataValidator
         }
     }
 
+    public static void Validate(ShipDefinition ship, IList<string> errors)
+    {
+        if (string.IsNullOrWhiteSpace(ship.Id))
+        {
+            errors.Add("ship: Id is required");
+        }
+
+        if (ship.DisplacementT <= 0)
+        {
+            errors.Add($"ship '{ship.Id}': DisplacementT must be > 0");
+        }
+
+        if (ship.CrewSurviveThreshold >= ship.CrewRepairThreshold
+            || ship.CrewRepairThreshold > ship.CrewTotal)
+        {
+            errors.Add($"ship '{ship.Id}': thresholds must satisfy survive < repair <= crewTotal");
+        }
+
+        var sectionIds = ship.HullSections.Select(s => s.Id).ToHashSet();
+        foreach (var section in ship.HullSections)
+        {
+            if (section.Hp <= 0)
+            {
+                errors.Add($"ship '{ship.Id}': hull section '{section.Id}' Hp must be > 0");
+            }
+        }
+
+        double buoyancy = ship.Parts.Sum(p => p.BuoyancySharePct);
+        if (ship.Parts.Length > 0 && Math.Abs(buoyancy - 100.0) > 5.0)
+        {
+            errors.Add($"ship '{ship.Id}': buoyancy shares sum to {buoyancy:0.#} %, expected ~100");
+        }
+
+        foreach (var part in ship.Parts)
+        {
+            if (!sectionIds.Contains(part.SectionId))
+            {
+                errors.Add($"ship '{ship.Id}': part '{part.Id}' references unknown section '{part.SectionId}'");
+            }
+
+            if (part.Hp <= 0)
+            {
+                errors.Add($"ship '{ship.Id}': part '{part.Id}' Hp must be > 0");
+            }
+
+            if (part.XMinM > part.XMaxM || part.YMinM > part.YMaxM || part.ZMinM > part.ZMaxM)
+            {
+                errors.Add($"ship '{ship.Id}': part '{part.Id}' box extents must be ordered");
+            }
+        }
+    }
+
     public static void Validate(WtReferenceEntry entry, IList<string> errors)
     {
         if (string.IsNullOrWhiteSpace(entry.Id))

@@ -24,17 +24,20 @@ public sealed class DataRepository
 
     public IReadOnlyDictionary<string, ShellDefinition> Shells { get; }
     public IReadOnlyDictionary<string, TorpedoDefinition> Torpedoes { get; }
+    public IReadOnlyDictionary<string, ShipDefinition> Ships { get; }
     public IReadOnlyDictionary<string, WtReferenceEntry> WtReferences { get; }
     public IReadOnlyDictionary<string, CalibrationEntry> Calibration { get; }
 
     private DataRepository(
         Dictionary<string, ShellDefinition> shells,
         Dictionary<string, TorpedoDefinition> torpedoes,
+        Dictionary<string, ShipDefinition> ships,
         Dictionary<string, WtReferenceEntry> wtReferences,
         Dictionary<string, CalibrationEntry> calibration)
     {
         Shells = shells;
         Torpedoes = torpedoes;
+        Ships = ships;
         WtReferences = wtReferences;
         Calibration = calibration;
     }
@@ -64,6 +67,7 @@ public sealed class DataRepository
         var errors = new List<string>();
         var shells = new Dictionary<string, ShellDefinition>();
         var torpedoes = new Dictionary<string, TorpedoDefinition>();
+        var ships = new Dictionary<string, ShipDefinition>();
         var wtReferences = new Dictionary<string, WtReferenceEntry>();
         var calibration = new Dictionary<string, CalibrationEntry>();
 
@@ -97,6 +101,17 @@ public sealed class DataRepository
                         {
                             DataValidator.Validate(torpedo, errors);
                             AddUnique(torpedoes, torpedo.Id, torpedo, path, errors);
+                        }
+
+                        break;
+
+                    case "shipSet":
+                        var shipSet = Deserialize<ShipSetDocument>(path, json);
+                        CheckSchemaVersion(path, shipSet.SchemaVersion, errors);
+                        foreach (var ship in shipSet.Ships)
+                        {
+                            DataValidator.Validate(ship, errors);
+                            AddUnique(ships, ship.Id, ship, path, errors);
                         }
 
                         break;
@@ -149,7 +164,7 @@ public sealed class DataRepository
             throw new DataValidationException(errors);
         }
 
-        return new DataRepository(shells, torpedoes, wtReferences, calibration);
+        return new DataRepository(shells, torpedoes, ships, wtReferences, calibration);
     }
 
     public CalibrationEntry RequireCalibration(string id)

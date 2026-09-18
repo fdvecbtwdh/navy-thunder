@@ -21,12 +21,17 @@ public struct BallisticProjectile
     public bool Alive;
     public ShellDefinition? Shell;
 
+    public BallisticProjectile()
+    {
+        LastTargetId = "";
+    }
+
     /// <summary>Set when the fuze has fired and the shell detonates after its delay.</summary>
     public bool FuzePending;
     public double FuzeDetonationAtTime;
 
     /// <summary>Target id of the most recent armor interaction (empty = none).</summary>
-    public string LastTargetId;
+    public string LastTargetId = "";
 
     public readonly double Speed => Velocity.Length;
 }

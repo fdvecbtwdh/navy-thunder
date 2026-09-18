@@ -63,6 +63,8 @@ public sealed class DamageControlSystem : ISimulationSystem
     {
         foreach (var ship in Ships)
         {
+            ship.UpdateResupply(world); // first-stage replenishment runs every tick (MDR-0011)
+
             if (ship.Lost || ship.CrewAlive <= ship.Definition.CrewRepairThreshold)
             {
                 continue; // no damage control below the repair threshold (MDR-0006)

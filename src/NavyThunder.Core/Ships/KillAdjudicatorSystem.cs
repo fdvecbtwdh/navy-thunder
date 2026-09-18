@@ -95,6 +95,9 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
                     Tick = world.TickIndex,
                     Time = world.Time,
                 });
+
+                // A magazine detonation is immediately fatal (WT: "will normally detonate").
+                ship.MarkDestroyed(ShipKillState.Destroyed, "magazine_detonation", world.Time);
             }
 
             // 4. Unsinkability lost: irreversible flooding, no patching can save her.

@@ -69,6 +69,21 @@ public sealed class DamageRegistry
         if (_sinks.TryGetValue(e.TargetId, out var sink))
         {
             sink.ApplyDamage(e);
+            return;
+        }
+
+        // Nested host ids ("ship:x/part", used by fires) route to their container sink.
+        int slash = e.TargetId.LastIndexOf('/');
+        while (slash > 0)
+        {
+            string prefix = e.TargetId[..slash];
+            if (_sinks.TryGetValue(prefix, out sink))
+            {
+                sink.ApplyDamage(e);
+                return;
+            }
+
+            slash = prefix.LastIndexOf('/');
         }
     }
 }

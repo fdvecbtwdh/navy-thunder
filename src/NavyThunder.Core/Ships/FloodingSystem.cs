@@ -24,8 +24,9 @@ public sealed class FloodingSystem : ISimulationSystem
     /// <summary>Water-level fraction added per second per metre of breach radius (approximation).</summary>
     public double FlowPerBreathMeter { get; init; } = 0.08;
 
-    /// <summary>List degrees per unit of lateral flooding imbalance (approximation).</summary>
-    public double ListDegPerImbalance { get; init; } = 12.0;
+    /// <summary>List degrees per unit of lateral flooding imbalance (approximation):
+    /// complete flooding of one side (~1.0) approaches the capsize angle.</summary>
+    public double ListDegPerImbalance { get; init; } = 45.0;
 
     public string Name => "flooding";
 
@@ -42,13 +43,28 @@ public sealed class FloodingSystem : ISimulationSystem
     /// <summary>Records a breach on the part containing the point (below waterline only).</summary>
     public void CreateBreach(Ship ship, Vec3 localPoint, double radiusM)
     {
-        var part = ship.PartAt(localPoint);
+        var part = ship.PartAt(localPoint)
+                   ?? ship.Parts.Values
+                       .Where(p => !p.Destroyed && p.Definition.YMinM < 0)
+                       .OrderBy(p => Vec3.Distance(p.Center, localPoint))
+                       .FirstOrDefault();
         if (part is null || part.Definition.YMinM >= 0 || part.Destroyed)
         {
             return; // above-waterline damage does not flood
         }
 
         part.Breached = true;
+        part.WaterLevel = Math.Min(0.9, part.WaterLevel + radiusM * 0.03); // initial ingress by breach size
+    }
+
+    /// <summary>Target-id based entry used by torpedoes and the damage bridge.</summary>
+    public void CreateBreach(SimulationWorld world, string targetId, Vec3 localPoint, double radiusM)
+    {
+        var ship = Ships.FirstOrDefault(s => s.TargetId == targetId);
+        if (ship is not null)
+        {
+            CreateBreach(ship, localPoint, radiusM);
+        }
     }
 
     public void Update(SimulationWorld world, double deltaTime)
@@ -65,7 +81,7 @@ public sealed class FloodingSystem : ISimulationSystem
             foreach (var part in ship.Parts.Values)
             {
                 if (part.Definition.Kind is PartKind.Compartment or PartKind.Magazine or PartKind.Boiler
-                    or PartKind.Engine or PartKind.Turbine or PartKind.Steering)
+                    or PartKind.Engine or PartKind.Turbine or PartKind.Steering or PartKind.FuelTank)
                 {
                     // Inflow from below-waterline breaches.
                     if (part.Breached && !part.Flooded && part.Definition.YMinM < 0)
