@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "kind": "wtReference",
+  "entries": [
+    {
+      "id": "demarre_speed_pow",
+      "value": 1.43,
+      "unit": "exponent",
+      "sourceKind": "wt_datamine",
+      "sourceUrl": "https://github.com/gszabi99/War-Thunder-Datamine (aces.vromfs.bin_u/gamedata/weapons/navalmodels_weapons, demarreSpeedPow)",
+      "retrievedOn": "2026-09-18",
+      "notes": "Identical on every sampled naval shell (406mm Mk7 family, 127mm/38 Mk12 family)."
+    },
+    {
+      "id": "demarre_mass_pow",
+      "value": 0.71,
+      "unit": "exponent",
+      "sourceKind": "wt_datamine",
+      "sourceUrl": "https://github.com/gszabi99/War-Thunder-Datamine (demarreMassPow)",
+      "retrievedOn": "2026-09-18"
+    },
+    {
+      "id": "demarre_caliber_pow",
+      "value": 1.07,
+      "unit": "exponent",
+      "sourceKind": "wt_datamine",
+      "sourceUrl": "https://github.com/gszabi99/War-Thunder-Datamine (demarreCaliberPow)",
+      "retrievedOn": "2026-09-18"
+    },
+    {
+      "id": "overmatch_thickness_ratio",
+      "value": 7.0,
+      "unit": "caliber:plate",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/661-shell-normalization-against-angled-armor-in-war-thunder",
+      "retrievedOn": "2026-09-18",
+      "notes": "At caliber:thickness >= 7:1 the thickness multiplier is 1 — impact angle fully ignored. Community '14.3x' phrasing is the reciprocal."
+    },
+    {
+      "id": "ricochet_angle_nominal_deg",
+      "value": 70.0,
+      "unit": "deg from normal",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/661-shell-normalization-against-angled-armor-in-war-thunder",
+      "retrievedOn": "2026-09-18",
+      "notes": "Wiki says ricochets are 'likely' above ~70°, implying a probabilistic band rather than a hard cut."
+    },
+    {
+      "id": "normalization_ratio_start",
+      "value": 0.5,
+      "unit": "caliber:plate",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/661-shell-normalization-against-angled-armor-in-war-thunder",
+      "retrievedOn": "2026-09-18",
+      "notes": "Lower bound of the caliber:plate range over which normalization transitions."
+    },
+    {
+      "id": "normalization_ratio_end",
+      "value": 2.5,
+      "unit": "caliber:plate",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/661-shell-normalization-against-angled-armor-in-war-thunder",
+      "retrievedOn": "2026-09-18"
+    },
+    {
+      "id": "overpressure_aphe_tnt_threshold_kg",
+      "value": 0.17,
+      "unit": "kg TNT eq",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/4236-the-mechanics-of-high-explosive-effect-and-overpressure",
+      "retrievedOn": "2026-09-18",
+      "notes": "APHE bursters below ~170 g TNT eq do not generate overpressure. Ships: overpressure only affects exposed crews of open modules."
+    },
+    {
+      "id": "crew_hp_per_member",
+      "value": 125.0,
+      "unit": "HP/crew",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/640-ship-crew-mechanics",
+      "retrievedOn": "2026-09-18",
+      "notes": "Official example: 500 HP compartment with 4 crew -> 125 damage per crewman lost."
+    },
+    {
+      "id": "unsinkability_mid_sections_capital",
+      "value": 2.0,
+      "unit": "sections",
+      "sourceKind": "wt_official_changelog",
+      "sourceUrl": "https://forum.warthunder.com/t/war-thunder-hornets-sting-changelog/221524",
+      "retrievedOn": "2026-09-18",
+      "notes": "Frigate+ ships lose unsinkability when >= 2 mid sections are destroyed (bow/stern excluded). Small craft: any one section."
+    },
+    {
+      "id": "turret_hoist_reload_penalty_max_pct",
+      "value": 20.0,
+      "unit": "pct",
+      "sourceKind": "wt_official_wiki",
+      "sourceUrl": "https://wiki.warthunder.com/mechanics/5245-ship-modules",
+      "retrievedOn": "2026-09-18",
+      "notes": "Damaged hoists add +10..20% reload time depending on damage state."
+    },
+    {
+      "id": "first_stage_resupply_s",
+      "value": 35.0,
+      "unit": "s",
+      "sourceKind": "wt_community",
+      "sourceUrl": "https://forum.warthunder.com (first-stage ammo resupply reports)",
+      "retrievedOn": "2026-09-18",
+      "notes": "Community-consistent measurement ~30-40 s, paused while firing. Approximate."
+    },
+    {
+      "id": "breach_patch_time_shell_min_s",
+      "value": 5.0,
+      "unit": "s",
+      "sourceKind": "wt_official_changelog",
+      "sourceUrl": "https://warthunder.com/en/game/changelog/current/1749",
+      "retrievedOn": "2026-09-18",
+      "notes": "Leviathans: shell breach patch time reworked to 5-20 s; torpedo breaches take longer."
+    },
+    {
+      "id": "breach_patch_time_shell_max_s",
+      "value": 20.0,
+      "unit": "s",
+      "sourceKind": "wt_official_changelog",
+      "sourceUrl": "https://warthunder.com/en/game/changelog/current/1749",
+      "retrievedOn": "2026-09-18"
+    }
+  ]
+}

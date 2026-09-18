@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "torpedoSet",
+  "torpedoes": [
+    {
+      "id": "ijn_610mm_type93_mod1_mod2",
+      "displayName": "Type 93 Mod 1/Mod 2 (Long Lance)",
+      "massKg": 2700.0,
+      "warheadMassKg": 490.0,
+      "speedMs": 25.2,
+      "rangeM": 20000.0,
+      "runningDepthM": 1.0,
+      "armDistanceM": 50.0,
+      "explosionPatchRadiusM": [4.0, 12.0],
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (torpedoes/jp_610mm_type93_model_1_mod2_torpedo.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18",
+        "notes": "Contact fuze only (detonationRadius 0.1), fixed depth, hydroShock underwater damage channel; no magnetic fuze anywhere in WT naval."
+      }
+    }
+  ]
+}

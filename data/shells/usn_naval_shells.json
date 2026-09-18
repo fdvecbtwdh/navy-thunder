@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "kind": "shellSet",
+  "shells": [
+    {
+      "id": "usn_406mm_mk8_mod6_apcbc",
+      "displayName": "406mm Mk8 Mod 6 APCBC",
+      "category": "APCBC",
+      "caliberMm": 406.0,
+      "massKg": 1225.0,
+      "muzzleVelocityMs": 762.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 18.55,
+      "fuseDelayS": 0.035,
+      "explodeThresholdMm": 38.0,
+      "demarrePenetrationK": 1.0,
+      "dragCoefficient": 1.02746,
+      "ballisticsModel": "LAW_1943",
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/406mm_50_mk7_naval_user_cannon.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18",
+        "notes": "Historical cross-check vs Navweaps: 1225 kg / 762 m/s / 18.4 kg Explosive D — consistent."
+      }
+    },
+    {
+      "id": "usn_406mm_mk13_hc",
+      "displayName": "406mm Mk13 HC",
+      "category": "HE",
+      "caliberMm": 406.0,
+      "massKg": 862.0,
+      "muzzleVelocityMs": 803.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 69.67,
+      "fuseDelayS": 0.001,
+      "explodeThresholdMm": 0.1,
+      "demarrePenetrationK": 0.15,
+      "dragCoefficient": 1.02223,
+      "ballisticsModel": "LAW_1943",
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/406mm_50_mk7_naval_user_cannon.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18",
+        "notes": "Muzzle velocity reported as 803-820 m/s across sources; 803 (Navweaps full charge) used here."
+      }
+    },
+    {
+      "id": "usn_127mm_mk34_common_he",
+      "displayName": "127mm Mk34 Common",
+      "category": "Common",
+      "caliberMm": 127.0,
+      "massKg": 25.0,
+      "muzzleVelocityMs": 792.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 3.288,
+      "fuseDelayS": 0.001,
+      "explodeThresholdMm": 0.1,
+      "demarrePenetrationK": 0.15,
+      "dragCoefficient": 0.35192,
+      "ballisticsModel": "ADVANCED_DYNAMIC_KV",
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/127mm_38_mk12_naval_user_cannon.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18"
+      }
+    },
+    {
+      "id": "usn_127mm_mk32_common_sap",
+      "displayName": "127mm Mk32 Common (SAP)",
+      "category": "SAP",
+      "caliberMm": 127.0,
+      "massKg": 24.49,
+      "muzzleVelocityMs": 792.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 1.17,
+      "fuseDelayS": 0.01,
+      "explodeThresholdMm": 6.0,
+      "demarrePenetrationK": 0.87,
+      "dragCoefficient": 0.35192,
+      "ballisticsModel": "ADVANCED_DYNAMIC_KV",
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/127mm_38_mk12_naval_user_cannon.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18"
+      }
+    },
+    {
+      "id": "usn_127mm_mk46_special_common",
+      "displayName": "127mm Mk46 Special Common",
+      "category": "SpecialCommon",
+      "caliberMm": 127.0,
+      "massKg": 25.0,
+      "muzzleVelocityMs": 792.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 0.925,
+      "fuseDelayS": 0.01,
+      "explodeThresholdMm": 6.0,
+      "demarrePenetrationK": 1.0,
+      "dragCoefficient": 0.35192,
+      "ballisticsModel": "ADVANCED_DYNAMIC_KV",
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (navalmodels_weapons/127mm_38_mk12_naval_user_cannon.blkx)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18"
+      }
+    },
+    {
+      "id": "usn_127mm_mk31_aa_vt",
+      "displayName": "127mm Mk31 AA VT",
+      "category": "AAVT",
+      "caliberMm": 127.0,
+      "massKg": 25.0,
+      "muzzleVelocityMs": 792.0,
+      "explosiveType": "explosive_d",
+      "explosiveMassKg": 3.288,
+      "fuseDelayS": 0.001,
+      "explodeThresholdMm": 0.1,
+      "demarrePenetrationK": 0.15,
+      "dragCoefficient": 0.35192,
+      "ballisticsModel": "ADVANCED_DYNAMIC_KV",
+      "proximityFuse": {
+        "radiusM": 23.0,
+        "armDistanceM": 457.0,
+        "airTargetsOnly": true
+      },
+      "source": {
+        "origin": "wt_datamine",
+        "url": "https://github.com/gszabi99/War-Thunder-Datamine (proximityFuse block: radius 23.0, armDistance 457.0)",
+        "versionStamp": "WT datamine 2026-09",
+        "retrievedOn": "2026-09-18"
+      }
+    }
+  ]
+}

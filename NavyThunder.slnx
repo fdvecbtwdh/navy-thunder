@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NavyThunder.Core/NavyThunder.Core.csproj" />
+    <Project Path="src/NavyThunder.Data/NavyThunder.Data.csproj" />
+    <Project Path="src/NavyThunder.ProtectionAnalysis/NavyThunder.ProtectionAnalysis.csproj" />
+    <Project Path="src/NavyThunder.SimRunner/NavyThunder.SimRunner.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NavyThunder.Core.Tests/NavyThunder.Core.Tests.csproj" />
+  </Folder>
+</Solution>
