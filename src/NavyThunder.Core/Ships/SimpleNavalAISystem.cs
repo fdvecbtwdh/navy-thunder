@@ -64,6 +64,7 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
                         TargetId = target.TargetId,
                         TargetPosition = () => target.WorldPosition,
                         TargetVelocity = () => targetVel,
+                        TargetLengthM = () => target.Definition.LengthM,
                     });
                 }
             }

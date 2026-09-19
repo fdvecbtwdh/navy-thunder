@@ -23,6 +23,9 @@ public sealed record GunOrder
     public required Func<Vec3> TargetPosition;
     public required Func<Vec3> TargetVelocity;
     public required string TargetId;
+
+    /// <summary>Target hull length (m) — salvo aim points scatter along the silhouette.</summary>
+    public Func<double> TargetLengthM { get; init; } = () => 0.0;
 }
 
 /// <summary>
@@ -168,11 +171,36 @@ public sealed class GunSystem : ISimulationSystem
                 _solutions[(shell.Id, bucket)] = firing;
             }
 
-            double bearingRad = desiredBearingDeg * Math.PI / 180.0;
+            // R0.6: distribute salvo aim points along the target's hull silhouette so
+            // shells land fore/aft of the locking point instead of stacking on the center.
+            Vec3 samplePoint = targetPos;
+            double hullLength = order.TargetLengthM();
+            if (hullLength > 1.0)
+            {
+                Vec3 targetVel = order.TargetVelocity();
+                Vec3 hullAxis = targetVel.LengthSquared > 1.0
+                    ? targetVel.Normalized()
+                    : new Vec3(Math.Sin(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2), 0,
+                               Math.Cos(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2));
+                double along = (rng.NextDouble() - 0.5) * hullLength;
+                samplePoint += hullAxis * along;
+            }
+
+            double bearingRad = Math.Atan2(samplePoint.X - worldMount.X, samplePoint.Z - worldMount.Z);
+            double horizontalRangeSample = Vec3.Distance(
+                new Vec3(worldMount.X, 0, worldMount.Z), new Vec3(samplePoint.X, 0, samplePoint.Z));
+            int sampleBucket = (int)(horizontalRangeSample / 50);
+            if (!_solutions.TryGetValue((shell.Id, sampleBucket), out var sampleFiring))
+            {
+                sampleFiring = Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs,
+                    ProtectionScenario.MakeDrag(shell), sampleBucket * 50.0 + 25);
+                _solutions[(shell.Id, sampleBucket)] = sampleFiring;
+            }
+
             Vec3 dir = new(
-                Math.Sin(bearingRad) * Math.Cos(firing.ElevationRad),
-                Math.Sin(firing.ElevationRad),
-                Math.Cos(bearingRad) * Math.Cos(firing.ElevationRad));
+                Math.Sin(bearingRad) * Math.Cos(sampleFiring.ElevationRad),
+                Math.Sin(sampleFiring.ElevationRad),
+                Math.Cos(bearingRad) * Math.Cos(sampleFiring.ElevationRad));
 
             for (int i = 0; i < salvo; i++)
             {

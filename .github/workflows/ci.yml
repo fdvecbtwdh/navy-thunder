@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test-calibrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build NavyThunder.slnx -c Release
+      - name: Test
+        run: dotnet test NavyThunder.slnx -c Release
+      - name: Data schema validation (full dataset load)
+        run: dotnet run --project src/NavyThunder.ProtectionAnalysis -c Release -- summary
+      - name: Calibration gate (stat-card regression)
+        run: dotnet run --project src/NavyThunder.ProtectionAnalysis -c Release -- report
