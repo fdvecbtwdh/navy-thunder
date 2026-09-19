@@ -45,6 +45,9 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
     /// <summary>Forced flooding rate once unsinkability is lost (fraction/s).</summary>
     public double ForcedFloodingRate { get; init; } = 0.05;
 
+    /// <summary>Seconds between losing unsinkability and foundering (MDR-0007).</summary>
+    public double UnsinkabilityGraceS { get; init; } = 180.0;
+
     public List<Ship> Ships { get; } = [];
 
     public string Name => "kill_adjudication";
@@ -101,8 +104,10 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
             }
 
             // 4. Unsinkability lost: irreversible flooding, no patching can save her.
+            //    (WT: she floods out and sinks - only the time is negotiable.)
             if (ship.UnsinkabilityLost)
             {
+                ship.UnsinkabilityLostTime ??= world.Time;
                 foreach (var part in ship.Parts.Values)
                 {
                     if (part.Definition.YMinM < 0 && !part.Flooded)
@@ -111,15 +116,27 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
                         part.WaterLevel = Math.Min(1.0, part.WaterLevel + ForcedFloodingRate * deltaTime);
                     }
                 }
+
+                if (world.Time - ship.UnsinkabilityLostTime.Value >= UnsinkabilityGraceS)
+                {
+                    ship.MarkDestroyed(ShipKillState.Foundered, "unsinkability_lost", world.Time);
+                }
+            }
+
+            if (ship.Lost)
+            {
+                world.Record(new ShipDestroyed
+                {
+                    ShipId = ship.TargetId,
+                    State = ship.KillState,
+                    Reason = ship.KillReason ?? "",
+                });
+                continue;
             }
 
             if (ship.BuoyancyLossPct >= 100.0)
             {
                 ship.MarkDestroyed(ShipKillState.Foundered, "buoyancy_lost", world.Time);
-            }
-            else if (ship.UnsinkabilityLost && ship.BuoyancyLossPct >= 60.0)
-            {
-                ship.MarkDestroyed(ShipKillState.Foundered, "unsinkability_lost", world.Time);
             }
             else if (Math.Abs(ship.ListDeg) >= ship.Definition.CapsizeAngleDeg)
             {

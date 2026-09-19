@@ -20,10 +20,10 @@ public static class Gunnery
 
     /// <summary>
     /// Simulates a shot from the origin toward +X at the given elevation until the
-    /// projectile descends back through y = 0 (after having climbed above 1 m), and
-    /// reports the interpolated ground crossing.
+    /// projectile descends back through y = <paramref name="crossingY"/> (after having
+    /// climbed at least 1 m above it), and reports the interpolated crossing.
     /// </summary>
-    public static TrajectoryResult SimulateToGround(double muzzleVelocityMs, double elevationRad, IDragModel drag, double maxTimeS = 300)
+    public static TrajectoryResult SimulateToGround(double muzzleVelocityMs, double elevationRad, IDragModel drag, double maxTimeS = 300, double crossingY = 0)
     {
         var p = MakeShot(muzzleVelocityMs, elevationRad);
         var integrator = new Rk4Integrator { DragModel = drag };
@@ -36,15 +36,15 @@ public static class Gunnery
             prevPos = p.Position;
             integrator.Step(ref p, StepH);
             t += StepH;
-            if (p.Position.Y > 1)
+            if (p.Position.Y > crossingY + 1)
             {
                 climbed = true;
             }
 
-            if (climbed && p.Position.Y <= 0)
+            if (climbed && p.Position.Y <= crossingY)
             {
                 double dy = p.Position.Y - prevPos.Y;
-                double f = Math.Abs(dy) < 1e-12 ? 0.0 : prevPos.Y / (prevPos.Y - p.Position.Y);
+                double f = Math.Abs(dy) < 1e-12 ? 0.0 : (prevPos.Y - crossingY) / (prevPos.Y - p.Position.Y);
                 Vec3 pos = prevPos + (p.Position - prevPos) * f;
                 Vec3 vel = p.Velocity; // step is small; velocity is effectively continuous
                 return new TrajectoryResult(pos, vel, t - StepH + StepH * f);
@@ -87,16 +87,17 @@ public static class Gunnery
     public sealed record GunnerySolution(TrajectoryResult Trajectory, double ElevationRad);
 
     /// <summary>
-    /// Bisection firing solution: find the elevation whose ground crossing lands exactly
-    /// on <paramref name="rangeM"/>, then report strike speed and fall angle there.
+    /// Bisection firing solution: find the elevation whose descent crossing of
+    /// <paramref name="crossingY"/> (the gun's own height above the waterline) lands
+    /// exactly on <paramref name="rangeM"/>, then report strike speed and fall angle.
     /// </summary>
-    public static GunnerySolution SolveFiringSolution(double muzzleVelocityMs, IDragModel drag, double rangeM)
+    public static GunnerySolution SolveFiringSolution(double muzzleVelocityMs, IDragModel drag, double rangeM, double crossingY = 0)
     {
         double lo = 0.001, hi = Math.PI / 4; // up to 45°, monotonic for surface fire
         for (int i = 0; i < 42; i++)
         {
             double mid = (lo + hi) / 2;
-            var probe = SimulateToGround(muzzleVelocityMs, mid, drag);
+            var probe = SimulateToGround(muzzleVelocityMs, mid, drag, crossingY: crossingY);
             if (probe.ImpactPosition.X < rangeM)
             {
                 lo = mid;
@@ -108,7 +109,7 @@ public static class Gunnery
         }
 
         double elevation = (lo + hi) / 2;
-        return new GunnerySolution(SimulateToGround(muzzleVelocityMs, elevation, drag), elevation);
+        return new GunnerySolution(SimulateToGround(muzzleVelocityMs, elevation, drag, crossingY: crossingY), elevation);
     }
 
     private static BallisticProjectile MakeShot(double muzzleVelocityMs, double elevationRad)

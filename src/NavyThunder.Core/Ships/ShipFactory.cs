@@ -8,7 +8,8 @@ namespace NavyThunder.Core.Ships;
 /// <summary>Builds runtime armor targets from ship definitions.</summary>
 public static class ShipFactory
 {
-    public static Ship Create(ShipDefinition definition) => new(definition);
+    public static Ship Create(ShipDefinition definition, string? instanceKey = null)
+        => new(definition, instanceKey);
 
     /// <summary>Constructs the ship's ArmorTarget (armor plates exposed to ballistics).</summary>
     public static ArmorTarget BuildArmorTarget(Ship ship)

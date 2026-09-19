@@ -26,6 +26,9 @@ public sealed class StrikeMission
     /// <summary>Resolves the live armor target of the struck ship (torpedo contact tests).</summary>
     public Func<NavyThunder.Core.Armor.ArmorTarget?>? TargetArmor { get; init; }
 
+    /// <summary>Target velocity for lead-aimed torpedo release.</summary>
+    public Func<Vec3> TargetVelocity { get; init; } = () => Vec3.Zero;
+
     public bool Released;
 }
 
@@ -238,8 +241,8 @@ public sealed class FlightModelSystem : ISimulationSystem
             if (envelope)
             {
                 Vec3 entry = state.Position with { Y = 0.5 };
-                Torpedoes.SpawnAirLaunched(entry, mission.TargetPosition(), mission.TargetId,
-                    mission.TargetArmor?.Invoke());
+                Torpedoes.SpawnAirLaunched(entry, mission.TargetPosition(), mission.TargetVelocity(),
+                    mission.TargetId, mission.TargetArmor?.Invoke());
             }
             // Outside the envelope the fish drowns: the attack run is simply wasted.
             return;

@@ -65,6 +65,13 @@ public sealed class ExplosionSystem : ISimulationSystem
 
     public List<ArmorTarget> Targets { get; } = [];
 
+    /// <summary>
+    /// FragmentImpact events are the highest-volume event stream (hundreds per burst).
+    /// Keep them on for Protection Analysis runs; long battles disable them to bound
+    /// memory (fragment DAMAGE still flows either way).
+    /// </summary>
+    public bool RecordFragmentImpacts { get; set; } = true;
+
     public string Name => "explosions";
 
     public ExplosionSystem(
@@ -232,14 +239,17 @@ public sealed class ExplosionSystem : ISimulationSystem
             }
 
             bool penetrated = plateHit.ThicknessMm <= fragPenMm;
-            world.Record(new FragmentImpact
+            if (RecordFragmentImpacts)
             {
-                ShellId = shellId,
-                TargetId = targetHit.Id,
-                PlateId = plateHit.Id,
-                Position = bestHit.Point,
-                Penetrated = penetrated,
-            });
+                world.Record(new FragmentImpact
+                {
+                    ShellId = shellId,
+                    TargetId = targetHit.Id,
+                    PlateId = plateHit.Id,
+                    Position = bestHit.Point,
+                    Penetrated = penetrated,
+                });
+            }
 
             if (!penetrated)
             {

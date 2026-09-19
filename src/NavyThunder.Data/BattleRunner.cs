@@ -95,13 +95,16 @@ public sealed class BattleRunner
 
         var resolver = new ArmorResolver(repo.ToPenetrationCalibration());
         Ballistics = new BallisticsSystem { Armor = resolver, GroundLevelY = -50 };
-        var explosions = new ExplosionSystem(repo.ToExplosionModel(), repo.Shells, Registry);
+        var explosions = new ExplosionSystem(repo.ToExplosionModel(), repo.Shells, Registry)
+        {
+            RecordFragmentImpacts = false, // bounded memory for long battles
+        };
         Bridge = new DamageBridgeSystem(Registry, repo.Shells);
         Fire = new FireSystem(repo.ToFireModel(), Registry);
         Flooding = new FloodingSystem(Registry, Fire);
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);
-        var ai = new SimpleNavalAISystem { Guns = Guns };
+        var ai = new SimpleNavalAISystem(Registry) { Guns = Guns };
         var damageControl = new DamageControlSystem { Fire = Fire, Flooding = Flooding };
         var adjudicator = new KillAdjudicatorSystem(Registry);
         DamageControl = damageControl;
@@ -125,9 +128,10 @@ public sealed class BattleRunner
         {
             var teamRecord = new Team { Id = team.Id, Name = team.Name };
             Battle.Teams.Add(teamRecord);
+            int shipIndex = 0;
             foreach (var spawn in team.Ships)
             {
-                var ship = ShipFactory.Create(repo.Ships[spawn.Ship]);
+                var ship = ShipFactory.Create(repo.Ships[spawn.Ship], $"{team.Id}-{shipIndex++}");
                 ship.Team = teamRecord;
                 ship.WorldPosition = new Vec3(spawn.X, 0, spawn.Z);
                 ship.HeadingDeg = spawn.HeadingDeg;
@@ -141,7 +145,7 @@ public sealed class BattleRunner
                 DamageControl.Ships.Add(ship);
                 Adjudicator.Ships.Add(ship);
                 navigation.Ships.Add(ship);
-                ai.Ships.Add(ship);
+                ai.RegisterShip(ship);
                 Guns.RegisterShip(ship);
 
                 var armor = ShipFactory.BuildArmorTarget(ship);
@@ -172,9 +176,12 @@ public sealed class BattleRunner
                 explosions.Targets.Add(armor);
                 Ballistics.ProximityTargets.Add(aircraft);
 
-                Func<Vec3> targetPos = () => Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost).WorldPosition;
-                Func<bool> targetAlive = () => Ships.Any(sh => sh.Team!.Id == enemyTeamId && !sh.Lost);
-
+                // Mission locks onto one target ship (R1.2 adds retargeting).
+                var targetShip = Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost);
+                Vec3 TargetVel() => new(
+                    Math.Sin(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444,
+                    0,
+                    Math.Cos(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444);
                 var state = FlightModel.Register(aircraft,
                     new Vec3(spawn.X, spawn.AltitudeM, spawn.Z),
                     spawn.HeadingDeg, spawn.SpeedMs, spawn.AltitudeM);
@@ -182,11 +189,11 @@ public sealed class BattleRunner
                 state.Mission = new StrikeMission
                 {
                     Kind = spawn.Mission == "torpedoStrike" ? MissionKind.TorpedoStrike : MissionKind.BombStrike,
-                    TargetId = $"team:{enemyTeamId}",
-                    TargetPosition = targetPos,
-                    TargetAlive = targetAlive,
-                    TargetArmor = () => _armorByTargetId.GetValueOrDefault(
-                        Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost).TargetId),
+                    TargetId = targetShip.TargetId,
+                    TargetPosition = () => targetShip.WorldPosition,
+                    TargetAlive = () => !targetShip.Lost,
+                    TargetVelocity = TargetVel,
+                    TargetArmor = () => _armorByTargetId.GetValueOrDefault(targetShip.TargetId),
                 };
             }
         }

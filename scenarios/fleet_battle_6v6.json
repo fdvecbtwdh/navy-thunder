@@ -1,0 +1,31 @@
+{
+  "name": "fleet_battle_6v6",
+  "maxDurationS": 2400,
+  "seed": 19440606,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        { "ship": "uss_north_carolina", "x": -4000, "z": -1000, "headingDeg": 0, "throttle": 1.0 },
+        { "ship": "uss_iowa", "x": -4200, "z": 800, "headingDeg": 0, "throttle": 1.0 },
+        { "ship": "uss_baltimore", "x": -2800, "z": -1600, "headingDeg": 10, "throttle": 1.0 },
+        { "ship": "uss_brooklyn", "x": -2600, "z": 400, "headingDeg": 10, "throttle": 1.0 },
+        { "ship": "uss_fletcher", "x": -1800, "z": -2200, "headingDeg": 20, "throttle": 1.0 },
+        { "ship": "uss_sumner", "x": -1600, "z": 1200, "headingDeg": 20, "throttle": 1.0 }
+      ]
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        { "ship": "ijn_nagato", "x": 4000, "z": -800, "headingDeg": 180, "throttle": 1.0 },
+        { "ship": "ijn_kongo", "x": 4200, "z": 1000, "headingDeg": 180, "throttle": 1.0 },
+        { "ship": "ijn_myoko", "x": 2800, "z": -1500, "headingDeg": 170, "throttle": 1.0 },
+        { "ship": "ijn_mogami", "x": 2600, "z": 600, "headingDeg": 170, "throttle": 1.0 },
+        { "ship": "ijn_kagero", "x": 1800, "z": -2200, "headingDeg": 160, "throttle": 1.0 },
+        { "ship": "ijn_fubuki", "x": 1600, "z": 1400, "headingDeg": 160, "throttle": 1.0 }
+      ]
+    }
+  ]
+}

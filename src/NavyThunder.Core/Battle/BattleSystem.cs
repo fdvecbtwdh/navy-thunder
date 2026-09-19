@@ -123,6 +123,14 @@ public static class BattleReportGenerator
                 ["damageTaken"] = Math.Round(damage.Sum(e => e.Amount), 1),
                 ["hits"] = damage.Count,
                 ["fires"] = damage.Count(e => e.Channel == DamageChannel.Fire),
+                ["sections"] = ship.Sections.Select(sec => new Dictionary<string, object?>
+                {
+                    ["id"] = sec.Definition.Id,
+                    ["hpFrac"] = Math.Round(sec.Hp / Math.Max(1.0, sec.Definition.Hp), 2),
+                    ["destroyed"] = sec.Destroyed,
+                }).ToList(),
+                ["partsDestroyed"] = ship.Parts.Values.Count(p => p.Destroyed),
+                ["partsTotal"] = ship.Parts.Count,
             };
         }).ToList();
 

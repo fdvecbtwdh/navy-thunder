@@ -42,6 +42,16 @@ public sealed class TorpedoSystem : ISimulationSystem
     private readonly List<TorpedoState> _torpedoes = [];
     private int _nextId;
 
+    /// <summary>Build probe marker (verifies fresh compile).</summary>
+    public const string BuildProbe = "torp_probe_2026_09_20_XYZZY";
+
+    /// <summary>Torpedoes launched (ship + air) - diagnostics/tests.</summary>
+    public int SpawnedCount { get; private set; }
+
+    /// <summary>Live torpedo snapshots for diagnostics.</summary>
+    public IReadOnlyList<(string Id, Vec3 Position, Vec3 Velocity, bool Armed)> DebugTorpedoes
+        => _torpedoes.Select(t => (t.Id, t.Position, t.Velocity, t.TravelledM >= t.Definition.ArmDistanceM)).ToList();
+
     public string Name => "torpedoes";
 
     private TorpedoDefinition? _airLaunchTemplate;
@@ -60,16 +70,24 @@ public sealed class TorpedoSystem : ISimulationSystem
     /// flown aligned; the fish runs straight along the release LOS).
     /// </summary>
     public string SpawnAirLaunched(Vec3 waterEntry, Vec3 targetPosition, string targetId)
-        => SpawnAirLaunched(waterEntry, targetPosition, targetId, ArmorFor(targetId));
+        => SpawnAirLaunched(waterEntry, targetPosition, Vec3.Zero, targetId, ArmorFor(targetId));
 
-    public string SpawnAirLaunched(Vec3 waterEntry, Vec3 targetPosition, string targetId, ArmorTarget? armor)
+    public string SpawnAirLaunched(Vec3 waterEntry, Vec3 targetPosition, Vec3 targetVelocity, string targetId, ArmorTarget? armor)
     {
         if (_airLaunchTemplate is not { } template)
         {
             throw new InvalidOperationException("No air-launch torpedo template registered.");
         }
 
-        Vec3 flat = targetPosition - waterEntry;
+        // Lead aim: point the fish where the target will be when it arrives (2 iterations).
+        Vec3 aim = targetPosition;
+        for (int i = 0; i < 2; i++)
+        {
+            double tof = Vec3.Distance(waterEntry, aim) / Math.Max(1.0, template.SpeedMs);
+            aim = targetPosition + targetVelocity * tof;
+        }
+
+        Vec3 flat = aim - waterEntry;
         flat = new Vec3(flat.X, 0, flat.Z);
         var state = new TorpedoState
         {
@@ -81,6 +99,7 @@ public sealed class TorpedoSystem : ISimulationSystem
             Velocity = flat.Normalized() * template.SpeedMs,
         };
         _torpedoes.Add(state);
+        SpawnedCount++;
         return state.Id;
     }
 
@@ -103,6 +122,7 @@ public sealed class TorpedoSystem : ISimulationSystem
             Velocity = direction.Normalized() * torpedo.SpeedMs,
         };
         _torpedoes.Add(state);
+        SpawnedCount++;
         return state.Id;
     }
 

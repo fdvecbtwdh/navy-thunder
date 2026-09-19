@@ -131,10 +131,22 @@ public sealed class GunSystem : ISimulationSystem
                 continue;
             }
 
-            // Turret traverse limit: fire only when the mount has trained onto the lead point.
-            var solution = FcsSolver.SolveLead(worldMount, shell.MuzzleVelocityMs, targetPos, order.TargetVelocity());
-            Vec3 toAim = solution.AimPoint - worldMount;
-            double desiredBearingDeg = Math.Atan2(toAim.X, toAim.Z) * 180.0 / Math.PI;
+            // Turret traverse limit: fire only when the mount has trained onto the lead
+            // point. The lead is iterated against the BALLISTIC time of flight (the arc
+            // takes far longer than range/muzzle-speed), so the guns lay for the target's
+            // predicted position at impact.
+            Vec3 predicted = targetPos;
+            Gunnery.GunnerySolution firing = GunneryAt(shell, worldMount, HorizontalDistance(worldMount, predicted));
+            double bearingRad = 0.0;
+            for (int iter = 0; iter < 4; iter++)
+            {
+                double tof = firing.Trajectory.TimeOfFlight;
+                predicted = targetPos + order.TargetVelocity() * tof;
+                double horizontalRange = HorizontalDistance(worldMount, predicted);
+                firing = GunneryAt(shell, worldMount, horizontalRange);
+                bearingRad = Math.Atan2(predicted.X - worldMount.X, predicted.Z - worldMount.Z);
+            }
+            double desiredBearingDeg = bearingRad * 180.0 / Math.PI;
             double maxSlew = gun.Definition.TraverseDegPerS * deltaTime;
             gun.TurretHeadingDeg = RotateToward(gun.TurretHeadingDeg, desiredBearingDeg, maxSlew);
             double bearingError = Math.Abs(AngleDelta(gun.TurretHeadingDeg, desiredBearingDeg));
@@ -162,15 +174,6 @@ public sealed class GunSystem : ISimulationSystem
             };
             var rng = world.Rng("guns");
 
-            double horizontalRange = Math.Sqrt(toAim.X * toAim.X + toAim.Z * toAim.Z);
-            int bucket = (int)(horizontalRange / 50);
-            if (!_solutions.TryGetValue((shell.Id, bucket), out var firing))
-            {
-                firing = Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs,
-                    ProtectionScenario.MakeDrag(shell), bucket * 50.0 + 25);
-                _solutions[(shell.Id, bucket)] = firing;
-            }
-
             // R0.6: distribute salvo aim points along the target's hull silhouette so
             // shells land fore/aft of the locking point instead of stacking on the center.
             Vec3 samplePoint = targetPos;
@@ -186,21 +189,14 @@ public sealed class GunSystem : ISimulationSystem
                 samplePoint += hullAxis * along;
             }
 
-            double bearingRad = Math.Atan2(samplePoint.X - worldMount.X, samplePoint.Z - worldMount.Z);
-            double horizontalRangeSample = Vec3.Distance(
-                new Vec3(worldMount.X, 0, worldMount.Z), new Vec3(samplePoint.X, 0, samplePoint.Z));
-            int sampleBucket = (int)(horizontalRangeSample / 50);
-            if (!_solutions.TryGetValue((shell.Id, sampleBucket), out var sampleFiring))
-            {
-                sampleFiring = Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs,
-                    ProtectionScenario.MakeDrag(shell), sampleBucket * 50.0 + 25);
-                _solutions[(shell.Id, sampleBucket)] = sampleFiring;
-            }
+            double bearingSampleRad = Math.Atan2(samplePoint.X - worldMount.X, samplePoint.Z - worldMount.Z);
+            double horizontalRangeSample = HorizontalDistance(worldMount, samplePoint);
+            var sampleFiring = GunneryAt(shell, worldMount, horizontalRangeSample);
 
             Vec3 dir = new(
-                Math.Sin(bearingRad) * Math.Cos(sampleFiring.ElevationRad),
+                Math.Sin(bearingSampleRad) * Math.Cos(sampleFiring.ElevationRad),
                 Math.Sin(sampleFiring.ElevationRad),
-                Math.Cos(bearingRad) * Math.Cos(sampleFiring.ElevationRad));
+                Math.Cos(bearingSampleRad) * Math.Cos(sampleFiring.ElevationRad));
 
             for (int i = 0; i < salvo; i++)
             {
@@ -212,6 +208,7 @@ public sealed class GunSystem : ISimulationSystem
                     MassKg = shell.MassKg,
                     Shell = shell,
                     LastTargetId = order.TargetId,
+                    ShooterId = gun.Ship.TargetId,
                 });
             }
 
@@ -224,6 +221,29 @@ public sealed class GunSystem : ISimulationSystem
                 Shells = salvo,
             });
         }
+    }
+
+
+    private Gunnery.GunnerySolution GunneryAt(ShellDefinition shell, Vec3 mount, double range)
+    {
+        int bucket = Math.Max(0, (int)(range / 50));
+        var key = (shell.Id, mount.Y > 0 ? (int)(mount.Y * 10) : 0, bucket);
+        if (!_solutionsByMount.TryGetValue((shell.Id, (int)(mount.Y * 10), bucket), out var solution))
+        {
+            solution = Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs,
+                ProtectionScenario.MakeDrag(shell), bucket * 50.0 + 25, crossingY: mount.Y);
+            _solutionsByMount[(shell.Id, (int)(mount.Y * 10), bucket)] = solution;
+        }
+
+        return solution;
+    }
+
+    private readonly Dictionary<(string ShellId, int HeightCm, int RangeBucket), Gunnery.GunnerySolution> _solutionsByMount = new();
+
+    private static double HorizontalDistance(Vec3 a, Vec3 b)
+    {
+        double dx = a.X - b.X, dz = a.Z - b.Z;
+        return Math.Sqrt(dx * dx + dz * dz);
     }
 
     private static double AngleDelta(double fromDeg, double toDeg)

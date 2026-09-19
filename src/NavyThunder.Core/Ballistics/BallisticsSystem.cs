@@ -41,6 +41,9 @@ public struct BallisticProjectile
     public string LastTargetId = "";
     public double TravelledM;
 
+    /// <summary>Id of the firing platform (ship target id) for threat attribution.</summary>
+    public string ShooterId = "";
+
     public readonly double Speed => Velocity.Length;
 }
 
@@ -88,6 +91,7 @@ public sealed record ProjectileArmorImpact : SimulationEvent
     public int ProjectileId { get; init; }
     public string ShellId { get; init; } = "";
     public string TargetId { get; init; } = "";
+    public string ShooterId { get; init; } = "";
     public string PlateId { get; init; } = "";
     public Vec3 Position { get; init; }
     public Vec3 Direction { get; init; }
@@ -109,6 +113,7 @@ public sealed record ShellDetonation : SimulationEvent
     public int ProjectileId { get; init; }
     public string ShellId { get; init; } = "";
     public string TargetId { get; init; } = "";
+    public string ShooterId { get; init; } = "";
     public Vec3 Position { get; init; }
 
     /// <summary>Velocity at detonation — the fragment cone axis (MDR-0005).</summary>
@@ -139,6 +144,11 @@ public sealed class BallisticsSystem : ISimulationSystem
     public double GroundLevelY { get; init; } = 0.0;
     public int NextProjectileId { get; private set; }
 
+    /// <summary>Diagnostics: substeps that ran armor-hit handling.</summary>
+    public long ArmorChecks { get; private set; }
+    public long ArmorSpawns { get; private set; }
+    public long ArmorImpactsResolved { get; private set; }
+
     /// <summary>Armor targets checked for hits; empty = pure ballistics.</summary>
     public List<ArmorTarget> Targets { get; } = [];
 
@@ -161,6 +171,10 @@ public sealed class BallisticsSystem : ISimulationSystem
     public int Spawn(BallisticProjectile projectile)
     {
         projectile.Id = ++NextProjectileId;
+        if (projectile.Shell is not null)
+        {
+            ArmorSpawns++;
+        }
         projectile.Alive = true;
         _projectiles.Add(projectile);
         return projectile.Id;
@@ -174,12 +188,17 @@ public sealed class BallisticsSystem : ISimulationSystem
             var p = _projectiles[i];
             for (int s = 0; s < IntegrationSubsteps && p.Alive; s++)
             {
+                if (Targets.Count > 0)
+                {
+                    ArmorChecks++;
+                }
                 Vec3 before = p.Position;
                 _integrator.Step(ref p, h);
                 p.TravelledM += (p.Position - before).Length;
 
                 if (Armor is not null && p.Shell is not null && Targets.Count > 0)
                 {
+                    ArmorImpactsResolved++;
                     HandleArmorHits(ref p, world, before);
                 }
 
@@ -285,6 +304,7 @@ public sealed class BallisticsSystem : ISimulationSystem
             ProjectileId = p.Id,
             ShellId = p.Shell!.Id,
             TargetId = hitTarget.Id,
+            ShooterId = p.ShooterId,
             Position = bestHit.Point,
             Direction = dir,
             PlateId = result.PlateId,
@@ -358,6 +378,7 @@ public sealed class BallisticsSystem : ISimulationSystem
             ProjectileId = p.Id,
             ShellId = p.Shell?.Id ?? "",
             TargetId = p.LastTargetId,
+            ShooterId = p.ShooterId,
             Position = position,
             Velocity = velocity,
             AfterPenetration = afterPenetration,

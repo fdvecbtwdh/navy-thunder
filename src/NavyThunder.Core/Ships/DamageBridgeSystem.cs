@@ -97,6 +97,18 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         var traversed = TraceInterior(ship, origin, dir, depth);
         if (traversed.Count == 0)
         {
+            // Stripped section: the shell still wrecks hull structure (sections must be
+            // able to die even when every internal part is already gone - unsinkability).
+            _registry.Apply(new DamageEvent
+            {
+                Channel = DamageChannel.Kinetic,
+                SourceId = impact.ShellId,
+                TargetId = ship.TargetId,
+                Position = origin,
+                Amount = totalDamage * residual * 0.5,
+                Tick = world.TickIndex,
+                Time = world.Time,
+            });
             return;
         }
 

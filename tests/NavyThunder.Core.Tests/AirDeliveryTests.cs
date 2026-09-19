@@ -50,23 +50,13 @@ public class AirDeliveryTests(ITestOutputHelper output)
 
         world_Run(runner, 240);
 
-        Assert.True(state.Mission!.Released, "torpedo bomber must release inside the envelope");
-        bool hit = runner.World.Events.Of<NavyThunder.Core.Torpedoes.TorpedoHit>().Any();
-        if (!hit)
-        {
-            // Diagnose: where did the fish end up and where is the ship?
-            output.WriteLine($"released={state.Mission.Released} battle={runner.Battle.Result}");
-            foreach (var s2 in runner.Ships)
-            {
-                output.WriteLine($"ship {s2.TargetId} lost={s2.Lost} pos={s2.WorldPosition}");
-            }
-            foreach (var e in runner.World.Events.All.TakeLast(8))
-            {
-                output.WriteLine($"evt {e.Kind} @{e.Time:0.#}s");
-            }
-        }
-        Assert.True(hit, "the dropped torpedo must contact the stationary target");
-        output.WriteLine($"torpedo hit(s) recorded; battle result={runner.Battle.Result}");
+        output.WriteLine($"released={state.Mission!.Released} spawned={runner.Torpedoes.SpawnedCount} " +
+                         $"alt={state.AltitudeM:0} spd={state.Velocity.Length:0} pos={state.Position}");
+        Assert.True(state.Mission.Released, "torpedo bomber must release inside the envelope");
+        Assert.True(runner.Torpedoes.SpawnedCount > 0, "the release must drop a fish");
+        Assert.Contains(runner.World.Events.Of<NavyThunder.Core.Torpedoes.TorpedoHit>(),
+            h => h.TargetId == "ship:test_battleship");
+        output.WriteLine($"torpedo hit recorded; battle result={runner.Battle.Result}");
     }
 
     [Fact]

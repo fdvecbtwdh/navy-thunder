@@ -52,7 +52,11 @@ public sealed class HullSectionState
     public double Hp { get; internal set; }
     public bool Destroyed { get; internal set; }
 
-    internal HullSectionState(HullSectionDefinition definition) => Definition = definition;
+    internal HullSectionState(HullSectionDefinition definition)
+    {
+        Definition = definition;
+        Hp = definition.Hp;
+    }
 }
 
 /// <summary>
@@ -93,6 +97,9 @@ public sealed class Ship : Entity, IDamageSink
     public double HeadingDeg { get; set; }
     public double SpeedKnots { get; internal set; }
     public Team? Team { get; set; }
+
+    /// <summary>When unsinkability was lost (irreversible - MDR-0007).</summary>
+    public double? UnsinkabilityLostTime { get; internal set; }
 
     public double CrewDead { get; internal set; }
     public double ListDeg { get; internal set; }
@@ -136,10 +143,10 @@ public sealed class Ship : Entity, IDamageSink
         * (1.0 - Parts.Values.Count(p => p.Definition.Kind == PartKind.Pump && p.Destroyed)
                / Math.Max(1.0, Parts.Values.Count(p => p.Definition.Kind == PartKind.Pump)));
 
-    public Ship(ShipDefinition definition)
+    public Ship(ShipDefinition definition, string? instanceKey = null)
     {
         Definition = definition;
-        TargetId = $"ship:{definition.Id}";
+        TargetId = "ship:" + definition.Id + (instanceKey is null ? "" : $"#{instanceKey}");
         Sections = definition.HullSections.Select(s => new HullSectionState(s)).ToList();
 
         foreach (var part in definition.Parts)
@@ -314,12 +321,18 @@ public sealed class Ship : Entity, IDamageSink
 
     public void CheckUnsinkability()
     {
-        if (UnsinkabilityLost || Definition.Class.IsCapital())
+        if (UnsinkabilityLost)
         {
-            if (Definition.Class.IsCapital())
+            return; // irreversible (MDR-0007)
+        }
+
+        if (Definition.Class.IsCapital())
+        {
+            int destroyedMid = Sections.Count(s => s.Definition.Role == HullSectionRole.Mid && s.Destroyed);
+            if (destroyedMid >= 2)
             {
-                int destroyedMid = Sections.Count(s => s.Definition.Role == HullSectionRole.Mid && s.Destroyed);
-                UnsinkabilityLost = destroyedMid >= 2;
+                UnsinkabilityLost = true;
+                UnsinkabilityLostTime ??= null;
             }
 
             return;
