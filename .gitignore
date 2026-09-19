@@ -8,3 +8,4 @@ TestResults/
 *.DotSettings
 .zcode/
 wt_extracted.json
+_wt_audit/
