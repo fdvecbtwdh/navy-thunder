@@ -60,7 +60,7 @@ python tools/generate_ships.py                                                 #
 dotnet run --project src/NavyThunder.ProtectionAnalysis -- report              # 校准报告
 ```
 
-详细机制依据见 [docs/mechanisms/README.md](docs/mechanisms/README.md)。校准状态见 [docs/calibration-report.json](docs/calibration-report.json)。
+详细机制依据见 [docs/mechanisms/README.md](docs/mechanisms/README.md)。校准状态见 [docs/calibration-report.json](docs/calibration-report.json)。后续工作安排见 [docs/ROADMAP.md](docs/ROADMAP.md)。
 
 ## License
 
