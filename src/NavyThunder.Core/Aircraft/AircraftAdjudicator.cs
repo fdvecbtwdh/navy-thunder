@@ -155,7 +155,8 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
 /// <summary>Builds the aircraft's ArmorTarget: skin plates on every part box face.</summary>
 public static class AircraftFactory
 {
-    public static Aircraft Create(AircraftDefinition definition) => new(definition);
+    public static Aircraft Create(AircraftDefinition definition, string? instanceKey = null)
+        => new(definition, instanceKey);
 
     public static ArmorTarget BuildArmorTarget(Aircraft aircraft)
     {

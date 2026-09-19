@@ -8,6 +8,13 @@
       "name": "United States Navy",
       "ships": [
         { "ship": "test_battleship", "x": -3500, "z": 0, "headingDeg": 0, "throttle": 1.0 }
+      ],
+      "aircraft": [
+        {
+          "aircraft": "test_fighter",
+          "x": -6000, "z": -3000, "altitudeM": 300, "speedMs": 110, "headingDeg": 45,
+          "mission": "bombStrike", "targetTeam": "ijn"
+        }
       ]
     },
     {
@@ -15,6 +22,13 @@
       "name": "Imperial Japanese Navy",
       "ships": [
         { "ship": "test_battleship", "x": 3500, "z": 0, "headingDeg": 180, "throttle": 1.0 }
+      ],
+      "aircraft": [
+        {
+          "aircraft": "test_fighter",
+          "x": 6000, "z": 3000, "altitudeM": 40, "speedMs": 65, "headingDeg": 225,
+          "mission": "torpedoStrike", "targetTeam": "usn"
+        }
       ]
     }
   ]

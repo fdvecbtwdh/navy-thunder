@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "shellSet",
+  "shells": [
+    {
+      "id": "usn_1000lb_an_m64_bomb",
+      "displayName": "AN-M64 1000 lb GP Bomb",
+      "category": "HE",
+      "caliberMm": 470,
+      "massKg": 454,
+      "muzzleVelocityMs": 1,
+      "explosiveType": "tritonal",
+      "explosiveMassKg": 195,
+      "fuseDelayS": 0.01,
+      "explodeThresholdMm": 0.1,
+      "demarrePenetrationK": 0.05,
+      "dragCoefficient": 0.6,
+      "source": {
+        "origin": "historical",
+        "url": "https://en.wikipedia.org/wiki/AN-M64",
+        "versionStamp": "Tier-2 2026-09-19",
+        "retrievedOn": "2026-09-19",
+        "notes": "Free-fall bomb released with the aircraft's velocity: muzzleVelocity is unused (release inherits carrier velocity). High drag bleeds speed to terminal fall. Blast routed through the shared explosion/fragment/overpressure pipeline."
+      }
+    }
+  ]
+}

@@ -44,11 +44,48 @@ public sealed class TorpedoSystem : ISimulationSystem
 
     public string Name => "torpedoes";
 
+    private TorpedoDefinition? _airLaunchTemplate;
+
     public TorpedoSystem(DamageRegistry registry, FloodingSystem? flooding = null)
     {
         _registry = registry;
         _flooding = flooding;
     }
+
+    /// <summary>Torpedo definition used for air-dropped fish (registered from data).</summary>
+    public void SetAirLaunchTemplate(TorpedoDefinition template) => _airLaunchTemplate = template;
+
+    /// <summary>
+    /// Drops an air-launched torpedo aimed at the target's live position (the drop was
+    /// flown aligned; the fish runs straight along the release LOS).
+    /// </summary>
+    public string SpawnAirLaunched(Vec3 waterEntry, Vec3 targetPosition, string targetId)
+        => SpawnAirLaunched(waterEntry, targetPosition, targetId, ArmorFor(targetId));
+
+    public string SpawnAirLaunched(Vec3 waterEntry, Vec3 targetPosition, string targetId, ArmorTarget? armor)
+    {
+        if (_airLaunchTemplate is not { } template)
+        {
+            throw new InvalidOperationException("No air-launch torpedo template registered.");
+        }
+
+        Vec3 flat = targetPosition - waterEntry;
+        flat = new Vec3(flat.X, 0, flat.Z);
+        var state = new TorpedoState
+        {
+            Id = $"torpedo_{++_nextId}",
+            Definition = template,
+            TargetId = targetId,
+            Armor = armor,
+            Position = waterEntry,
+            Velocity = flat.Normalized() * template.SpeedMs,
+        };
+        _torpedoes.Add(state);
+        return state.Id;
+    }
+
+    /// <summary>Armor-target lookup for air-launched weapons (wired by the battle runner).</summary>
+    public Func<string, ArmorTarget?> ArmorFor { get; set; } = _ => null;
 
     public void Initialize(SimulationWorld world)
     {

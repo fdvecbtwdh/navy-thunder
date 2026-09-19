@@ -27,6 +27,9 @@ public sealed class DataRepository
     public IReadOnlyDictionary<string, ShipDefinition> Ships { get; }
     public IReadOnlyDictionary<string, AircraftDefinition> Aircraft { get; }
     public IReadOnlyDictionary<string, WtReferenceEntry> WtReferences { get; }
+
+    /// <summary>Extracted WT ship unit records (last wtShipUnits document loaded; informational).</summary>
+    public WtShipUnitRecord[] ShipUnits { get; private set; } = [];
     public IReadOnlyDictionary<string, CalibrationEntry> Calibration { get; }
 
     private DataRepository(
@@ -68,6 +71,7 @@ public sealed class DataRepository
     public static DataRepository LoadFromDocuments(IEnumerable<(string Path, string Json)> documents)
     {
         var errors = new List<string>();
+        WtShipUnitRecord[] _lastShipUnits = [];
         var shells = new Dictionary<string, ShellDefinition>();
         var torpedoes = new Dictionary<string, TorpedoDefinition>();
         var ships = new Dictionary<string, ShipDefinition>();
@@ -131,6 +135,19 @@ public sealed class DataRepository
 
                         break;
 
+                    case "wtShipUnits":
+                        var shipUnits = Deserialize<WtShipUnitsDocument>(path, json);
+                        CheckSchemaVersion(path, shipUnits.SchemaVersion, errors);
+                        foreach (var unit in shipUnits.Ships)
+                        {
+                            if (string.IsNullOrWhiteSpace(unit.Id))
+                            {
+                                errors.Add($"{path}: wtShipUnits entry with empty Id");
+                            }
+                        }
+                        _lastShipUnits = shipUnits.Ships;
+                        break;
+
                     case "wtReference":
                         var wtDoc = Deserialize<WtReferenceDocument>(path, json);
                         CheckSchemaVersion(path, wtDoc.SchemaVersion, errors);
@@ -179,7 +196,12 @@ public sealed class DataRepository
             throw new DataValidationException(errors);
         }
 
-        return new DataRepository(shells, torpedoes, ships, aircraftDict, wtReferences, calibration);
+        var repository = new DataRepository(shells, torpedoes, ships, aircraftDict, wtReferences, calibration)
+        {
+            ShipUnits = _lastShipUnits,
+        };
+        _lastShipUnits = [];
+        return repository;
     }
 
     public CalibrationEntry RequireCalibration(string id)

@@ -2,6 +2,7 @@ using System.Text.Json;
 using NavyThunder.Core.AntiAir;
 using NavyThunder.Core.Armor;
 using NavyThunder.Core.Aviation;
+using NavyThunder.Core.Aviation;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Battle;
 using NavyThunder.Core.Damage;
@@ -24,11 +25,25 @@ public sealed record ScenarioShipSpawn
     public double Throttle { get; init; } = 1.0;
 }
 
+public sealed record ScenarioAircraftSpawn
+{
+    public required string Aircraft { get; init; }
+    public required double X { get; init; }
+    public required double Z { get; init; }
+    public double AltitudeM { get; init; } = 500;
+    public double SpeedMs { get; init; } = 110;
+    public double HeadingDeg { get; init; }
+    /// <summary>"torpedoStrike" | "bombStrike"</summary>
+    public required string Mission { get; init; }
+    public required string TargetTeam { get; init; }
+}
+
 public sealed record ScenarioTeam
 {
     public required string Id { get; init; }
     public required string Name { get; init; }
     public required ScenarioShipSpawn[] Ships { get; init; }
+    public ScenarioAircraftSpawn[] Aircraft { get; init; } = [];
 }
 
 public sealed record BattleScenario
@@ -57,12 +72,20 @@ public sealed class BattleRunner
     public List<Ship> Ships { get; } = [];
     public BattleSystem Battle { get; }
     public DamageRegistry Registry { get; } = new();
+    private readonly Dictionary<string, ArmorTarget> _armorByTargetId = new();
     public GunSystem Guns { get; }
     public DamageBridgeSystem Bridge { get; }
     public FireSystem Fire { get; }
     public FloodingSystem Flooding { get; }
     public DamageControlSystem DamageControl { get; }
     public KillAdjudicatorSystem Adjudicator { get; }
+    public FlightModelSystem FlightModel { get; }
+    public AircraftAdjudicatorSystem AircraftAdjudicator { get; }
+    public NavyThunder.Core.Torpedoes.TorpedoSystem Torpedoes { get; }
+
+    /// <summary>Test/diagnostic accessor for armor targets by ship target id.</summary>
+    public NavyThunder.Core.Armor.ArmorTarget? ArmorLookup(string targetId) => _armorByTargetId.GetValueOrDefault(targetId);
+    public List<NavyThunder.Core.Aviation.Aircraft> Aircraft { get; } = [];
     public BallisticsSystem Ballistics { get; }
 
     public BattleRunner(DataRepository repo, BattleScenario scenario)
@@ -83,6 +106,20 @@ public sealed class BattleRunner
         var adjudicator = new KillAdjudicatorSystem(Registry);
         DamageControl = damageControl;
         Adjudicator = adjudicator;
+        var torpedoSystem = new NavyThunder.Core.Torpedoes.TorpedoSystem(Registry, Flooding);
+        Torpedoes = torpedoSystem;
+        FlightModel = new FlightModelSystem(Registry) { Ballistics = Ballistics, Torpedoes = torpedoSystem };
+        if (repo.Shells.TryGetValue("usn_1000lb_an_m64_bomb", out var bombShell))
+        {
+            FlightModel.SetBombShell(MissionKind.BombStrike, bombShell);
+        }
+
+        torpedoSystem.ArmorFor = id => _armorByTargetId.GetValueOrDefault(id);
+        if (repo.Torpedoes.TryGetValue("ijn_610mm_type93_mod1_mod2", out var airTorpedo))
+        {
+            torpedoSystem.SetAirLaunchTemplate(airTorpedo);
+        }
+        AircraftAdjudicator = new AircraftAdjudicatorSystem(Registry, repo.Shells);
 
         foreach (var team in scenario.Teams)
         {
@@ -110,6 +147,47 @@ public sealed class BattleRunner
                 var armor = ShipFactory.BuildArmorTarget(ship);
                 Ballistics.Targets.Add(armor);
                 explosions.Targets.Add(armor);
+                _armorByTargetId[ship.TargetId] = armor;
+            }
+        }
+
+        // Aircraft squadrons (R0.5/R1.3): missions target the first enemy team's ships.
+        foreach (var team in scenario.Teams)
+        {
+            var teamRecord = Battle.Teams.First(t => t.Id == team.Id);
+            var enemyTeamId = scenario.Teams.First(t => t.Id != team.Id).Id;
+            int squadronIndex = 0;
+            foreach (var spawn in team.Aircraft)
+            {
+                var aircraft = AircraftFactory.Create(repo.Aircraft[spawn.Aircraft], $"{team.Id}-{squadronIndex++}");
+                aircraft.Team = teamRecord;
+                Aircraft.Add(aircraft);
+                World.AddEntity(aircraft);
+                Registry.Register(aircraft);
+                AircraftAdjudicator.Aircraft.Add(aircraft);
+                AircraftAdjudicator.ByTargetId[aircraft.TargetId] = aircraft;
+
+                var armor = AircraftFactory.BuildArmorTarget(aircraft);
+                Ballistics.Targets.Add(armor);
+                explosions.Targets.Add(armor);
+                Ballistics.ProximityTargets.Add(aircraft);
+
+                Func<Vec3> targetPos = () => Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost).WorldPosition;
+                Func<bool> targetAlive = () => Ships.Any(sh => sh.Team!.Id == enemyTeamId && !sh.Lost);
+
+                var state = FlightModel.Register(aircraft,
+                    new Vec3(spawn.X, spawn.AltitudeM, spawn.Z),
+                    spawn.HeadingDeg, spawn.SpeedMs, spawn.AltitudeM);
+                state.MissionAltitudeM = spawn.AltitudeM;
+                state.Mission = new StrikeMission
+                {
+                    Kind = spawn.Mission == "torpedoStrike" ? MissionKind.TorpedoStrike : MissionKind.BombStrike,
+                    TargetId = $"team:{enemyTeamId}",
+                    TargetPosition = targetPos,
+                    TargetAlive = targetAlive,
+                    TargetArmor = () => _armorByTargetId.GetValueOrDefault(
+                        Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost).TargetId),
+                };
             }
         }
 
@@ -123,6 +201,9 @@ public sealed class BattleRunner
         World.AddSystem(Guns);
         World.AddSystem(damageControl);
         World.AddSystem(adjudicator);
+        World.AddSystem(AircraftAdjudicator);
+        World.AddSystem(FlightModel);
+        World.AddSystem(Torpedoes);
         World.AddSystem(Battle);
     }
 

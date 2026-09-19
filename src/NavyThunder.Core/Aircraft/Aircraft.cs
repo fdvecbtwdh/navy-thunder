@@ -35,6 +35,9 @@ public sealed class Aircraft : Entity, IDamageSink, IProximityTarget
 {
     /// <summary>World placement (aircraft move in the Phase 5 scenario layer).</summary>
     public Vec3 WorldPosition { get; set; } = Vec3.Zero;
+
+    /// <summary>Owning side of the engagement (null = unaligned/test).</summary>
+    public NavyThunder.Core.Ships.Team? Team { get; set; }
     public Vec3 Velocity { get; set; } = Vec3.Zero;
 
     public string ProximityTargetId => TargetId;
@@ -59,10 +62,10 @@ public sealed class Aircraft : Entity, IDamageSink, IProximityTarget
     public IReadOnlyDictionary<string, AircraftPartState> Parts => _partsById;
     public bool Alive => State != AircraftState.Destroyed;
 
-    public Aircraft(AircraftDefinition definition)
+    public Aircraft(AircraftDefinition definition, string? instanceKey = null)
     {
         Definition = definition;
-        TargetId = $"aircraft:{definition.Id}";
+        TargetId = $"aircraft:{definition.Id}" + (instanceKey is null ? "" : $"#{instanceKey}");
         FuelKg = definition.FuelKg;
         OilKg = 60;
         CoolantKg = 90;

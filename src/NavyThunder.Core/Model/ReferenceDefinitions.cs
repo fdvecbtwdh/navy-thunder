@@ -30,6 +30,28 @@ public sealed record WtReferenceDocument
     public required WtReferenceEntry[] Entries { get; init; }
 }
 
+/// <summary>One extracted War Thunder ship unit record (Tier-1 reference data).</summary>
+public sealed record WtShipUnitRecord
+{
+    public required string Id { get; init; }
+    public required string Name { get; init; }
+    public string? Nation { get; init; }
+    public double? DisplacementT { get; init; }
+    public double? MaxSpeedKnots { get; init; }
+    public string? WeaponsSummary { get; init; }
+    public string? SourcePath { get; init; }
+}
+
+public sealed record WtShipUnitsDocument
+{
+    public int SchemaVersion { get; init; }
+
+    [JsonIgnore]
+    public string Kind => "wtShipUnits";
+
+    public required WtShipUnitRecord[] Ships { get; init; }
+}
+
 /// <summary>
 /// A tunable engine parameter whose formula/number is NOT publicly confirmed
 /// (approximation:true) plus any adjustable constant. All approximated WT behavior must
