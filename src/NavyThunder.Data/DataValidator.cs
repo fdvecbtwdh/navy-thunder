@@ -146,6 +146,21 @@ public static class DataValidator
             errors.Add($"ship '{ship.Id}': buoyancy shares sum to {buoyancy:0.#} %, expected ~100");
         }
 
+        var turretGroups = ship.Parts.Where(p => p.TurretGroup is not null)
+            .Select(p => p.TurretGroup!).ToHashSet();
+        foreach (var gun in ship.Guns)
+        {
+            if (!turretGroups.Contains(gun.TurretGroup))
+            {
+                errors.Add($"ship '{ship.Id}': gun '{gun.Id}' references unknown turret group '{gun.TurretGroup}'");
+            }
+
+            if (gun.Barrels <= 0 || gun.RoundsPerMinute <= 0)
+            {
+                errors.Add($"ship '{ship.Id}': gun '{gun.Id}' has invalid Barrels/RoundsPerMinute");
+            }
+        }
+
         foreach (var part in ship.Parts)
         {
             if (!sectionIds.Contains(part.SectionId))

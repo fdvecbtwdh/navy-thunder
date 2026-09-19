@@ -1,0 +1,33 @@
+{
+  "result": "TeamWin",
+  "winner": "usn",
+  "reason": "annihilation",
+  "durationS": 676,
+  "gunsFired": 354,
+  "magazineDetonations": 0,
+  "torpedoHits": 0,
+  "ships": [
+    {
+      "ship": "ship:test_battleship",
+      "team": "usn",
+      "state": "Alive",
+      "lostAtS": null,
+      "reason": null,
+      "crewAlive": 1900,
+      "damageTaken": 273981.8,
+      "hits": 345,
+      "fires": 0
+    },
+    {
+      "ship": "ship:test_battleship",
+      "team": "ijn",
+      "state": "Foundered",
+      "lostAtS": 676,
+      "reason": "unsinkability_lost",
+      "crewAlive": 1900,
+      "damageTaken": 273981.8,
+      "hits": 345,
+      "fires": 0
+    }
+  ]
+}

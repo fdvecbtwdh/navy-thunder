@@ -79,8 +79,20 @@ public sealed class Ship : Entity, IDamageSink
 
     public string TargetId { get; }
 
-    /// <summary>World placement of the ship origin (ships are static until the Phase 5 scenario layer).</summary>
+    /// <summary>World placement of the ship origin, integrated by the navigation system.</summary>
     public Vec3 WorldPosition { get; set; } = Vec3.Zero;
+
+    // ---------------- navigation state (R0.2) ----------------
+
+    /// <summary>Ordered rudder, -1 (port) .. +1 (starboard).</summary>
+    public double RudderCommand { get; set; }
+
+    /// <summary>Ordered throttle, 0 .. 1.</summary>
+    public double ThrottleCommand { get; set; } = 1.0;
+
+    public double HeadingDeg { get; set; }
+    public double SpeedKnots { get; internal set; }
+    public Team? Team { get; set; }
 
     public double CrewDead { get; internal set; }
     public double ListDeg { get; internal set; }

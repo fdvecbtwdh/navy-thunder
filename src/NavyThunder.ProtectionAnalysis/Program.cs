@@ -74,9 +74,9 @@ switch (args[0])
             switch (args[i])
             {
                 case "--shell": shellId = args[i + 1]; break;
-                case "--plate" when double.TryParse(args[i + 1], out var v): plate = v; break;
-                case "--angle" when double.TryParse(args[i + 1], out var v): angle = v; break;
-                case "--range" when double.TryParse(args[i + 1], out var v): range = v; break;
+                case "--plate" when double.TryParse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture, out var v): plate = v; break;
+                case "--angle" when double.TryParse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture, out var v): angle = v; break;
+                case "--range" when double.TryParse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture, out var v): range = v; break;
             }
         }
 
@@ -93,8 +93,8 @@ switch (args[0])
         if (range > 0)
         {
             var strike = ProtectionScenario.StrikeAtRange(shell, range);
-            impactSpeed = strike.ImpactSpeed;
-            fallAngleDeg = strike.ImpactFallAngleDeg;
+            impactSpeed = strike.Trajectory.ImpactSpeed;
+            fallAngleDeg = strike.Trajectory.ImpactFallAngleDeg;
         }
         else
         {
@@ -159,10 +159,10 @@ switch (args[0])
 
             string marker = "_pen_0deg_";
             int m0 = key.IndexOf(marker, StringComparison.Ordinal) + marker.Length;
-            double range = double.Parse(key[m0..^1]); // strip trailing 'm'
+            double range = double.Parse(key[m0..^1], System.Globalization.CultureInfo.InvariantCulture); // strip trailing 'm'
             var shell = repo.RequireShell(prefix.Value.Id);
             double computed = NavyThunder.Core.Armor.DeMarre.PenetrationMm(shell,
-                ProtectionScenario.StrikeAtRange(shell, range).ImpactSpeed);
+                ProtectionScenario.ImpactSpeedAtRange(shell, range));
             double expected = refEntry.Value;
             double deviation = (computed - expected) / expected;
             bool ok = Math.Abs(deviation) <= prefix.Value.Tol;
@@ -183,7 +183,6 @@ switch (args[0])
 
         var report = new Dictionary<string, object?>
         {
-            ["generatedOn"] = DateTime.UtcNow.ToString("yyyy-MM-dd"),
             ["touchedReferenceVersion"] = "WT 2.59 era stat cards (Iowa wiki page, 2026-09-19)",
             ["total"] = total,
             ["passed"] = passed,

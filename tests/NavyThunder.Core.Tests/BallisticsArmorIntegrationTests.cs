@@ -35,7 +35,7 @@ public class BallisticsArmorIntegrationTests
             .Add(new NavyThunder.Core.Geometry.ArmorPlate
             {
                 Id = $"{id}_belt",
-                Center = new Vec3(x, y, 0),
+                BaseCenter = new Vec3(x, y, 0),
                 Normal = new Vec3(-1, 0, 0),
                 AxisU = new Vec3(0, 1, 0),
                 AxisV = new Vec3(0, 0, 1),
@@ -53,7 +53,7 @@ public class BallisticsArmorIntegrationTests
             .Add(new NavyThunder.Core.Geometry.ArmorPlate
             {
                 Id = $"{id}_deck",
-                Center = new Vec3(x, y, 0),
+                BaseCenter = new Vec3(x, y, 0),
                 Normal = new Vec3(-Math.Sin(rad), Math.Cos(rad), 0),
                 AxisU = new Vec3(Math.Cos(rad), Math.Sin(rad), 0),
                 AxisV = new Vec3(0, 0, 1),

@@ -16,7 +16,8 @@ public static class ShipFactory
         var target = new ArmorTarget { Id = ship.TargetId };
         foreach (var plate in ship.Definition.ArmorPlates)
         {
-            target.Add(MakePlate(plate, ship.WorldPosition));
+            var built = MakePlate(plate, ship.WorldPosition);
+            target.Add(built);
         }
 
         return target;
@@ -31,44 +32,43 @@ public static class ShipFactory
         double hx = (def.XMaxM - def.XMinM) / 2;
         double hz = (def.ZMaxM - def.ZMinM) / 2;
 
-        return def.Face switch
+        Vec3 baseCenter = def.Face switch
         {
-            BoxFace.XMin => new ArmorPlate
+            BoxFace.XMin => new Vec3(def.XMinM, cy, cz),
+            BoxFace.XMax => new Vec3(def.XMaxM, cy, cz),
+            BoxFace.YMin => new Vec3(cx, def.YMinM, cz),
+            BoxFace.YMax => new Vec3(cx, def.YMaxM, cz),
+            BoxFace.ZMin => new Vec3(cx, cy, def.ZMinM),
+            _ => new Vec3(cx, cy, def.ZMaxM),
+        };
+
+        return new ArmorPlate
+        {
+            Id = def.Id,
+            BaseCenter = baseCenter,
+            Offset = offset,
+            Normal = def.Face switch
             {
-                Id = def.Id, Center = new Vec3(def.XMinM + offset.X, cy, cz),
-                Normal = new Vec3(-1, 0, 0), AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1),
-                HalfU = hy, HalfV = hz, ThicknessMm = def.ThicknessMm,
+                BoxFace.XMin => new Vec3(-1, 0, 0),
+                BoxFace.XMax => new Vec3(1, 0, 0),
+                BoxFace.YMin => new Vec3(0, -1, 0),
+                BoxFace.YMax => new Vec3(0, 1, 0),
+                BoxFace.ZMin => new Vec3(0, 0, -1),
+                _ => new Vec3(0, 0, 1),
             },
-            BoxFace.XMax => new ArmorPlate
-            {
-                Id = def.Id, Center = new Vec3(def.XMaxM + offset.X, cy, cz),
-                Normal = new Vec3(1, 0, 0), AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1),
-                HalfU = hy, HalfV = hz, ThicknessMm = def.ThicknessMm,
-            },
-            BoxFace.YMin => new ArmorPlate
-            {
-                Id = def.Id, Center = new Vec3(cx, def.YMinM + offset.Y, cz),
-                Normal = new Vec3(0, -1, 0), AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1),
-                HalfU = hx, HalfV = hz, ThicknessMm = def.ThicknessMm,
-            },
-            BoxFace.YMax => new ArmorPlate
-            {
-                Id = def.Id, Center = new Vec3(cx, def.YMaxM + offset.Y, cz),
-                Normal = new Vec3(0, 1, 0), AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1),
-                HalfU = hx, HalfV = hz, ThicknessMm = def.ThicknessMm,
-            },
-            BoxFace.ZMin => new ArmorPlate
-            {
-                Id = def.Id, Center = new Vec3(cx, cy, def.ZMinM + offset.Z),
-                Normal = new Vec3(0, 0, -1), AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0),
-                HalfU = hx, HalfV = hy, ThicknessMm = def.ThicknessMm,
-            },
-            _ => new ArmorPlate
-            {
-                Id = def.Id, Center = new Vec3(cx, cy, def.ZMaxM + offset.Z),
-                Normal = new Vec3(0, 0, 1), AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0),
-                HalfU = hx, HalfV = hy, ThicknessMm = def.ThicknessMm,
-            },
+            AxisU = def.Face is BoxFace.XMin or BoxFace.XMax ? new Vec3(0, 1, 0)
+                    : def.Face is BoxFace.YMin or BoxFace.YMax ? new Vec3(1, 0, 0)
+                    : new Vec3(1, 0, 0),
+            AxisV = def.Face is BoxFace.XMin or BoxFace.XMax ? new Vec3(0, 0, 1)
+                    : def.Face is BoxFace.YMin or BoxFace.YMax ? new Vec3(0, 0, 1)
+                    : new Vec3(0, 1, 0),
+            HalfU = def.Face is BoxFace.XMin or BoxFace.XMax ? hy
+                    : def.Face is BoxFace.YMin or BoxFace.YMax ? hx
+                    : hx,
+            HalfV = def.Face is BoxFace.XMin or BoxFace.XMax ? hz
+                    : def.Face is BoxFace.YMin or BoxFace.YMax ? hz
+                    : hy,
+            ThicknessMm = def.ThicknessMm,
         };
     }
 }

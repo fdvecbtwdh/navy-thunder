@@ -1,0 +1,21 @@
+{
+  "name": "bb_duel",
+  "maxDurationS": 3600,
+  "seed": 424242,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        { "ship": "test_battleship", "x": -3500, "z": 0, "headingDeg": 0, "throttle": 1.0 }
+      ]
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        { "ship": "test_battleship", "x": 3500, "z": 0, "headingDeg": 180, "throttle": 1.0 }
+      ]
+    }
+  ]
+}

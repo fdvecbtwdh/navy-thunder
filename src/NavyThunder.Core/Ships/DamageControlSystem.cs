@@ -45,6 +45,8 @@ public sealed class DamageControlSystem : ISimulationSystem
 
     public double UnwaterBoost { get; init; } = 1.5;
 
+    private readonly DamageControlFireBridge _fireBridge = new();
+
     public string Name => "damage_control";
 
     public DamageControlSystem()
@@ -83,7 +85,7 @@ public sealed class DamageControlSystem : ISimulationSystem
                         PatchBreaches(ship, deltaTime * speed);
                         break;
                     case DcFlow.Extinguishing:
-                        Fire?.ExtinguishProgress(world, ship, ExtinguishSeconds / speed, deltaTime);
+                        _ = Fire is not null && _fireBridge.ExtinguishProgress(Fire, world, ship, ExtinguishSeconds / speed, deltaTime);
                         break;
                     case DcFlow.Unwatering:
                         Unwater(ship, deltaTime * speed * UnwaterBoost);
@@ -126,21 +128,21 @@ public sealed class DamageControlSystem : ISimulationSystem
     }
 }
 
-/// <summary>Extension keeps FireSystem decoupled from ships.</summary>
-public static class DamageControlFireBridge
+/// <summary>Per-instance extinguish progress (never static: battles must not share state).</summary>
+public sealed class DamageControlFireBridge
 {
-    private static readonly Dictionary<string, double> Progress = [];
+    private readonly Dictionary<string, double> _progress = [];
 
-    public static void ExtinguishProgress(this FireSystem fire, SimulationWorld world, Ship ship, double durationS, double deltaTime)
+    public bool ExtinguishProgress(FireSystem fire, SimulationWorld world, Ship ship, double durationS, double deltaTime)
     {
         string key = ship.TargetId;
         if (!fire.Fires.Any(f => f.HostId.StartsWith(key, StringComparison.Ordinal) && f.Active))
         {
-            Progress.Remove(key);
-            return;
+            _progress.Remove(key);
+            return false;
         }
 
-        double value = Progress.GetValueOrDefault(key) + deltaTime / Math.Max(0.1, durationS);
+        double value = _progress.GetValueOrDefault(key) + deltaTime / Math.Max(0.1, durationS);
         if (value >= 1.0)
         {
             foreach (var f in fire.Fires.Where(f => f.HostId.StartsWith(key, StringComparison.Ordinal) && f.Active))
@@ -148,11 +150,11 @@ public static class DamageControlFireBridge
                 fire.Extinguish(world, f.HostId);
             }
 
-            Progress[key] = 0;
+            _progress[key] = 0;
+            return true;
         }
-        else
-        {
-            Progress[key] = value;
-        }
+
+        _progress[key] = value;
+        return false;
     }
 }

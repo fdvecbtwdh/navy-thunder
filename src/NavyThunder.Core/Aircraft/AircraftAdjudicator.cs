@@ -188,37 +188,37 @@ public static class AircraftFactory
             BoxFace.XMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(part.XMinM, cy, cz), Normal = new Vec3(-1, 0, 0),
+                BaseCenter = new Vec3(part.XMinM, cy, cz), Normal = new Vec3(-1, 0, 0),
                 AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1), HalfU = hy, HalfV = hz,
             },
             BoxFace.XMax => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(part.XMaxM, cy, cz), Normal = new Vec3(1, 0, 0),
+                BaseCenter = new Vec3(part.XMaxM, cy, cz), Normal = new Vec3(1, 0, 0),
                 AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1), HalfU = hy, HalfV = hz,
             },
             BoxFace.YMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(cx, part.YMinM, cz), Normal = new Vec3(0, -1, 0),
+                BaseCenter = new Vec3(cx, part.YMinM, cz), Normal = new Vec3(0, -1, 0),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1), HalfU = hx, HalfV = hz,
             },
             BoxFace.YMax => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(cx, part.YMaxM, cz), Normal = new Vec3(0, 1, 0),
+                BaseCenter = new Vec3(cx, part.YMaxM, cz), Normal = new Vec3(0, 1, 0),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1), HalfU = hx, HalfV = hz,
             },
             BoxFace.ZMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(cx, cy, part.ZMinM), Normal = new Vec3(0, 0, -1),
+                BaseCenter = new Vec3(cx, cy, part.ZMinM), Normal = new Vec3(0, 0, -1),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0), HalfU = hx, HalfV = hy,
             },
             _ => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                Center = new Vec3(cx, cy, part.ZMaxM), Normal = new Vec3(0, 0, 1),
+                BaseCenter = new Vec3(cx, cy, part.ZMaxM), Normal = new Vec3(0, 0, 1),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0), HalfU = hx, HalfV = hy,
             },
         };

@@ -6,6 +6,21 @@
    "id": "uss_fletcher",
    "displayName": "USS FLETCHER",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "uss_fletcher_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2500,
    "lengthM": 114,
    "beamM": 11,
@@ -258,6 +273,21 @@
    "id": "uss_sims",
    "displayName": "USS SIMS",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "uss_sims_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 1570,
    "lengthM": 106,
    "beamM": 11,
@@ -510,6 +540,21 @@
    "id": "uss_gearing",
    "displayName": "USS GEARING",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "uss_gearing_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2616,
    "lengthM": 119,
    "beamM": 12.5,
@@ -762,6 +807,21 @@
    "id": "uss_sumner",
    "displayName": "USS SUMNER",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "uss_sumner_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 3200,
    "lengthM": 114.7,
    "beamM": 12.4,
@@ -1014,6 +1074,21 @@
    "id": "ijn_kagero",
    "displayName": "IJN KAGERO",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "ijn_kagero_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2500,
    "lengthM": 118,
    "beamM": 10.8,
@@ -1266,6 +1341,21 @@
    "id": "ijn_fubuki",
    "displayName": "IJN FUBUKI",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "ijn_fubuki_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2090,
    "lengthM": 115,
    "beamM": 10.4,
@@ -1518,6 +1608,21 @@
    "id": "dkm_z23",
    "displayName": "DKM Z23",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "dkm_z23_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2600,
    "lengthM": 127,
    "beamM": 12,
@@ -1770,6 +1875,21 @@
    "id": "rn_tribal",
    "displayName": "RN TRIBAL",
    "class": "Destroyer",
+   "maxSpeedKnots": 36,
+   "turnRateDegPerS": 3.0,
+   "guns": [
+    {
+     "id": "rn_tribal_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 2,
+     "roundsPerMinute": 12,
+     "rangeM": 15000,
+     "traverseDegPerS": 12,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 2520,
    "lengthM": 115,
    "beamM": 11.2,
@@ -2022,6 +2142,32 @@
    "id": "uss_atlanta",
    "displayName": "USS ATLANTA",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_atlanta_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_atlanta_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 7400,
    "lengthM": 165,
    "beamM": 16,
@@ -2332,6 +2478,32 @@
    "id": "uss_brooklyn",
    "displayName": "USS BROOKLYN",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_brooklyn_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_brooklyn_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 12207,
    "lengthM": 185,
    "beamM": 19,
@@ -2642,6 +2814,32 @@
    "id": "uss_baltimore",
    "displayName": "USS BALTIMORE",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_baltimore_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_baltimore_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 13600,
    "lengthM": 205,
    "beamM": 21.6,
@@ -2952,6 +3150,32 @@
    "id": "uss_new_orleans",
    "displayName": "USS NEW ORLEANS",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_new_orleans_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_new_orleans_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 10360,
    "lengthM": 179,
    "beamM": 18.8,
@@ -3262,6 +3486,32 @@
    "id": "ijn_myoko",
    "displayName": "IJN MYOKO",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "ijn_myoko_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_myoko_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 15493,
    "lengthM": 204,
    "beamM": 19.5,
@@ -3572,6 +3822,32 @@
    "id": "ijn_mogami",
    "displayName": "IJN MOGAMI",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "ijn_mogami_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_mogami_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 12400,
    "lengthM": 200,
    "beamM": 18,
@@ -3882,6 +4158,32 @@
    "id": "dkm_prinz_eugen",
    "displayName": "DKM PRINZ EUGEN",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "dkm_prinz_eugen_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "dkm_prinz_eugen_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 16970,
    "lengthM": 212,
    "beamM": 22,
@@ -4192,6 +4494,32 @@
    "id": "rn_edinburgh",
    "displayName": "RN EDINBURGH",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "rn_edinburgh_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "rn_edinburgh_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 11550,
    "lengthM": 193,
    "beamM": 19.3,
@@ -4502,6 +4830,32 @@
    "id": "uss_northampton",
    "displayName": "USS NORTHAMPTON",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_northampton_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_northampton_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 9200,
    "lengthM": 182,
    "beamM": 18.8,
@@ -4812,6 +5166,32 @@
    "id": "uss_penelope",
    "displayName": "USS PENELOPE",
    "class": "Cruiser",
+   "maxSpeedKnots": 32,
+   "turnRateDegPerS": 2.0,
+   "guns": [
+    {
+     "id": "uss_penelope_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_penelope_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 3,
+     "roundsPerMinute": 6,
+     "rangeM": 15000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 5700,
    "lengthM": 154,
    "beamM": 15.5,
@@ -5122,6 +5502,43 @@
    "id": "uss_nevada",
    "displayName": "USS NEVADA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_nevada_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_nevada_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_nevada_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 29500,
    "lengthM": 178,
    "beamM": 29,
@@ -5462,6 +5879,43 @@
    "id": "uss_pennsylvania",
    "displayName": "USS PENNSYLVANIA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_pennsylvania_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_pennsylvania_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_pennsylvania_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 32400,
    "lengthM": 185,
    "beamM": 32,
@@ -5802,6 +6256,43 @@
    "id": "uss_new_mexico",
    "displayName": "USS NEW MEXICO",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_new_mexico_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_new_mexico_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_new_mexico_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 34000,
    "lengthM": 190,
    "beamM": 32,
@@ -6142,6 +6633,43 @@
    "id": "uss_colorado",
    "displayName": "USS COLORADO",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_colorado_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_colorado_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_colorado_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 32600,
    "lengthM": 190,
    "beamM": 30,
@@ -6482,6 +7010,43 @@
    "id": "uss_north_carolina",
    "displayName": "USS NORTH CAROLINA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_north_carolina_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_north_carolina_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_north_carolina_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 41500,
    "lengthM": 222,
    "beamM": 33,
@@ -6822,6 +7387,43 @@
    "id": "uss_south_dakota",
    "displayName": "USS SOUTH DAKOTA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_south_dakota_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_south_dakota_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_south_dakota_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 40500,
    "lengthM": 210,
    "beamM": 33,
@@ -7162,6 +7764,43 @@
    "id": "uss_iowa",
    "displayName": "USS IOWA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_iowa_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_iowa_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_iowa_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 57500,
    "lengthM": 262,
    "beamM": 33,
@@ -7502,6 +8141,43 @@
    "id": "uss_california",
    "displayName": "USS CALIFORNIA",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "uss_california_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_california_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_california_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 35500,
    "lengthM": 190,
    "beamM": 32,
@@ -7842,6 +8518,43 @@
    "id": "ijn_kongo",
    "displayName": "IJN KONGO",
    "class": "Battlecruiser",
+   "maxSpeedKnots": 28,
+   "turnRateDegPerS": 1.8,
+   "guns": [
+    {
+     "id": "ijn_kongo_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_kongo_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_kongo_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 37000,
    "lengthM": 222,
    "beamM": 29,
@@ -8182,6 +8895,43 @@
    "id": "ijn_nagato",
    "displayName": "IJN NAGATO",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "ijn_nagato_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_nagato_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_nagato_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 42850,
    "lengthM": 215,
    "beamM": 29,
@@ -8522,6 +9272,43 @@
    "id": "rn_renown",
    "displayName": "RN RENOWN",
    "class": "Battlecruiser",
+   "maxSpeedKnots": 28,
+   "turnRateDegPerS": 1.8,
+   "guns": [
+    {
+     "id": "rn_renown_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "rn_renown_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "rn_renown_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 32000,
    "lengthM": 242,
    "beamM": 27.4,
@@ -8862,6 +9649,43 @@
    "id": "rms_bismarck",
    "displayName": "RMS BISMARCK",
    "class": "Battleship",
+   "maxSpeedKnots": 27,
+   "turnRateDegPerS": 1.5,
+   "guns": [
+    {
+     "id": "rms_bismarck_gun_A",
+     "turretGroup": "A",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "rms_bismarck_gun_B",
+     "turretGroup": "B",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    },
+    {
+     "id": "rms_bismarck_gun_C",
+     "turretGroup": "C",
+     "shellId": "usn_406mm_mk8_mod6_apcbc",
+     "barrels": 3,
+     "roundsPerMinute": 2,
+     "rangeM": 30000,
+     "traverseDegPerS": 6,
+     "horizontalMrad": 2.5,
+     "verticalMrad": 1.5
+    }
+   ],
    "displacementT": 51000,
    "lengthM": 251,
    "beamM": 36,

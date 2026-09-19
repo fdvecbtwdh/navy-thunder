@@ -48,6 +48,33 @@ FLEET = [
 ]
 
 
+CLASS_MOBILITY = {
+    # class: (max_speed_kn, turn_deg_s, gun_groups, barrels, rpm, shell_id)
+    "Destroyer": (36, 3.0, 1, 2, 12, "usn_127mm_mk46_special_common"),
+    "Cruiser": (32, 2.0, 3, 3, 6, "usn_127mm_mk46_special_common"),
+    "Battlecruiser": (28, 1.8, 4, 3, 2, "usn_406mm_mk8_mod6_apcbc"),
+    "Battleship": (27, 1.5, 3, 3, 2, "usn_406mm_mk8_mod6_apcbc"),
+}
+
+
+def build_guns(name, cls, deck_y, half_b, turret_group_count):
+    speed, turn, _, barrels, rpm, shell = CLASS_MOBILITY[cls]
+    guns = []
+    for g in range(turret_group_count):
+        guns.append({
+            "id": f"{name}_gun_{chr(65 + g)}", "turretGroup": chr(65 + g),
+            "shellId": shell, "barrels": barrels, "roundsPerMinute": rpm,
+            "rangeM": 30000 if cls in ("Battleship", "Battlecruiser") else 15000,
+            "traverseDegPerS": 6 if capital_like(cls) else 12,
+            "horizontalMrad": 2.5, "verticalMrad": 1.5,
+        })
+    return speed, turn, guns
+
+
+def capital_like(cls):
+    return cls in ("Battleship", "Battlecruiser", "Cruiser")
+
+
 def build_ship(row):
     (name, cls, disp, length, beam, draft, crew, repair, survive,
      belt_mm, deck_mm, turret_groups, generation) = row
@@ -147,10 +174,15 @@ def build_ship(row):
          "face": "YMax", "thicknessMm": deck_mm},
     ]
 
+    speed_kn, turn_rate, guns = build_guns(name, cls, deck_y, half_b, turret_groups)
+
     return {
         "id": name,
         "displayName": name.replace("_", " ").upper(),
         "class": cls,
+        "maxSpeedKnots": speed_kn,
+        "turnRateDegPerS": turn_rate,
+        "guns": guns,
         "displacementT": disp,
         "lengthM": length,
         "beamM": beam,
@@ -158,6 +190,8 @@ def build_ship(row):
         "crewTotal": crew,
         "crewRepairThreshold": round(crew * repair),
         "crewSurviveThreshold": round(crew * survive),
+        "maxSpeedKnots": CLASS_MOBILITY[cls][0],
+        "turnRateDegPerS": CLASS_MOBILITY[cls][1],
         "firstStageRoundsPerTurret": 30 if not capital else 40,
         "resupplySeconds": 35,
         "dcGeneration": generation,

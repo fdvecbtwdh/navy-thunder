@@ -1,0 +1,141 @@
+using NavyThunder.Core.Damage;
+using NavyThunder.Core.Mathematics;
+using NavyThunder.Core.Ships;
+using NavyThunder.Core.World;
+
+namespace NavyThunder.Core.Battle;
+
+/// <summary>Victory by annihilation, with a time limit fallback (draw by surviving tonnage).</summary>
+public sealed record VictoryConditions
+{
+    public double TimeLimitS { get; init; } = 1800;
+}
+
+public enum BattleResult
+{
+    Running,
+    TeamWin,
+    Draw,
+}
+
+public sealed record BattleEnded : SimulationEvent
+{
+    public string? WinnerTeamId { get; init; }
+    public required BattleResult Result { get; init; }
+    public string Reason { get; init; } = "";
+    public override string Kind => "battle_ended";
+}
+
+/// <summary>
+/// Battle framework (R0.7): team rosters, victory adjudication (annihilation / time
+/// limit) and the end-of-battle transition. Runs last in the system order.
+/// </summary>
+public sealed class BattleSystem : ISimulationSystem
+{
+    public List<Team> Teams { get; } = [];
+    public List<Ship> Ships { get; } = [];
+    public VictoryConditions Victory { get; init; } = new();
+
+    public BattleResult Result { get; private set; } = BattleResult.Running;
+    public string? WinnerTeamId { get; private set; }
+    public double DurationS { get; private set; }
+
+    public string Name => "battle";
+
+    public BattleSystem()
+    {
+    }
+
+    public void Initialize(SimulationWorld world)
+    {
+    }
+
+    public void Update(SimulationWorld world, double deltaTime)
+    {
+        if (Result != BattleResult.Running)
+        {
+            return;
+        }
+
+        DurationS = world.Time;
+
+        foreach (var team in Teams)
+        {
+            var enemies = Ships.Where(s => s.Team is not null && s.Team.Id != team.Id).ToList();
+            var hostilesAlive = enemies.Count(s => !s.Lost);
+            if (enemies.Count > 0 && hostilesAlive == 0)
+            {
+                Finish(world, BattleResult.TeamWin, team.Id, "annihilation");
+                return;
+            }
+
+            var ownAlive = Ships.Count(s => s.Team?.Id == team.Id && !s.Lost);
+            var ownTotal = Ships.Count(s => s.Team?.Id == team.Id);
+            if (ownTotal > 0 && ownAlive == 0)
+            {
+                var winner = Teams.FirstOrDefault(t => t.Id != team.Id);
+                Finish(world, BattleResult.TeamWin, winner?.Id, "annihilation");
+                return;
+            }
+        }
+
+        if (world.Time >= Victory.TimeLimitS)
+        {
+            Finish(world, BattleResult.Draw, null, "time_limit");
+        }
+    }
+
+    private void Finish(SimulationWorld world, BattleResult result, string? winnerTeamId, string reason)
+    {
+        Result = result;
+        WinnerTeamId = winnerTeamId;
+        world.Record(new BattleEnded
+        {
+            WinnerTeamId = winnerTeamId,
+            Result = result,
+            Reason = reason,
+        });
+    }
+}
+
+/// <summary>End-of-battle summary assembled from the event log and damage ledger.</summary>
+public static class BattleReportGenerator
+{
+    public static Dictionary<string, object?> Generate(
+        SimulationWorld world,
+        IReadOnlyList<Ship> ships,
+        DamageRegistry registry,
+        BattleSystem battle)
+    {
+        var battleEnded = world.Events.Of<BattleEnded>().LastOrDefault();
+
+        var shipSummaries = ships.Select(ship =>
+        {
+            var damage = registry.Log.Where(e => e.TargetId == ship.TargetId).ToList();
+            return new Dictionary<string, object?>
+            {
+                ["ship"] = ship.TargetId,
+                ["team"] = ship.Team?.Id,
+                ["state"] = ship.KillState.ToString(),
+                ["lostAtS"] = ship.DestroyedTime is null ? null : Math.Round(ship.DestroyedTime.Value, 1),
+                ["reason"] = ship.KillReason,
+                ["crewAlive"] = ship.CrewAlive,
+                ["damageTaken"] = Math.Round(damage.Sum(e => e.Amount), 1),
+                ["hits"] = damage.Count,
+                ["fires"] = damage.Count(e => e.Channel == DamageChannel.Fire),
+            };
+        }).ToList();
+
+        return new Dictionary<string, object?>
+        {
+            ["result"] = battle.Result.ToString(),
+            ["winner"] = battleEnded?.WinnerTeamId ?? battle.WinnerTeamId,
+            ["reason"] = battleEnded?.Reason ?? "",
+            ["durationS"] = Math.Round(battle.DurationS, 1),
+            ["gunsFired"] = world.Events.Of<GunFired>().Sum(g => g.Shells),
+            ["magazineDetonations"] = world.Events.Of<MagazineDetonation>().Count(),
+            ["torpedoHits"] = world.Events.Of<Torpedoes.TorpedoHit>().Count(),
+            ["ships"] = shipSummaries,
+        };
+    }
+}

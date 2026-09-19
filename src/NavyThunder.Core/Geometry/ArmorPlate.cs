@@ -12,7 +12,15 @@ public readonly record struct RayHit(double Distance, Vec3 Point, Vec3 Normal);
 public sealed class ArmorPlate
 {
     public required string Id { get; init; }
-    public required Vec3 Center { get; init; }
+
+    /// <summary>Untranslated local center (template position).</summary>
+    public Vec3 BaseCenter { get; init; } = Vec3.Zero;
+
+    /// <summary>Translation applied by owners (moving ships).</summary>
+    public Vec3 Offset { get; internal set; } = Vec3.Zero;
+
+    /// <summary>World center = BaseCenter + Offset.</summary>
+    public Vec3 Center => BaseCenter + Offset;
 
     /// <summary>Unit normal of the front (outward) face.</summary>
     public required Vec3 Normal { get; init; }
@@ -30,6 +38,9 @@ public sealed class ArmorPlate
     public string Material { get; init; } = "ship_structural_steel";
 
     public double ThicknessM => ThicknessMm / 1000.0;
+
+    /// <summary>Moves the plate to BaseCenter + offset (used for moving ships).</summary>
+    public void Translate(Vec3 offset) => Offset = offset;
 
     /// <summary>
     /// Intersects a ray with the front face. Returns the distance along the ray, the hit

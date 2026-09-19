@@ -55,7 +55,7 @@ public class ExplosionSystemTests
             .Add(new ArmorPlate
             {
                 Id = $"{id}_p",
-                Center = new Vec3(x, 0, 0),
+                BaseCenter = new Vec3(x, 0, 0),
                 Normal = new Vec3(-1, 0, 0),
                 AxisU = new Vec3(0, 1, 0),
                 AxisV = new Vec3(0, 0, 1),

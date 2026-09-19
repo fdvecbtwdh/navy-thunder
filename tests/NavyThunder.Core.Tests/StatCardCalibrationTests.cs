@@ -16,7 +16,7 @@ public class StatCardCalibrationTests
     private static double PenAtRange(NavyThunder.Core.Model.ShellDefinition shell, double rangeM)
     {
         var strike = ProtectionScenario.StrikeAtRange(shell, rangeM);
-        return DeMarre.PenetrationMm(shell, strike.ImpactSpeed);
+        return DeMarre.PenetrationMm(shell, strike.Trajectory.ImpactSpeed);
     }
 
     [Theory]
@@ -90,21 +90,21 @@ public class AngleModelCalibrationTests
     [Fact]
     public void Stat_Card_30deg_Plate_Is_Penetrable_At_The_1000m_Strike_Speed()
     {
-        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).ImpactSpeed;
+        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).Trajectory.ImpactSpeed;
         Assert.Equal(PlateResolution.Penetrated, ResolveAt(657, 30, strike).Outcome);
     }
 
     [Fact]
     public void Stat_Card_60deg_Plate_Is_Penetrable_At_The_1000m_Strike_Speed()
     {
-        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).ImpactSpeed;
+        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).Trajectory.ImpactSpeed;
         Assert.Equal(PlateResolution.Penetrated, ResolveAt(300, 60, strike).Outcome);
     }
 
     [Fact]
     public void Materially_Thicker_Angled_Plates_Reject_The_1000m_Shot()
     {
-        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).ImpactSpeed;
+        double strike = ProtectionScenario.StrikeAtRange(TestShells.Mk8, 1000).Trajectory.ImpactSpeed;
         Assert.Equal(PlateResolution.Stopped, ResolveAt(657 * 1.5, 30, strike).Outcome);
         Assert.Equal(PlateResolution.Stopped, ResolveAt(300 * 2.0, 60, strike).Outcome);
     }

@@ -84,11 +84,13 @@ public static class Gunnery
         return new TrajectoryResult(p.Position, p.Velocity, t);
     }
 
+    public sealed record GunnerySolution(TrajectoryResult Trajectory, double ElevationRad);
+
     /// <summary>
     /// Bisection firing solution: find the elevation whose ground crossing lands exactly
     /// on <paramref name="rangeM"/>, then report strike speed and fall angle there.
     /// </summary>
-    public static TrajectoryResult SolveFiringSolution(double muzzleVelocityMs, IDragModel drag, double rangeM)
+    public static GunnerySolution SolveFiringSolution(double muzzleVelocityMs, IDragModel drag, double rangeM)
     {
         double lo = 0.001, hi = Math.PI / 4; // up to 45°, monotonic for surface fire
         for (int i = 0; i < 42; i++)
@@ -105,7 +107,8 @@ public static class Gunnery
             }
         }
 
-        return SimulateToGround(muzzleVelocityMs, (lo + hi) / 2, drag);
+        double elevation = (lo + hi) / 2;
+        return new GunnerySolution(SimulateToGround(muzzleVelocityMs, elevation, drag), elevation);
     }
 
     private static BallisticProjectile MakeShot(double muzzleVelocityMs, double elevationRad)

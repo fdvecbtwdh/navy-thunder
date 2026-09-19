@@ -72,7 +72,7 @@ public static class TestShells
     public static ArmorPlate Plate(double thicknessMm, string id = "plate") => new()
     {
         Id = id,
-        Center = Vec3.Zero,
+        BaseCenter = Vec3.Zero,
         Normal = new Vec3(-1, 0, 0),
         AxisU = new Vec3(0, 1, 0),
         AxisV = new Vec3(0, 0, 1),

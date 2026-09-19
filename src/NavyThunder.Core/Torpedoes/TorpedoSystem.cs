@@ -88,6 +88,12 @@ public sealed class TorpedoSystem : ISimulationSystem
                 continue; // not yet armed (MDR-0012)
             }
 
+            if (t.TravelledM > t.Definition.RangeM)
+            {
+                t.Alive = false; // fuel exhausted: sinks without detonating
+                continue;
+            }
+
             Vec3 dir = t.Velocity.Normalized();
             foreach (var (plate, hit) in t.Armor.Trace(before, dir))
             {

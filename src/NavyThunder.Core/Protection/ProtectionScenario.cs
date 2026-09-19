@@ -54,7 +54,7 @@ public static class ProtectionScenario
         return new ArmorPlate
         {
             Id = id,
-            Center = new Vec3(0, 0, 0),
+            BaseCenter = new Vec3(0, 0, 0),
             Normal = new Vec3(-1, 0, 0),
             AxisU = new Vec3(0, 1, 0),
             AxisV = new Vec3(0, 0, 1),
@@ -70,9 +70,13 @@ public static class ProtectionScenario
         shell.MassKg);
 
     /// <summary>Strike velocity and fall angle of a shell at the given range (bisection firing solution).</summary>
-    public static TrajectoryResult StrikeAtRange(ShellDefinition shell, double rangeM)
+    public static Gunnery.GunnerySolution StrikeAtRange(ShellDefinition shell, double rangeM)
     {
         var drag = MakeDrag(shell);
         return Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs, drag, rangeM);
     }
+
+    /// <summary>Impact speed of a shell after ballistic flight over the given range.</summary>
+    public static double ImpactSpeedAtRange(ShellDefinition shell, double rangeM)
+        => rangeM <= 0 ? shell.MuzzleVelocityMs : StrikeAtRange(shell, rangeM).Trajectory.ImpactSpeed;
 }

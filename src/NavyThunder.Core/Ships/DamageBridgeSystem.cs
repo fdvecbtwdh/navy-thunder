@@ -2,6 +2,7 @@ using NavyThunder.Core.Armor;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Damage;
 using NavyThunder.Core.Explosions;
+using NavyThunder.Core.Fire;
 using NavyThunder.Core.Mathematics;
 using NavyThunder.Core.Model;
 using NavyThunder.Core.World;
@@ -30,6 +31,17 @@ public sealed class DamageBridgeSystem : ISimulationSystem
     public double InteriorTraceDepthM { get; init; } = 12.0;
 
     public Dictionary<string, Ship> ShipsByTargetId { get; } = [];
+
+    /// <summary>Optional fire system: combat damage rolls ignition through it (MDR-0010).</summary>
+    public FireSystem? Fire { get; set; }
+
+    /// <summary>Shell-category ignition multipliers (HE families burn, caps less so).</summary>
+    public double IgnitionMultiplier(ShellCategory category) => category switch
+    {
+        ShellCategory.HE or ShellCategory.Common or ShellCategory.AACommon or ShellCategory.AAVT => 1.0,
+        ShellCategory.SAP or ShellCategory.SpecialCommon => 0.7,
+        _ => 0.4,
+    };
 
     public string Name => "damage_bridge";
 
@@ -101,7 +113,29 @@ public sealed class DamageBridgeSystem : ISimulationSystem
                 Tick = world.TickIndex,
                 Time = world.Time,
             });
+
+            TryIgnitePart(world, ship, part, impact.ShellId, impact.ShellId);
         }
+    }
+
+    /// <summary>Independent ignition roll on a damaged part (MDR-0010: not tied to remaining HP).</summary>
+    private void TryIgnitePart(SimulationWorld world, Ship ship, ShipPartState part, string shellId, string sourceId)
+    {
+        if (Fire is null || part.Destroyed || !part.Definition.Open && part.Definition.Kind is not (PartKind.Compartment or PartKind.Boiler or PartKind.Engine or PartKind.FuelTank))
+        {
+            return;
+        }
+
+        if (!_shells.TryGetValue(shellId, out var shell))
+        {
+            return;
+        }
+
+        double multiplier = IgnitionMultiplier(shell.Category)
+                            * (part.Definition.Kind == PartKind.FuelTank ? 1.2 : 1.0);
+        Fire.TryIgnite(world, $"{ship.TargetId}/{part.Definition.Id}",
+            part.Definition.Kind == PartKind.Engine ? "engine" : "compartment",
+            part.Center, multiplier);
     }
 
     /// <summary>Segment-vs-AABB walk over the ship's part boxes, ordered by entry distance.</summary>

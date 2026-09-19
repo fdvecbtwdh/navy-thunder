@@ -128,6 +128,43 @@ public sealed record ShipDefinition
     public double CapsizeAngleDeg { get; init; } = 40.0;
 
     public ArmorPlateDefinition[] ArmorPlates { get; init; } = [];
+
+    // ---------------- mobility (R0.2) ----------------
+
+    /// <summary>Design full speed in knots (data; AI/throttle target = this × throttle × engine health).</summary>
+    public double MaxSpeedKnots { get; init; } = 30.0;
+
+    /// <summary>Rudder-hard turn rate at cruising speed (deg/s, data).</summary>
+    public double TurnRateDegPerS { get; init; } = 2.0;
+
+    /// <summary>Acceleration fraction of max speed per second (0..1, approximation).</summary>
+    public double AccelerationFactor { get; init; } = 0.06;
+
+    // ---------------- weapons (R0.1) ----------------
+
+    public NavalGunDefinition[] Guns { get; init; } = [];
+}
+
+/// <summary>One naval gun mount: linked to its turret-group parts (reload/ammo/destruction).</summary>
+public sealed record NavalGunDefinition
+{
+    public required string Id { get; init; }
+    public required string TurretGroup { get; init; }
+
+    public required string ShellId { get; init; }
+
+    public required int Barrels { get; init; }
+
+    /// <summary>Cyclic rate per barrel (rounds/minute) with ready-rack supply.</summary>
+    public required double RoundsPerMinute { get; init; }
+
+    public double RangeM { get; init; } = 30000.0;
+
+    /// <summary>Turret traverse speed (deg/s); guns only fire when on target.</summary>
+    public double TraverseDegPerS { get; init; } = 6.0;
+
+    public double HorizontalMrad { get; init; } = 2.0;
+    public double VerticalMrad { get; init; } = 1.5;
 }
 
 public enum BoxFace
