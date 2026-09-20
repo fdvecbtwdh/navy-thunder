@@ -33,7 +33,7 @@ public class ShipAIScenarioTests(ITestOutputHelper output)
         // Run the full engagement.
         runner.Run();
 
-        var report = BattleReportGenerator.Generate(runner.World, runner.Ships, runner.Registry, runner.Battle);
+        var report = BattleReportGenerator.Generate(runner.World, runner.Ships, runner.Battle);
         output.WriteLine($"result={report["result"]} winner={report["winner"]} duration={report["durationS"]}s guns={report["gunsFired"]}");
         foreach (var ship in runner.Ships)
         {

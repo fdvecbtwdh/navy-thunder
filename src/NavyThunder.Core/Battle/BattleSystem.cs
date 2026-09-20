@@ -40,7 +40,15 @@ public sealed class BattleSystem : ISimulationSystem
     public string? WinnerTeamId { get; private set; }
     public double DurationS { get; private set; }
 
+    /// <summary>Incremental battle aggregates (trim-safe; survive event-log trimming).</summary>
+    public int GunsFired { get; private set; }
+    public int MagazineDetonations { get; private set; }
+    public int TorpedoHits { get; private set; }
+    public int ShipsLost { get; private set; }
+
     public string Name => "battle";
+
+    private long _lastSeq;
 
     public BattleSystem()
     {
@@ -52,6 +60,27 @@ public sealed class BattleSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
+        foreach (var e in world.Events.After(_lastSeq))
+        {
+            switch (e)
+            {
+                case Ships.GunFired g:
+                    GunsFired += g.Shells;
+                    break;
+                case MagazineDetonation:
+                    MagazineDetonations++;
+                    break;
+                case Torpedoes.TorpedoHit:
+                    TorpedoHits++;
+                    break;
+                case ShipDestroyed:
+                    ShipsLost++;
+                    break;
+            }
+        }
+
+        _lastSeq = world.Events.TotalRecorded;
+
         if (Result != BattleResult.Running)
         {
             return;
@@ -104,14 +133,12 @@ public static class BattleReportGenerator
     public static Dictionary<string, object?> Generate(
         SimulationWorld world,
         IReadOnlyList<Ship> ships,
-        DamageRegistry registry,
         BattleSystem battle)
     {
         var battleEnded = world.Events.Of<BattleEnded>().LastOrDefault();
 
         var shipSummaries = ships.Select(ship =>
         {
-            var damage = registry.Log.Where(e => e.TargetId == ship.TargetId).ToList();
             return new Dictionary<string, object?>
             {
                 ["ship"] = ship.TargetId,
@@ -120,9 +147,8 @@ public static class BattleReportGenerator
                 ["lostAtS"] = ship.DestroyedTime is null ? null : Math.Round(ship.DestroyedTime.Value, 1),
                 ["reason"] = ship.KillReason,
                 ["crewAlive"] = ship.CrewAlive,
-                ["damageTaken"] = Math.Round(damage.Sum(e => e.Amount), 1),
-                ["hits"] = damage.Count,
-                ["fires"] = damage.Count(e => e.Channel == DamageChannel.Fire),
+                ["damageTaken"] = Math.Round(ship.DamageTaken, 1),
+                ["hits"] = ship.HitsTaken,
                 ["sections"] = ship.Sections.Select(sec => new Dictionary<string, object?>
                 {
                     ["id"] = sec.Definition.Id,
@@ -140,9 +166,10 @@ public static class BattleReportGenerator
             ["winner"] = battleEnded?.WinnerTeamId ?? battle.WinnerTeamId,
             ["reason"] = battleEnded?.Reason ?? "",
             ["durationS"] = Math.Round(battle.DurationS, 1),
-            ["gunsFired"] = world.Events.Of<GunFired>().Sum(g => g.Shells),
-            ["magazineDetonations"] = world.Events.Of<MagazineDetonation>().Count(),
-            ["torpedoHits"] = world.Events.Of<Torpedoes.TorpedoHit>().Count(),
+            ["gunsFired"] = battle.GunsFired,
+            ["magazineDetonations"] = battle.MagazineDetonations,
+            ["torpedoHits"] = battle.TorpedoHits,
+            ["shipsLost"] = battle.ShipsLost,
             ["ships"] = shipSummaries,
         };
     }

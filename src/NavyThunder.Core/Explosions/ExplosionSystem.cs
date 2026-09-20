@@ -61,7 +61,7 @@ public sealed class ExplosionSystem : ISimulationSystem
     private readonly ExplosionModel _model;
     private readonly IReadOnlyDictionary<string, ShellDefinition> _shells;
     private readonly DamageRegistry _registry;
-    private int _processedEvents;
+    private long _lastSeq;
 
     public List<ArmorTarget> Targets { get; } = [];
 
@@ -90,16 +90,15 @@ public sealed class ExplosionSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
-        var events = world.Events.All;
-        while (_processedEvents < events.Count)
+        foreach (var e in world.Events.After(_lastSeq))
         {
-            if (events[_processedEvents] is ShellDetonation d)
+            if (e is ShellDetonation d)
             {
                 ProcessDetonation(world, d);
             }
-
-            _processedEvents++;
         }
+
+        _lastSeq = world.Events.TotalRecorded;
     }
 
     private void ProcessDetonation(SimulationWorld world, ShellDetonation d)

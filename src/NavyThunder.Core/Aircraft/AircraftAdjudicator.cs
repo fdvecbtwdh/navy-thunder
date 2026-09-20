@@ -29,7 +29,7 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
     private readonly HashSet<(int ProjectileId, string PartId)> _wounded = [];
     private readonly HashSet<string> _reported = [];
     private readonly IReadOnlyDictionary<string, ShellDefinition> _shells;
-    private int _processedEvents;
+    private long _lastSeq;
 
     public List<Aircraft> Aircraft { get; } = [];
     public Dictionary<string, Aircraft> ByTargetId { get; } = [];
@@ -51,10 +51,9 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
-        var events = world.Events.All;
-        while (_processedEvents < events.Count)
+        foreach (var e in world.Events.After(_lastSeq))
         {
-            if (events[_processedEvents] is ProjectileArmorImpact impact
+            if (e is ProjectileArmorImpact impact
                 && impact.Outcome == PlateResolution.Penetrated
                 && ByTargetId.TryGetValue(impact.TargetId, out var aircraft))
             {
@@ -78,9 +77,9 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
                     });
                 }
             }
-
-            _processedEvents++;
         }
+
+        _lastSeq = world.Events.TotalRecorded;
 
         foreach (var aircraft in Aircraft)
         {

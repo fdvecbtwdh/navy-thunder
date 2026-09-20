@@ -223,6 +223,6 @@ public sealed class BattleRunner
             World.Step();
         }
 
-        return BattleReportGenerator.Generate(World, Ships, Registry, Battle);
+        return BattleReportGenerator.Generate(World, Ships, Battle);
     }
 }

@@ -41,7 +41,7 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
     private readonly DamageRegistry _registry;
     private readonly Dictionary<string, ShipMind> _minds = [];
     private readonly Dictionary<string, Ship> _shipsById = [];
-    private int _processedEvents;
+    private long _lastSeq;
 
     public List<Ship> Ships { get; } = [];
     public GunSystem? Guns { get; set; }
@@ -99,19 +99,18 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
 
     private void AccumulateThreat(SimulationWorld world)
     {
-        var events = world.Events.All;
-        while (_processedEvents < events.Count)
+        foreach (var e in world.Events.After(_lastSeq))
         {
-            if (events[_processedEvents] is ProjectileArmorImpact impact
+            if (e is ProjectileArmorImpact impact
                 && impact.Outcome == PlateResolution.Penetrated
                 && _minds.TryGetValue(impact.TargetId, out var victim)
                 && impact.ShooterId.Length > 0)
             {
                 victim.ThreatToUs[impact.ShooterId] = victim.ThreatToUs.GetValueOrDefault(impact.ShooterId) + 1;
             }
-
-            _processedEvents++;
         }
+
+        _lastSeq = world.Events.TotalRecorded;
     }
 
     private Ship? ResolveTarget(string? targetId)

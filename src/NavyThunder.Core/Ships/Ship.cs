@@ -102,6 +102,10 @@ public sealed class Ship : Entity, IDamageSink
     public double? UnsinkabilityLostTime { get; internal set; }
 
     public double CrewDead { get; internal set; }
+
+    /// <summary>Lifetime accumulated damage (battle-report aggregate, trim-safe).</summary>
+    public double DamageTaken { get; internal set; }
+    public int HitsTaken { get; internal set; }
     public double ListDeg { get; internal set; }
     public bool UnsinkabilityLost { get; internal set; }
     public ShipKillState KillState { get; internal set; } = ShipKillState.Alive;

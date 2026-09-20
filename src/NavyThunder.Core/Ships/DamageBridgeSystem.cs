@@ -22,7 +22,7 @@ public sealed class DamageBridgeSystem : ISimulationSystem
 {
     private readonly DamageRegistry _registry;
     private readonly IReadOnlyDictionary<string, ShellDefinition> _shells;
-    private int _processedEvents;
+    private long _lastSeq;
 
     /// <summary>Engine damage (HP) per cbrt(kg) of shell mass — engine-internal WT scale (approximation).</summary>
     public double KineticDamagePerCbrtKg { get; init; } = 500.0;
@@ -57,10 +57,9 @@ public sealed class DamageBridgeSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
-        var events = world.Events.All;
-        while (_processedEvents < events.Count)
+        foreach (var e in world.Events.After(_lastSeq))
         {
-            switch (events[_processedEvents])
+            switch (e)
             {
                 case ProjectileArmorImpact impact when impact.Outcome == PlateResolution.Penetrated:
                     ApplyInteriorTrace(world, impact);
@@ -74,9 +73,9 @@ public sealed class DamageBridgeSystem : ISimulationSystem
                     ApplyOverpressure(world, wave);
                     break;
             }
-
-            _processedEvents++;
         }
+
+        _lastSeq = world.Events.TotalRecorded;
     }
 
     private void ApplyInteriorTrace(SimulationWorld world, ProjectileArmorImpact impact)
