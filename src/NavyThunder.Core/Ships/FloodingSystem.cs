@@ -57,13 +57,14 @@ public sealed class FloodingSystem : ISimulationSystem
         part.WaterLevel = Math.Min(0.9, part.WaterLevel + radiusM * 0.03); // initial ingress by breach size
     }
 
-    /// <summary>Target-id based entry used by torpedoes and the damage bridge.</summary>
-    public void CreateBreach(SimulationWorld world, string targetId, Vec3 localPoint, double radiusM)
+    /// <summary>Target-id based entry used by torpedoes and the damage bridge.
+    /// Accepts WORLD coordinates and converts to the ship's hull-local frame.</summary>
+    public void CreateBreach(SimulationWorld world, string targetId, Vec3 worldPoint, double radiusM)
     {
         var ship = Ships.FirstOrDefault(s => s.TargetId == targetId);
         if (ship is not null)
         {
-            CreateBreach(ship, localPoint, radiusM);
+            CreateBreach(ship, worldPoint - ship.WorldPosition, radiusM);
         }
     }
 

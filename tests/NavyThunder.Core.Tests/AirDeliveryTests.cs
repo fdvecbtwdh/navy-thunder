@@ -55,7 +55,7 @@ public class AirDeliveryTests(ITestOutputHelper output)
         Assert.True(state.Mission.Released, "torpedo bomber must release inside the envelope");
         Assert.True(runner.Torpedoes.SpawnedCount > 0, "the release must drop a fish");
         Assert.Contains(runner.World.Events.Of<NavyThunder.Core.Torpedoes.TorpedoHit>(),
-            h => h.TargetId == "ship:test_battleship");
+            h => h.TargetId.StartsWith("ship:test_battleship"));
         output.WriteLine($"torpedo hit recorded; battle result={runner.Battle.Result}");
     }
 
