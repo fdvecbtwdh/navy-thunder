@@ -1,7 +1,8 @@
+using NavyThunder.Core.Armor;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Damage;
 using NavyThunder.Core.FireControl;
-using NavyThunder.Core.Protection;
+using NavyThunder.Core.Geometry;
 using NavyThunder.Core.Mathematics;
 using NavyThunder.Core.Model;
 using NavyThunder.Core.World;
@@ -51,6 +52,9 @@ public sealed class GunSystem : ISimulationSystem
     private readonly List<GunState> _guns = [];
     private readonly Dictionary<(string ShipId, string GunId), GunOrder> _orders = [];
     private readonly Dictionary<(string ShellId, int RangeBucket), Gunnery.GunnerySolution> _solutions = [];
+    private readonly List<Ship> _trackedHulls = [];
+    private readonly Dictionary<string, ArmorTarget> _armorByHull = new();
+    private readonly Dictionary<string, Vec3> _spawnByHull = new();
 
     public string Name => "guns";
 
@@ -67,6 +71,8 @@ public sealed class GunSystem : ISimulationSystem
     /// <summary>Registers all guns of a ship from its data definition.</summary>
     public void RegisterShip(Ship ship)
     {
+        _trackedHulls.Add(ship);
+        _spawnByHull[ship.TargetId] = ship.WorldPosition;
         foreach (var gun in ship.Definition.Guns)
         {
             // Mount position = centroid of the group's turret parts (falls back to ship center).
@@ -99,6 +105,8 @@ public sealed class GunSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
+        FollowHullArmor();
+
         foreach (var gun in _guns)
         {
             var order = GetOrder(gun.Ship.TargetId, gun.Definition.Id);
@@ -152,7 +160,12 @@ public sealed class GunSystem : ISimulationSystem
             double bearingError = Math.Abs(AngleDelta(gun.TurretHeadingDeg, desiredBearingDeg));
 
             gun.ReloadRemainingS = Math.Max(0, gun.ReloadRemainingS - deltaTime);
-            if (bearingError > 2.0 || gun.ReloadRemainingS > 0)
+            // The trained-on-target tolerance must shrink with range: a fixed angular gate
+            // looses long-range salvos while the mount is still slewing (2 deg at 25 km is
+            // a ~900 m aiming error, far wider than any hull). Gate on a fraction of the
+            // target silhouette instead.
+            double bearingGateDeg = Math.Atan2(FireGateToleranceM, range) * 180.0 / Math.PI;
+            if (bearingError > bearingGateDeg || gun.ReloadRemainingS > 0)
             {
                 continue;
             }
@@ -176,15 +189,20 @@ public sealed class GunSystem : ISimulationSystem
 
             // R0.6: distribute salvo aim points along the target's hull silhouette so
             // shells land fore/aft of the locking point instead of stacking on the center.
+            // The silhouette's long axis comes from the target's armor envelope: hull
+            // geometry in this sim is axis-aligned (plates and turret offsets translate,
+            // never rotate), and spreading along the velocity vector would spray the salvo
+            // across the narrow beam instead of along the length.
             Vec3 samplePoint = targetPos;
             double hullLength = order.TargetLengthM();
             if (hullLength > 1.0)
             {
                 Vec3 targetVel = order.TargetVelocity();
-                Vec3 hullAxis = targetVel.LengthSquared > 1.0
-                    ? targetVel.Normalized()
-                    : new Vec3(Math.Sin(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2), 0,
-                               Math.Cos(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2));
+                Vec3 hullAxis = HullLengthAxis(order.TargetId)
+                                ?? (targetVel.LengthSquared > 1.0
+                                    ? targetVel.Normalized()
+                                    : new Vec3(Math.Sin(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2), 0,
+                                               Math.Cos(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2)));
                 double along = (rng.NextDouble() - 0.5) * hullLength;
                 samplePoint += hullAxis * along;
             }
@@ -224,15 +242,93 @@ public sealed class GunSystem : ISimulationSystem
     }
 
 
+    /// <summary>
+    /// Long axis of the target's armor envelope: the extent axis of her largest plate.
+    /// Null when no armor target is registered for the id (caller falls back to the
+    /// velocity direction).
+    /// </summary>
+    private Vec3? HullLengthAxis(string targetId)
+    {
+        if (!_armorByHull.TryGetValue(targetId, out var armor))
+        {
+            return null;
+        }
+
+        ArmorPlate? largest = null;
+        foreach (var plate in armor.Plates)
+        {
+            if (largest is null
+                || Math.Max(plate.HalfU, plate.HalfV) > Math.Max(largest.HalfU, largest.HalfV))
+            {
+                largest = plate;
+            }
+        }
+
+        if (largest is null)
+        {
+            return null;
+        }
+
+        return largest.HalfU >= largest.HalfV ? largest.AxisU : largest.AxisV;
+    }
+
+    /// <summary>
+    /// Integration bridge: hull armor plates must follow their ship as she moves, or hit
+    /// detection keeps testing plates frozen at the spawn position while the hull sails
+    /// kilometres away (the navigation system's Track hook is not wired for every host).
+    /// Resolved lazily because armor targets are built after ship registration. Plate
+    /// templates bake the spawn position into BaseCenter, so the live offset is the
+    /// displacement from the registered (spawn) position.
+    /// </summary>
+    private void FollowHullArmor()
+    {
+        foreach (var ship in _trackedHulls)
+        {
+            if (!_armorByHull.TryGetValue(ship.TargetId, out var armor))
+            {
+                armor = _ballistics.Targets.FirstOrDefault(t => t.Id == ship.TargetId);
+                if (armor is null)
+                {
+                    continue; // not built yet; retry on the next tick
+                }
+
+                _armorByHull[ship.TargetId] = armor;
+            }
+
+            Vec3 displacement = ship.WorldPosition - _spawnByHull.GetValueOrDefault(ship.TargetId);
+            foreach (var plate in armor.Plates)
+            {
+                plate.Translate(displacement);
+            }
+        }
+    }
+
+    /// <summary>Aim-point height above the waterline: mid freeboard, so the descent
+    /// straddles the belt band up to the weather deck instead of dropping through the
+    /// unarmored waterline plane ahead of/under the hull silhouette.</summary>
+    private const double AimHeightAboveWaterlineM = 4.0;
+
+    /// <summary>How far off-train the mount may be at the moment of fire (m at the
+    /// target). Keeps long-range salvos from loosing while the turret slews.</summary>
+    private const double FireGateToleranceM = 25.0;
+
     private Gunnery.GunnerySolution GunneryAt(ShellDefinition shell, Vec3 mount, double range)
     {
-        int bucket = Math.Max(0, (int)(range / 50));
-        var key = (shell.Id, mount.Y > 0 ? (int)(mount.Y * 10) : 0, bucket);
-        if (!_solutionsByMount.TryGetValue((shell.Id, (int)(mount.Y * 10), bucket), out var solution))
+        int bucket = Math.Max(0, (int)(range / 10));
+        int heightCm = (int)(mount.Y * 10);
+        if (!_solutionsByMount.TryGetValue((shell.Id, heightCm, bucket), out var solution))
         {
-            solution = Gunnery.SolveFiringSolution(shell.MuzzleVelocityMs,
-                ProtectionScenario.MakeDrag(shell), bucket * 50.0 + 25, crossingY: mount.Y);
-            _solutionsByMount[(shell.Id, (int)(mount.Y * 10), bucket)] = solution;
+            // The firing solution must integrate the same physics the shells fly with:
+            // the live ballistics system's drag model. Solving with a different drag
+            // (e.g. a per-shell quadratic model while the world flies vacuum) shifts the
+            // impact by kilometres and no shot can ever land on the target.
+            // crossingY is the crossing height RELATIVE TO THE MUZZLE (the trajectory
+            // origin is the gun), so a world aim height of AimHeightAboveWaterlineM from a
+            // mount at world height mount.Y means crossingY = aim - mount.Y.
+            solution = Gunnery.SolveFiringSolution(
+                shell.MuzzleVelocityMs, _ballistics.DragModel, bucket * 10.0 + 5,
+                crossingY: AimHeightAboveWaterlineM - mount.Y);
+            _solutionsByMount[(shell.Id, heightCm, bucket)] = solution;
         }
 
         return solution;

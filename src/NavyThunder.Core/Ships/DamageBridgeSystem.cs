@@ -92,7 +92,10 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         double depth = Math.Min(InteriorTraceDepthM * residual, ship.Definition.LengthM);
 
         // Start just behind the struck plate's slab so the trace hits interior parts.
-        Vec3 origin = impact.Position + dir * 0.5;
+        // Combat events arrive in world space; part boxes and section lookups are
+        // hull-local, so the trace origin must be mapped into the hull frame first
+        // (otherwise every ship away from the origin is immune to penetration).
+        Vec3 origin = impact.Position + dir * 0.5 - ship.WorldPosition;
         double totalDamage = KineticDamagePerCbrtKg * Math.Cbrt(shell.MassKg);
         var traversed = TraceInterior(ship, origin, dir, depth);
         if (traversed.Count == 0)
@@ -222,13 +225,15 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         }
 
         // Chemical damage at the burst position; ExplosionSystem additionally handles
-        // the fragment cone and the blast against the ship's armor plates.
+        // the fragment cone and the blast against the ship's armor plates. The burst
+        // position is converted into the hull frame so the radial pass finds the parts
+        // around it (part centers are hull-local).
         _registry.Apply(new DamageEvent
         {
             Channel = DamageChannel.Chemical,
             SourceId = detonation.ShellId,
             TargetId = ship.TargetId,
-            Position = detonation.Position,
+            Position = detonation.Position - ship.WorldPosition,
             Amount = 300.0 * Math.Cbrt(Math.Max(shell.ExplosiveMassKg, 0.1)),
             Tick = world.TickIndex,
             Time = world.Time,

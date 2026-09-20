@@ -46,9 +46,15 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
     public List<Ship> Ships { get; } = [];
     public GunSystem? Guns { get; set; }
 
-    /// <summary>Preferred engagement band as fractions of the best gun range.</summary>
-    public double PreferredRangeMinFraction { get; set; } = 0.35;
-    public double PreferredRangeMaxFraction { get; set; } = 0.85;
+    /// <summary>
+    /// Preferred engagement band as fractions of the best gun range. Naval gunfire only
+    /// converts against a maneuvering hull inside the band where ballistic time of flight
+    /// stays short enough to lead her (about a quarter of maximum gun range): a 40 s arc
+    /// to a zigzagging target lands hundreds of metres off no matter how good the solution
+    /// is, so holding fire at the edge of gun range is wasted ammunition.
+    /// </summary>
+    public double PreferredRangeMinFraction { get; set; } = 0.25;
+    public double PreferredRangeMaxFraction { get; set; } = 0.40;
 
     /// <summary>Hull fraction below which the ship disengages and kites away.</summary>
     public double DisengageHullFraction { get; set; } = 0.3;
