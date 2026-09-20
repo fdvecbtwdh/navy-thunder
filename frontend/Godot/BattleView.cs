@@ -195,12 +195,7 @@ public partial class BattleView : Node2D
         }
         if (_hud is not null && _playerShip is not null)
         {
-            _hud.Text = _playerShip.Alive
-                ? $"{_playerShip.TargetId}  SPD {_playerShip.SpeedKnots:0.0} kn  " +
-                  $"HDG {_playerShip.HeadingDeg:0}°  THR {_playerShip.ThrottleCommand:0.00}  " +
-                  $"RUD {_playerShip.RudderCommand:+0.00;-0.00;0.00}" + "\n" +
-                  $"W/S throttle  A/D rudder  X center  |  t={_runner.World.Time:0}s"
-                : $"{_playerShip.TargetId} DESTROYED  |  t={_runner.World.Time:0}s";
+            _hud.Text = BuildHudText();
         }
 
         if (smoke)
@@ -311,14 +306,39 @@ public partial class BattleView : Node2D
             DrawArc(ToScreen(MouseWorld()), 6f, 0, Mathf.Tau, 24,
                 new Color(1f, 0.6f, 0.1f, 0.8f), 1.5f);
         }
+    }
 
-        if (_playerShip is { Alive: true } && _hud is not null && _runner is not null)
+    /// <summary>R2.2/R2.3/R2.4 status readout: helm, guns, hull sections, fire/flood.</summary>
+    private string BuildHudText()
+    {
+        var ship = _playerShip!;
+        string helm = ship.Alive
+            ? $"{ship.TargetId}  SPD {ship.SpeedKnots:0.0} kn  HDG {ship.HeadingDeg:0}  " +
+              $"THR {ship.ThrottleCommand:0.00}  RUD {ship.RudderCommand:+0.00;-0.00;0.00}"
+            : $"{ship.TargetId} DESTROYED";
+        double reload = _runner!.Guns.ReloadRemainingOf(ship.TargetId);
+        string guns = ship.Alive
+            ? (reload > 0 ? $"GUNS reloading {reload:0.0}s" : "GUNS ready") + "  |  hover an enemy to engage"
+            : "";
+
+        // Hull sections: hp bar + fire/flood markers (R2.4 damage HUD).
+        var lines = new List<string> { helm, guns };
+        foreach (var section in ship.Sections)
         {
-            double reload = _runner.Guns.ReloadRemainingOf(_playerShip.TargetId);
-            string gunState = reload > 0 ? $"RELOAD {reload:0.0}s" : "GUNS READY";
-            DrawString(ThemeDB.FallbackFont, new Vector2(16, 88),
-                $"{gunState}  |  hover an enemy to engage",
-                HorizontalAlignment.Left, -1, 14, Colors.Orange);
+            double frac = section.Definition.Hp <= 0 ? 0 : section.Hp / section.Definition.Hp;
+            bool fire = _runner!.Fire.Fires.Any(f => f.Active && ship.Parts.Values.Any(pt =>
+                pt.Definition.SectionId == section.Definition.Id &&
+                f.HostId == $"{ship.TargetId}/{pt.Definition.Id}"));
+            bool flood = ship.Parts.Values.Any(pt =>
+                pt.Definition.SectionId == section.Definition.Id && pt.WaterLevel > 0.05);
+            string marker = (fire ? " [FIRE]" : "") + (flood ? " [FLOOD]" : "");
+            lines.Add($"{section.Definition.Id,-10} {frac,4:P0}  " +
+                      new string('#', (int)System.Math.Round(frac * 20)).PadRight(20) + marker +
+                      (section.Destroyed ? "  DESTROYED" : ""));
         }
+
+        lines.Add($"CREW {ship.CrewAlive}/{ship.Definition.CrewTotal}  |  W/S throttle  A/D rudder  X center  " +
+                  $"|  t={_runner!.World.Time:0}s");
+        return string.Join("\n", lines);
     }
 }
