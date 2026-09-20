@@ -23,6 +23,9 @@ public sealed record ScenarioShipSpawn
     public required double Z { get; init; }
     public double HeadingDeg { get; init; }
     public double Throttle { get; init; } = 1.0;
+
+    /// <summary>Set false for static test targets that must not engage aircraft.</summary>
+    public bool Aa { get; init; } = true;
 }
 
 public sealed record ScenarioAircraftSpawn
@@ -82,6 +85,7 @@ public sealed class BattleRunner
     public FlightModelSystem FlightModel { get; }
     public AircraftAdjudicatorSystem AircraftAdjudicator { get; }
     public NavyThunder.Core.Torpedoes.TorpedoSystem Torpedoes { get; }
+    public AntiAircraftSystem AntiAir { get; }
 
     /// <summary>Test/diagnostic accessor for armor targets by ship target id.</summary>
     public NavyThunder.Core.Armor.ArmorTarget? ArmorLookup(string targetId) => _armorByTargetId.GetValueOrDefault(targetId);
@@ -101,6 +105,7 @@ public sealed class BattleRunner
         };
         Bridge = new DamageBridgeSystem(Registry, repo.Shells);
         Fire = new FireSystem(repo.ToFireModel(), Registry);
+        Bridge.Fire = Fire; // combat damage rolls ignition through the fire system (MDR-0010)
         Flooding = new FloodingSystem(Registry, Fire);
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);
@@ -111,6 +116,8 @@ public sealed class BattleRunner
         Adjudicator = adjudicator;
         var torpedoSystem = new NavyThunder.Core.Torpedoes.TorpedoSystem(Registry, Flooding);
         Torpedoes = torpedoSystem;
+        var antiAir = new AntiAircraftSystem(repo.Shells) { Ballistics = Ballistics };
+        AntiAir = antiAir;
         FlightModel = new FlightModelSystem(Registry) { Ballistics = Ballistics, Torpedoes = torpedoSystem };
         if (repo.Shells.TryGetValue("usn_1000lb_an_m64_bomb", out var bombShell))
         {
@@ -152,10 +159,32 @@ public sealed class BattleRunner
                 Ballistics.Targets.Add(armor);
                 explosions.Targets.Add(armor);
                 _armorByTargetId[ship.TargetId] = armor;
+
+                // R1.4 (partial): hull AA battery - one VT barrage mount tracking the ship
+                // until it dies; per-turret data-driven mounts remain R1.4 completion.
+                // (spawn.Aa == false opts static test targets out of engaging aircraft)
+                var aaMount = new AAMount
+                {
+                    Id = $"{ship.TargetId}/aa",
+                    Position = Vec3.Zero, // superseded by the tracking provider
+                    PositionProvider = () => ship.WorldPosition,
+                    IsActive = () => ship.Alive,
+                    ShellId = "usn_127mm_mk31_aa_vt",
+                    RangeM = 5000,
+                    MuzzleVelocityMs = 792,
+                    RoundsPerMinute = 60,
+                    HorizontalMrad = 15,
+                    VerticalMrad = 12,
+                };
+                if (spawn.Aa)
+                {
+                    antiAir.Mounts.Add(aaMount);
+                }
             }
         }
 
         // Aircraft squadrons (R0.5/R1.3): missions target the first enemy team's ships.
+        var aircraftSpecs = new List<(NavyThunder.Core.Aviation.Aircraft Aircraft, string Mission, double AltitudeM, string EnemyTeamId)>();
         foreach (var team in scenario.Teams)
         {
             var teamRecord = Battle.Teams.First(t => t.Id == team.Id);
@@ -176,29 +205,37 @@ public sealed class BattleRunner
                 explosions.Targets.Add(armor);
                 Ballistics.ProximityTargets.Add(aircraft);
 
-                // Mission locks onto one target ship (R1.2 adds retargeting).
                 var targetShip = Ships.First(sh => sh.Team!.Id == enemyTeamId && !sh.Lost);
-                Vec3 TargetVel() => new(
-                    Math.Sin(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444,
-                    0,
-                    Math.Cos(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444);
                 var state = FlightModel.Register(aircraft,
                     new Vec3(spawn.X, spawn.AltitudeM, spawn.Z),
                     spawn.HeadingDeg, spawn.SpeedMs, spawn.AltitudeM);
                 state.MissionAltitudeM = spawn.AltitudeM;
-                state.Mission = new StrikeMission
-                {
-                    Kind = spawn.Mission == "torpedoStrike" ? MissionKind.TorpedoStrike : MissionKind.BombStrike,
-                    TargetId = targetShip.TargetId,
-                    TargetPosition = () => targetShip.WorldPosition,
-                    TargetAlive = () => !targetShip.Lost,
-                    TargetVelocity = TargetVel,
-                    TargetArmor = () => _armorByTargetId.GetValueOrDefault(targetShip.TargetId),
-                };
+                state.Mission = BuildStrikeMission(targetShip, spawn.Mission);
+                aircraftSpecs.Add((aircraft, spawn.Mission, spawn.AltitudeM, enemyTeamId));
             }
         }
 
+        foreach (var aircraft in Aircraft)
+        {
+            antiAir.AirTargets.Add(aircraft);
+        }
+
+        // R1.2 retargeting: after a completed strike (target destroyed post-release) the
+        // aircraft is handed the next live enemy ship until the enemy team is gone.
+        FlightModel.MissionFactory = aircraft =>
+        {
+            var spec = aircraftSpecs.FirstOrDefault(s => s.Aircraft == aircraft);
+            if (spec.Aircraft is null)
+            {
+                return null;
+            }
+
+            var target = Ships.FirstOrDefault(sh => sh.Team!.Id == spec.EnemyTeamId && !sh.Lost);
+            return target is null ? null : BuildStrikeMission(target, spec.Mission);
+        };
+
         World.AddSystem(Ballistics);
+        World.AddSystem(antiAir);
         World.AddSystem(explosions);
         World.AddSystem(Bridge);
         World.AddSystem(Flooding);
@@ -212,6 +249,23 @@ public sealed class BattleRunner
         World.AddSystem(FlightModel);
         World.AddSystem(Torpedoes);
         World.AddSystem(Battle);
+    }
+
+    private StrikeMission BuildStrikeMission(Ship targetShip, string missionKind)
+    {
+        Vec3 TargetVel() => new(
+            Math.Sin(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444,
+            0,
+            Math.Cos(targetShip.HeadingDeg * Math.PI / 180.0) * targetShip.SpeedKnots * 0.514444);
+        return new StrikeMission
+        {
+            Kind = missionKind == "torpedoStrike" ? MissionKind.TorpedoStrike : MissionKind.BombStrike,
+            TargetId = targetShip.TargetId,
+            TargetPosition = () => targetShip.WorldPosition,
+            TargetAlive = () => !targetShip.Lost,
+            TargetVelocity = TargetVel,
+            TargetArmor = () => _armorByTargetId.GetValueOrDefault(targetShip.TargetId),
+        };
     }
 
     /// <summary>Runs until the battle ends or the safety cap, then returns the report.</summary>

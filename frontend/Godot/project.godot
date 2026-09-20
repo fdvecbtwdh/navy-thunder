@@ -1,0 +1,16 @@
+; Engine configuration file (Godot 4.7, .NET edition)
+config_version=5
+
+[application]
+
+config/name="Navy Thunder"
+run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.7", "C#")
+
+[dotnet]
+
+project/assembly_name="NavyThunder.Frontend"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.043, 0.11, 0.18, 1)

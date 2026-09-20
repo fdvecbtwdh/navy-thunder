@@ -1,0 +1,4 @@
+result=TeamWin
+winner=ijn
+ship:test_battleship#ijn-0|Alive|-|1151
+ship:test_battleship#usn-0|Foundered|unsinkability_lost|1422

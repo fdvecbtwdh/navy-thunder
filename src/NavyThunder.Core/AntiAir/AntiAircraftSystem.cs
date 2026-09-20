@@ -27,6 +27,16 @@ public sealed record AAMount
 
     /// <summary>Optional radar: functional radar tightens the barrage, destroyed radar loosens it.</summary>
     public RadarSensor? Radar { get; init; }
+
+    /// <summary>Ship-mounted mounts resolve their position each tick (the hull moves).</summary>
+    public Func<Vec3>? PositionProvider { get; init; }
+
+    /// <summary>Mount only fires while this holds (e.g. host ship still alive).</summary>
+    public Func<bool>? IsActive { get; init; }
+
+    public Vec3 ResolvePosition() => PositionProvider?.Invoke() ?? Position;
+
+    public bool ResolvesActive() => IsActive?.Invoke() ?? true;
 }
 
 /// <summary>
@@ -67,6 +77,12 @@ public sealed class AntiAircraftSystem : ISimulationSystem
     {
         foreach (var mount in Mounts)
         {
+            if (!mount.ResolvesActive())
+            {
+                continue;
+            }
+
+            Vec3 position = mount.ResolvePosition();
             _cooldown.TryGetValue(mount.Id, out double cooldown);
             cooldown -= deltaTime;
 
@@ -79,7 +95,7 @@ public sealed class AntiAircraftSystem : ISimulationSystem
                     continue;
                 }
 
-                double d = Vec3.Distance(candidate.WorldPosition, mount.Position);
+                double d = Vec3.Distance(candidate.WorldPosition, position);
                 if (d <= bestRange)
                 {
                     bestRange = d;
@@ -101,9 +117,9 @@ public sealed class AntiAircraftSystem : ISimulationSystem
             }
 
             // Lead solution with ballistic time of flight; dispersion on top.
-            var solution = FcsSolver.SolveLead(mount.Position, mount.MuzzleVelocityMs,
+            var solution = FcsSolver.SolveLead(position, mount.MuzzleVelocityMs,
                 target.WorldPosition, target.Velocity);
-            Vec3 dir = (solution.AimPoint - mount.Position).Normalized();
+            Vec3 dir = (solution.AimPoint - position).Normalized();
 
             var dispersion = new DispersionModel
             {
@@ -115,7 +131,7 @@ public sealed class AntiAircraftSystem : ISimulationSystem
 
             Ballistics.Spawn(new BallisticProjectile
             {
-                Position = mount.Position,
+                Position = position,
                 Velocity = dir * mount.MuzzleVelocityMs,
                 MassKg = 1,
                 Shell = shell,

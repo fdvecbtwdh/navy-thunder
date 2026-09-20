@@ -24,6 +24,9 @@ public sealed class DamageBridgeSystem : ISimulationSystem
     private readonly IReadOnlyDictionary<string, ShellDefinition> _shells;
     private long _lastSeq;
 
+    /// <summary>Diagnostics: penetrated armor impacts consumed this battle.</summary>
+    public long PenetratedImpacts;
+
     /// <summary>Engine damage (HP) per cbrt(kg) of shell mass — engine-internal WT scale (approximation).</summary>
     public double KineticDamagePerCbrtKg { get; init; } = 500.0;
 
@@ -62,6 +65,7 @@ public sealed class DamageBridgeSystem : ISimulationSystem
             switch (e)
             {
                 case ProjectileArmorImpact impact when impact.Outcome == PlateResolution.Penetrated:
+                    PenetratedImpacts++;
                     ApplyInteriorTrace(world, impact);
                     break;
 
@@ -97,6 +101,13 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         Vec3 origin = impact.Position + dir * 0.5 - ship.WorldPosition;
         double totalDamage = KineticDamagePerCbrtKg * Math.Cbrt(shell.MassKg);
         var traversed = TraceInterior(ship, origin, dir, depth);
+
+        // Ignition rolls on the flammable parts of every SECTION the shell line passes
+        // through, wrecked or not (battles end with burning wrecks). Part boxes tile only
+        // a fraction of the hull, so a box-level trace would almost never roll; sections
+        // tile the whole hull, which matches WT's section-level fire model.
+        RollSectionIgnition(world, ship, origin, dir, impact.ShellId);
+
         if (traversed.Count == 0)
         {
             // Stripped section: the shell still wrecks hull structure (sections must be
@@ -127,15 +138,60 @@ public sealed class DamageBridgeSystem : ISimulationSystem
                 Tick = world.TickIndex,
                 Time = world.Time,
             });
-
-            TryIgnitePart(world, ship, part, impact.ShellId, impact.ShellId);
         }
+    }
+
+    /// <summary>
+    /// Rolls ignition on the flammable parts of every hull section the shell line passes
+    /// through (MDR-0010), regardless of part HP state; FireSystem's per-host dedup keeps
+    /// one fire per part.
+    /// </summary>
+    private void RollSectionIgnition(SimulationWorld world, Ship ship, Vec3 origin, Vec3 dir, string shellId)
+    {
+        double lineLen = ship.Definition.LengthM * 1.2;
+        foreach (var section in ship.Definition.HullSections)
+        {
+            if (!SegmentCrossesXSlab(origin, dir, lineLen, section.XMinM, section.XMaxM))
+            {
+                continue;
+            }
+
+            foreach (var part in ship.Parts.Values)
+            {
+                if (part.Definition.SectionId == section.Id)
+                {
+                    TryIgnitePart(world, ship, part, shellId, shellId);
+                }
+            }
+        }
+    }
+
+    /// <summary>True if the segment origin+t*dir (t in [0, maxDepth]) overlaps [xMin, xMax].</summary>
+    private static bool SegmentCrossesXSlab(Vec3 origin, Vec3 dir, double maxDepth, double xMin, double xMax)
+    {
+        if (Math.Abs(dir.X) < 1e-9)
+        {
+            return origin.X >= xMin && origin.X <= xMax;
+        }
+
+        double t1 = (xMin - origin.X) / dir.X;
+        double t2 = (xMax - origin.X) / dir.X;
+        if (t1 > t2)
+        {
+            (t1, t2) = (t2, t1);
+        }
+
+        return Math.Max(t1, 0) <= Math.Min(t2, maxDepth);
     }
 
     /// <summary>Independent ignition roll on a damaged part (MDR-0010: not tied to remaining HP).</summary>
     private void TryIgnitePart(SimulationWorld world, Ship ship, ShipPartState part, string shellId, string sourceId)
     {
-        if (Fire is null || part.Destroyed || !part.Definition.Open && part.Definition.Kind is not (PartKind.Compartment or PartKind.Boiler or PartKind.Engine or PartKind.FuelTank))
+        // Destroyed parts stay flammable (battles end with burning wrecks): the
+        // per-host "already burning" dedup in FireSystem is what prevents stacking.
+        bool flammableKind = part.Definition.Kind is PartKind.Compartment or PartKind.Boiler
+            or PartKind.Engine or PartKind.FuelTank;
+        if (Fire is null || (!part.Definition.Open && !flammableKind))
         {
             return;
         }
@@ -154,12 +210,12 @@ public sealed class DamageBridgeSystem : ISimulationSystem
 
     /// <summary>Segment-vs-AABB walk over the ship's part boxes, ordered by entry distance.</summary>
     public static IReadOnlyList<(ShipPartState Part, double PathLength)> TraceInterior(
-        Ship ship, Vec3 origin, Vec3 dir, double maxDepth)
+        Ship ship, Vec3 origin, Vec3 dir, double maxDepth, bool includeDestroyed = false)
     {
         var hits = new List<(ShipPartState Part, double Enter, double Length)>();
         foreach (var part in ship.Parts.Values)
         {
-            if (part.Destroyed)
+            if (part.Destroyed && !includeDestroyed)
             {
                 continue;
             }

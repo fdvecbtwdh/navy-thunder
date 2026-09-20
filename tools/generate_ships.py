@@ -3,13 +3,14 @@
 
 Expands a parameter table of historical ship classes into full NavyThunder shipSet
 JSON: compartment layout follows the class template (bow/mid/stern sections, magazines,
-boilers, engines, steering, fire control, pumps, turrets with first-stage racks), with
-displacement/crew/armor taken from the historical parameter rows.
+boilers, engines, steering, fire control, pumps, turrets with first-stage racks).
 
-Layouts are TEMPLATES parameterised by real hull data - hand-refinement per ship is a
-continuous data task (the schema already supports bespoke layouts).
+W3: displacement, max speed and the main battery (caliber/turret count/barrels) are
+now taken from the WT client extract (data/reference/wt_ship_units.json) whenever the
+unit matches; the historical row stays as the fallback for hull form, crew and armor.
 """
 import json
+import re
 from pathlib import Path
 
 # name, class, displacement_t, length_m, beam_m, draft_m, crew, repair_pct, survive_pct,
@@ -47,6 +48,41 @@ FLEET = [
     ("rms_bismarck", "Battleship", 51000, 251, 36, 9.9, 2200, 0.5, 0.42, 320, 110, 3, 3),
 ]
 
+# FLEET name -> WT client unit id (wt_ship_units.json). Explicit: fuzzy name matching
+# cross-matches variants (uss_california hit a rocket cruiser). None = no trusted match.
+WT_ID = {
+    "uss_fletcher": "us_destroyer_fletcher",
+    "uss_sims": "uss_dd_sims",
+    "uss_gearing": "us_destroyer_gearing",
+    "uss_sumner": "us_destroyer_sumner",
+    "ijn_kagero": "jp_destroyer_kagero",
+    "ijn_fubuki": "jp_destroyer_fubuki",
+    "dkm_z23": None,
+    "rn_tribal": "uk_destroyer_tribal",
+    "uss_atlanta": "us_cruiser_atlanta_class_atlanta",
+    "uss_brooklyn": "uss_brooklyn",
+    "uss_baltimore": "us_cruiser_baltimore_class",
+    "uss_new_orleans": "us_cruiser_new_orleans_class",
+    "ijn_myoko": "jp_cruiser_myoko",
+    "ijn_mogami": "jp_cruiser_mogami",
+    "dkm_prinz_eugen": "germ_cruiser_prinz_eugen",
+    "rn_edinburgh": None,
+    "uss_northampton": "us_cruiser_northampton_class",
+    "uss_penelope": None,
+    "uss_nevada": "us_battleship_nevada",
+    "uss_pennsylvania": None,
+    "uss_new_mexico": None,
+    "uss_colorado": "us_battleship_colorado_class_colorado",
+    "uss_north_carolina": "us_battleship_north_carolina_class",
+    "uss_south_dakota": "us_battleship_south_dakota",
+    "uss_iowa": "us_battleship_iowa_class_iowa",
+    "uss_california": None,
+    "ijn_kongo": "jp_battlecruiser_kongo",
+    "ijn_nagato": "jp_battleship_nagato",
+    "rn_renown": "uk_battlecruiser_renown",
+    "rms_bismarck": "germ_battleship_bismarck",
+}
+
 
 CLASS_MOBILITY = {
     # class: (max_speed_kn, turn_deg_s, gun_groups, barrels, rpm, shell_id)
@@ -56,16 +92,50 @@ CLASS_MOBILITY = {
     "Battleship": (27, 1.5, 3, 3, 2, "usn_406mm_mk8_mod6_apcbc"),
 }
 
+CAPITAL_SHELL = "usn_406mm_mk8_mod6_apcbc"
+LIGHT_SHELL = "usn_127mm_mk46_special_common"
+WEAPON_RE = re.compile(r"(\d+)x(\d+(?:\.\d+)?)mm")
 
-def build_guns(name, cls, deck_y, half_b, turret_group_count):
-    speed, turn, _, barrels, rpm, shell = CLASS_MOBILITY[cls]
+
+def wt_main_battery(summary):
+    """Largest-caliber group from a weaponsSummary like '8x380mm; 12x150mm; ...'.
+
+    Returns (guns_count, total_barrels, caliber_mm) or None.
+    """
+    groups = [(int(n), int(float(cal)), float(cal)) for n, cal in WEAPON_RE.findall(summary or "")]
+    if not groups:
+        return None
+    n, c, mm = max(groups, key=lambda g: g[2])
+    return n, c, mm
+
+
+def wt_gun_params(cls, cal_mm, turret_groups_fallback):
+    """Map the real main caliber onto the available shell set and gun handling."""
+    capital = cal_mm >= 280
+    shell = CAPITAL_SHELL if capital else LIGHT_SHELL
+    rpm = 12 if cal_mm <= 130 else 6 if cal_mm <= 155 else 4 if cal_mm <= 210 else 2
+    range_m = 30000 if capital else (18000 if cal_mm > 130 else 15000)
+    traverse = 6 if capital else 12
+    return shell, rpm, range_m, traverse
+
+
+def load_wt_units(path="data/reference/wt_ship_units.json"):
+    p = Path(path)
+    if not p.exists():
+        return {}
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    return {s["id"]: s for s in doc.get("ships", [])}
+
+
+def build_guns(name, cls, deck_y, half_b, turret_group_count, shell, rpm, range_m, traverse):
+    speed, turn, _, barrels, _, _ = CLASS_MOBILITY[cls]
     guns = []
     for g in range(turret_group_count):
         guns.append({
             "id": f"{name}_gun_{chr(65 + g)}", "turretGroup": chr(65 + g),
             "shellId": shell, "barrels": barrels, "roundsPerMinute": rpm,
-            "rangeM": 30000 if cls in ("Battleship", "Battlecruiser") else 15000,
-            "traverseDegPerS": 6 if capital_like(cls) else 12,
+            "rangeM": range_m,
+            "traverseDegPerS": traverse,
             "horizontalMrad": 2.5, "verticalMrad": 1.5,
         })
     return speed, turn, guns
@@ -75,9 +145,31 @@ def capital_like(cls):
     return cls in ("Battleship", "Battlecruiser", "Cruiser")
 
 
-def build_ship(row):
+def build_ship(row, wt_units):
     (name, cls, disp, length, beam, draft, crew, repair, survive,
      belt_mm, deck_mm, turret_groups, generation) = row
+
+    wt = wt_units.get(WT_ID.get(name) or "", {})
+    wt_disp = wt.get("displacementT")
+    wt_speed = wt.get("maxSpeedKnots")
+    battery = wt_main_battery(wt.get("weaponsSummary", ""))
+    wt_fields = []
+    if wt_disp:
+        disp = float(wt_disp)
+        wt_fields.append("displacementT")
+    if wt_speed:
+        speed_kn = float(wt_speed)
+        wt_fields.append("maxSpeedKnots")
+    else:
+        speed_kn = CLASS_MOBILITY[cls][0]
+    if battery:
+        shell, rpm, range_m, traverse = wt_gun_params(cls, battery[2], turret_groups)
+        if battery[0] >= 2:
+            turret_groups = min(4, max(1, battery[0] // 2))
+        wt_fields.append("mainBattery")
+    else:
+        shell, rpm, range_m, traverse = CLASS_MOBILITY[cls][5], CLASS_MOBILITY[cls][4], \
+            (30000 if cls in ("Battleship", "Battlecruiser") else 15000), None
 
     half_l = length / 2
     half_b = beam / 2
@@ -174,14 +266,15 @@ def build_ship(row):
          "face": "YMax", "thicknessMm": deck_mm},
     ]
 
-    speed_kn, turn_rate, guns = build_guns(name, cls, deck_y, half_b, turret_groups)
+    turn_rate = CLASS_MOBILITY[cls][1]
+    default_traverse = 6 if capital_like(cls) else 12
+    guns = build_guns(name, cls, deck_y, half_b, turret_groups,
+                      shell, rpm, range_m, traverse or default_traverse)[2]
 
     return {
         "id": name,
         "displayName": name.replace("_", " ").upper(),
         "class": cls,
-        "maxSpeedKnots": speed_kn,
-        "turnRateDegPerS": turn_rate,
         "guns": guns,
         "displacementT": disp,
         "lengthM": length,
@@ -190,8 +283,8 @@ def build_ship(row):
         "crewTotal": crew,
         "crewRepairThreshold": round(crew * repair),
         "crewSurviveThreshold": round(crew * survive),
-        "maxSpeedKnots": CLASS_MOBILITY[cls][0],
-        "turnRateDegPerS": CLASS_MOBILITY[cls][1],
+        "maxSpeedKnots": speed_kn,
+        "turnRateDegPerS": turn_rate,
         "firstStageRoundsPerTurret": 30 if not capital else 40,
         "resupplySeconds": 35,
         "dcGeneration": generation,
@@ -201,17 +294,21 @@ def build_ship(row):
         "parts": parts,
         "armorPlates": plates,
         "source": {
-            "origin": "hand_authored",
-            "notes": "Templated layout expanded from historical parameters "
-                     "(displacement/crew/armor); compartment layout is a class template, "
+            "origin": "wt_client_extract+hand_template" if wt_fields else "hand_authored",
+            "wtUnitId": WT_ID.get(name),
+            "wtDerivedFields": wt_fields,
+            "notes": "Templated layout expanded from historical parameters; "
+                     "displacement/speed/main battery taken from the WT client extract "
+                     "when matched. Compartment layout is a class template, "
                      "not a ship-specific survey - Tier-2 data.",
-            "versionStamp": "generated 2026-09-19",
+            "versionStamp": "generated 2026-09-21",
         },
     }
 
 
 def main():
-    ships = [build_ship(row) for row in FLEET]
+    wt_units = load_wt_units()
+    ships = [build_ship(row, wt_units) for row in FLEET]
     doc = {
         "schemaVersion": 1,
         "kind": "shipSet",
@@ -219,7 +316,8 @@ def main():
     }
     out = Path("data/ships/generated_fleet.json")
     out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"generated {len(ships)} ships -> {out}")
+    blended = sum(1 for s in ships if s["source"]["origin"].startswith("wt_client"))
+    print(f"generated {len(ships)} ships ({blended} with WT real parameters) -> {out}")
 
 
 if __name__ == "__main__":

@@ -7,7 +7,14 @@
       "id": "usn",
       "name": "United States Navy",
       "ships": [
-        { "ship": "test_battleship", "x": 0, "z": 0, "headingDeg": 90, "throttle": 0.0 }
+        {
+          "ship": "test_battleship",
+          "x": 0,
+          "z": 0,
+          "headingDeg": 90,
+          "throttle": 0.0,
+          "aa": false
+        }
       ],
       "aircraft": []
     },
@@ -18,13 +25,23 @@
       "aircraft": [
         {
           "aircraft": "test_fighter",
-          "x": 0, "z": -2500, "altitudeM": 40, "speedMs": 65, "headingDeg": 0,
-          "mission": "torpedoStrike", "targetTeam": "usn"
+          "x": 0,
+          "z": -2500,
+          "altitudeM": 40,
+          "speedMs": 65,
+          "headingDeg": 0,
+          "mission": "torpedoStrike",
+          "targetTeam": "usn"
         },
         {
           "aircraft": "test_fighter",
-          "x": -900, "z": -1200, "altitudeM": 300, "speedMs": 110, "headingDeg": 35,
-          "mission": "bombStrike", "targetTeam": "usn"
+          "x": -900,
+          "z": -1200,
+          "altitudeM": 300,
+          "speedMs": 110,
+          "headingDeg": 35,
+          "mission": "bombStrike",
+          "targetTeam": "usn"
         }
       ]
     }

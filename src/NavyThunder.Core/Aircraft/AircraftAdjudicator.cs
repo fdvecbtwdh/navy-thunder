@@ -34,8 +34,22 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
     public List<Aircraft> Aircraft { get; } = [];
     public Dictionary<string, Aircraft> ByTargetId { get; } = [];
 
-    /// <summary>Kinetic damage (HP) per cbrt(kg) of projectile mass (engine scale, approximation).</summary>
-    public double KineticDamagePerCbrtKg { get; init; } = 900.0;
+    /// <summary>Kinetic damage (HP) per cbrt(kg) of projectile mass (engine scale) -
+    /// low so AA-class hits wound modules instead of deleting the airframe; heavy naval
+    /// shells still one-shot any part at this scale.</summary>
+    public double KineticDamagePerCbrtKg { get; init; } = 90.0;
+
+    /// <summary>VT airburst wounds aircraft within this radius (WT barrage effectiveness).</summary>
+    public double AirburstLethalRadiusM { get; init; } = 30.0;
+
+    /// <summary>Diagnostics: airburst events seen and applications applied.</summary>
+    public long AirburstsSeen;
+    public long AirburstApplications;
+
+    /// <summary>Airburst damage (HP) per cbrt(kg) of shell mass at the burst centre -
+    /// tuned so a heavy barrage downs aircraft over sustained exposure while a lone
+    /// ship gives attackers a window to press their strike.</summary>
+    public double AirburstDamagePerCbrtKg { get; init; } = 60.0;
 
     public string Name => "aircraft_adjudication";
 
@@ -72,6 +86,68 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
                         TargetId = aircraft.TargetId,
                         Position = part.Center,
                         Amount = amount,
+                        Tick = world.TickIndex,
+                        Time = world.Time,
+                    });
+                }
+            }
+            else if (e is ShellDetonation burst && burst.TargetId.Length == 0)
+            {
+                AirburstsSeen++;
+
+                // VT airburst: fragments + blast wound every aircraft near the burst,
+                // linear falloff to the lethal radius (barrage AA kill mechanism).
+                foreach (var victim in Aircraft)
+                {
+                    if (!victim.Alive)
+                    {
+                        continue;
+                    }
+
+                    double d = Vec3.Distance(burst.Position, victim.WorldPosition);
+                    if (d > AirburstLethalRadiusM)
+                    {
+                        continue;
+                    }
+
+                    // Fragments strike the OUTERMOST structure nearest the burst (point to
+                    // part-box surface distance in the airframe's local frame); buried
+                    // parts (pilot, oil) are only reached once the skin around them dies.
+                    Vec3 local = burst.Position - victim.WorldPosition;
+                    AircraftPartState? nearest = null;
+                    double bestSurface = double.MaxValue;
+                    foreach (var pt in victim.Parts.Values)
+                    {
+                        if (pt.Destroyed)
+                        {
+                            continue;
+                        }
+
+                        double gapX = Math.Max(pt.Definition.XMinM - local.X, Math.Max(0, local.X - pt.Definition.XMaxM));
+                        double gapY = Math.Max(pt.Definition.YMinM - local.Y, Math.Max(0, local.Y - pt.Definition.YMaxM));
+                        double gapZ = Math.Max(pt.Definition.ZMinM - local.Z, Math.Max(0, local.Z - pt.Definition.ZMaxM));
+                        double surf = Math.Sqrt(gapX * gapX + gapY * gapY + gapZ * gapZ);
+                        if (surf < bestSurface)
+                        {
+                            bestSurface = surf;
+                            nearest = pt;
+                        }
+                    }
+
+                    if (nearest is null)
+                    {
+                        continue;
+                    }
+
+                    double falloff = 1.0 - d / AirburstLethalRadiusM;
+                    AirburstApplications++;
+                    _registry.Apply(new DamageEvent
+                    {
+                        Channel = DamageChannel.Fragment,
+                        SourceId = burst.ShellId,
+                        TargetId = victim.TargetId,
+                        Position = nearest.Center,
+                        Amount = AirburstDamagePerCbrtKg * Math.Cbrt(ShellMass(burst.ShellId)) * falloff,
                         Tick = world.TickIndex,
                         Time = world.Time,
                     });

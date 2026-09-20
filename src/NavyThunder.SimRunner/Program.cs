@@ -41,6 +41,8 @@ var runner = new BattleRunner(repo, scenario);
 
 Console.Error.WriteLine($"battle '{scenario.Name}': {runner.Ships.Count} ships, seed {scenario.Seed}");
 var report = runner.Run();
+Console.Error.WriteLine(
+    $"diag: fires={runner.Fire.Fires.Count} rollCount={runner.Fire.RollCount} rollSuccess={runner.Fire.RollSuccess} penImpacts={runner.Bridge.PenetratedImpacts} aircraftLost={runner.Aircraft.Count(a => !a.Alive)} aaShots={runner.AntiAir.ShotsFired} bursts={runner.AircraftAdjudicator.AirburstsSeen} applications={runner.AircraftAdjudicator.AirburstApplications}");
 
 var json = JsonSerializer.Serialize(report, new JsonSerializerOptions
 {

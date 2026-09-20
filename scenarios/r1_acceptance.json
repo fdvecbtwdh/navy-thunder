@@ -1,0 +1,105 @@
+{
+  "name": "r1_acceptance",
+  "maxDurationS": 1800,
+  "seed": 20260921,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": -6000,
+          "z": 0,
+          "headingDeg": 0,
+          "throttle": 1.0
+        },
+        {
+          "ship": "test_destroyer",
+          "x": -2500,
+          "z": 700,
+          "headingDeg": 0,
+          "throttle": 1.0
+        },
+        {
+          "ship": "test_destroyer",
+          "x": -2800,
+          "z": -700,
+          "headingDeg": 0,
+          "throttle": 1.0
+        }
+      ],
+      "aircraft": [
+        {
+          "aircraft": "test_fighter",
+          "x": -8000,
+          "z": -5000,
+          "altitudeM": 300,
+          "speedMs": 110,
+          "headingDeg": 30,
+          "mission": "bombStrike",
+          "targetTeam": "ijn"
+        },
+        {
+          "aircraft": "test_fighter",
+          "x": -9000,
+          "z": -4000,
+          "altitudeM": 300,
+          "speedMs": 110,
+          "headingDeg": 30,
+          "mission": "bombStrike",
+          "targetTeam": "ijn"
+        }
+      ]
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": 6000,
+          "z": 0,
+          "headingDeg": 180,
+          "throttle": 1.0
+        },
+        {
+          "ship": "test_destroyer",
+          "x": 2500,
+          "z": -700,
+          "headingDeg": 180,
+          "throttle": 1.0
+        },
+        {
+          "ship": "test_destroyer",
+          "x": 2800,
+          "z": 700,
+          "headingDeg": 180,
+          "throttle": 1.0
+        }
+      ],
+      "aircraft": [
+        {
+          "aircraft": "test_fighter",
+          "x": 8000,
+          "z": 5000,
+          "altitudeM": 40,
+          "speedMs": 65,
+          "headingDeg": 210,
+          "mission": "torpedoStrike",
+          "targetTeam": "usn"
+        },
+        {
+          "aircraft": "test_fighter",
+          "x": 9000,
+          "z": 4000,
+          "altitudeM": 40,
+          "speedMs": 65,
+          "headingDeg": 210,
+          "mission": "torpedoStrike",
+          "targetTeam": "usn"
+        }
+      ]
+    }
+  ]
+}

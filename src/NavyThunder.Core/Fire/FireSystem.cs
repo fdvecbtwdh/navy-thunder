@@ -67,8 +67,16 @@ public sealed class FireSystem : ISimulationSystem
     public void SetFlammability(string hostId, double multiplier) => _hostFlammability[hostId] = multiplier;
 
     /// <summary>Independent ignition roll; ignores host HP by design (MDR-0010).</summary>
+    /// <summary>Diagnostics: ignition rolls seen and fires lit (0 roll = wiring gap, 0/N success = probability).</summary>
+    public long RollCount;
+    public long RollSuccess;
+
+    /// <summary>A fire consumes its host's combustibles and dies after this long (s).</summary>
+    public double MaxBurnTimeS { get; init; } = 240;
+
     public bool TryIgnite(SimulationWorld world, string hostId, string hostKind, Vec3 position, double sourceMultiplier = 1.0)
     {
+        RollCount++;
         if (_fires.Any(f => f.HostId == hostId && f.Active))
         {
             return false; // already burning
@@ -81,6 +89,7 @@ public sealed class FireSystem : ISimulationSystem
             return false;
         }
 
+        RollSuccess++;
         _fires.Add(new FireInstance
         {
             Id = $"fire_{++_nextFireId}",
@@ -117,6 +126,12 @@ public sealed class FireSystem : ISimulationSystem
         {
             if (!fire.Active)
             {
+                continue;
+            }
+
+            if (world.Time - fire.StartedTime >= MaxBurnTimeS)
+            {
+                fire.ExtinguishedTime = world.Time; // burned out
                 continue;
             }
 

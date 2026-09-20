@@ -121,6 +121,80 @@ public class AirDeliveryTests(ITestOutputHelper output)
             b.Aircraft.Select(ac => $"{ac.State}|{ac.WorldPosition.X:F1}|{ac.WorldPosition.Z:F1}"));
     }
 
+    [Fact]
+    public void Strike_Aircraft_Retargets_Next_Live_Ship_When_Target_Sinks_Early()
+    {
+        var repo = DataRepository.LoadFromDirectory(RepoLocator.FindDataDirectory());
+        var scenario = new BattleScenario
+        {
+            Name = "retarget_probe",
+            MaxDurationS = 1800,
+            Seed = 1234,
+            Teams =
+            [
+                new ScenarioTeam
+                {
+                    Id = "usn", Name = "United States Navy",
+                    Ships =
+                    [
+                        new ScenarioShipSpawn { Ship = "test_battleship", X = -2000, Z = 0, Throttle = 0 },
+                        new ScenarioShipSpawn { Ship = "test_battleship", X = -8000, Z = 0, Throttle = 0 },
+                    ],
+                },
+                new ScenarioTeam
+                {
+                    Id = "ijn", Name = "Imperial Japanese Navy", Ships = [],
+                    Aircraft =
+                    [
+                        new ScenarioAircraftSpawn
+                        {
+                            Aircraft = "test_fighter", X = 0, Z = -4000, AltitudeM = 40,
+                            SpeedMs = 65, HeadingDeg = 0, Mission = "torpedoStrike", TargetTeam = "usn",
+                        },
+                    ],
+                },
+            ],
+        };
+        var runner = new BattleRunner(repo, scenario);
+        var aircraft = runner.Aircraft[0];
+        var state = runner.FlightModel.StateOf(aircraft)!;
+        var firstTargetId = state.Mission!.TargetId;
+
+        // Sink the assigned target long before the aircraft arrives: destroy every part.
+        var doomed = runner.Ships.First(s => s.TargetId == firstTargetId);
+        foreach (var part in doomed.Parts.Values)
+        {
+            runner.Registry.Apply(new DamageEvent
+            {
+                Channel = DamageChannel.Kinetic,
+                SourceId = "test",
+                TargetId = doomed.TargetId,
+                Position = part.Center,
+                Amount = part.Definition.Hp + 1,
+            });
+        }
+        double deadline = runner.World.Time + 120;
+        while (runner.World.Time < deadline && !doomed.Lost)
+        {
+            runner.World.Step();
+        }
+
+        Assert.True(doomed.Lost, "the injected damage must sink the assigned target");
+
+        // The aircraft must be handed the next live enemy ship instead of orbiting the wreck.
+        deadline = runner.World.Time + 120;
+        while (runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.Running
+               && runner.World.Time < deadline
+               && state.Mission?.TargetId != "ship:test_battleship#usn-1")
+        {
+            runner.World.Step();
+        }
+
+        Assert.NotNull(state.Mission);
+        Assert.Equal("ship:test_battleship#usn-1", state.Mission.TargetId);
+        Assert.True(aircraft.Alive);
+    }
+
     private static void world_Run(BattleRunner runner, double seconds)
     {
         // Step until battle end or the requested duration, whichever comes first.

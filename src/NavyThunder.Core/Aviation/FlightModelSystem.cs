@@ -62,6 +62,7 @@ public sealed class FlightModelSystem : ISimulationSystem
 {
     private readonly DamageRegistry _registry;
     private readonly Dictionary<Aircraft, AircraftFlightState> _states = [];
+    private readonly Dictionary<Aircraft, double> _nextMissionRequestS = [];
 
     /// <summary>Water/surface level; descending through it crashes the aircraft.</summary>
     public double SurfaceLevelY { get; init; } = 0.0;
@@ -70,6 +71,15 @@ public sealed class FlightModelSystem : ISimulationSystem
     public TorpedoSystem Torpedoes { get; init; } = null!;
     public IReadOnlyDictionary<string, Aircraft> AircraftByTargetId => _byTargetId;
     private readonly Dictionary<string, Aircraft> _byTargetId = [];
+
+    /// <summary>
+    /// R1.2 retargeting: when a mission completes (target destroyed after release) the
+    /// factory issues the next strike; returning null keeps the aircraft egressing.
+    /// </summary>
+    public Func<Aircraft, StrikeMission?>? MissionFactory { get; set; }
+
+    /// <summary>Seconds between retarget attempts after a cleared mission.</summary>
+    public double RetargetCooldownS { get; set; } = 45;
 
     /// <summary>Torpedo release envelope (approximation; WT: too fast/high drowns the fish).</summary>
     public double TorpedoMaxReleaseAltitudeM { get; init; } = 50;
@@ -208,10 +218,33 @@ public sealed class FlightModelSystem : ISimulationSystem
                 }
             }
 
-            // Egress ends the attack run.
+            // Egress ends the attack run; R1.2 retargeting issues the next strike.
             if (state.Mission is { Released: true } done && !done.TargetAlive())
             {
                 state.Mission = null;
+                _nextMissionRequestS[aircraft] = world.Time + RetargetCooldownS;
+            }
+
+            // Target sank before release: the strike is moot, request a new task at once.
+            if (state.Mission is { Released: false } moot && !moot.TargetAlive())
+            {
+                state.Mission = null;
+                _nextMissionRequestS[aircraft] = world.Time;
+            }
+
+            if (state.Mission is null && MissionFactory is not null
+                && world.Time >= _nextMissionRequestS.GetValueOrDefault(aircraft))
+            {
+                var next = MissionFactory(aircraft);
+                if (next is not null)
+                {
+                    state.Mission = next;
+                    _nextMissionRequestS.Remove(aircraft);
+                }
+                else
+                {
+                    _nextMissionRequestS[aircraft] = world.Time + 30;
+                }
             }
         }
     }
