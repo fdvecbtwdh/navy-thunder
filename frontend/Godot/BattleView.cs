@@ -1,6 +1,7 @@
 using Godot;
-using NavyThunder.Data;
 using NavyThunder.Core.Mathematics;
+using NavyThunder.Core.Ships;
+using NavyThunder.Data;
 
 namespace NavyThunder.Frontend;
 
@@ -52,7 +53,63 @@ public partial class BattleView : Node2D
         var scenario = BattleScenario.Load(Path.Combine(repoRoot, "scenarios", "bb_duel.json"));
         _runner = new BattleRunner(repo, scenario);
         _shotPath = OS.GetEnvironment("NT_FRONTEND_SHOT");
-        GD.Print($"R2.1: battle wired, ships={_runner.Ships.Count}, result={_runner.Battle.Result}");
+
+        // R2.2: the first USN ship answers to the helm; the chase camera follows it.
+        _runner.HandControlToPlayer(_runner.Ships[0].TargetId);
+        _playerShip = _runner.PlayerShip;
+        var cam = new Camera2D { Enabled = true };
+        AddChild(cam);
+        cam.MakeCurrent();
+        _camera = cam;
+
+        var hud = new CanvasLayer();
+        AddChild(hud);
+        _hud = new Label
+        {
+            Position = new Vector2(16, 10),
+            Text = "",
+        };
+        _hud.AddThemeFontSizeOverride("font_size", 16);
+        hud.AddChild(_hud);
+
+        GD.Print($"R2.2: battle wired, ships={_runner.Ships.Count}, " +
+                 $"player={_playerShip?.TargetId ?? "none"}, result={_runner.Battle.Result}");
+    }
+
+    private Ship? _playerShip;
+    private Camera2D? _camera;
+    private Label? _hud;
+
+    /// <summary>Per-frame helm input: W/S throttle, A/D rudder, X centers rudder.</summary>
+    private void ApplyHelm(double delta)
+    {
+        if (_playerShip is null || !_playerShip.Alive)
+        {
+            return;
+        }
+
+        const double throttleRate = 0.25;
+        const double rudderRate = 0.8;
+        if (Input.IsKeyPressed(Key.W))
+        {
+            _playerShip.ThrottleCommand = System.Math.Min(1.0, _playerShip.ThrottleCommand + throttleRate * delta);
+        }
+        if (Input.IsKeyPressed(Key.S))
+        {
+            _playerShip.ThrottleCommand = System.Math.Max(0.0, _playerShip.ThrottleCommand - throttleRate * delta);
+        }
+        if (Input.IsKeyPressed(Key.A))
+        {
+            _playerShip.RudderCommand = System.Math.Max(-1.0, _playerShip.RudderCommand - rudderRate * delta);
+        }
+        if (Input.IsKeyPressed(Key.D))
+        {
+            _playerShip.RudderCommand = System.Math.Min(1.0, _playerShip.RudderCommand + rudderRate * delta);
+        }
+        if (Input.IsKeyPressed(Key.X))
+        {
+            _playerShip.RudderCommand = 0;
+        }
     }
 
     public override void _Process(double delta)
@@ -70,6 +127,22 @@ public partial class BattleView : Node2D
         {
             _runner.World.Step();
             _smokeAccumulator -= _runner.World.FixedDeltaTime;
+        }
+
+        ApplyHelm(delta);
+
+        if (_playerShip is not null && _camera is not null)
+        {
+            _camera.Position = ToScreen(_playerShip.WorldPosition);
+        }
+        if (_hud is not null && _playerShip is not null)
+        {
+            _hud.Text = _playerShip.Alive
+                ? $"{_playerShip.TargetId}  SPD {_playerShip.SpeedKnots:0.0} kn  " +
+                  $"HDG {_playerShip.HeadingDeg:0}°  THR {_playerShip.ThrottleCommand:0.00}  " +
+                  $"RUD {_playerShip.RudderCommand:+0.00;-0.00;0.00}" + "\n" +
+                  $"W/S throttle  A/D rudder  X center  |  t={_runner.World.Time:0}s"
+                : $"{_playerShip.TargetId} DESTROYED  |  t={_runner.World.Time:0}s";
         }
 
         if (smoke)
@@ -107,18 +180,24 @@ public partial class BattleView : Node2D
     public override void _Draw()
     {
         var size = GetViewportRect().Size;
+        // Background must fill the viewport in WORLD space (the camera translates the
+        // canvas), so anchor everything on the camera centre with generous margins.
+        var camCenter = _camera?.Position ?? size / 2f;
+        var x0 = camCenter.X - size.X * 1.5f;
+        var x1 = camCenter.X + size.X * 1.5f;
+        var y0 = camCenter.Y - size.Y * 1.5f;
+        var y1 = camCenter.Y + size.Y * 1.5f;
 
-        // Sky band above the horizon; sea fills the rest.
-        DrawRect(new Rect2(0, 0, size.X, size.Y * 0.18f), SkyColor);
-        DrawRect(new Rect2(0, size.Y * 0.18f, size.X, size.Y * 0.82f), SeaColor);
+        DrawRect(new Rect2(x0, y0, x1 - x0, y1 - y0), SeaColor);
 
-        // Wave bands: fixed horizontal stripes scrolling slowly with sim time.
+        // Wave bands: world-space horizontal stripes with a slow sim-time shimmer.
         double t = _runner?.World.Time ?? 0;
-        for (int i = 0; i < 22; i++)
+        float step = 44f;
+        float phase = (float)(t * 12.0) % step;
+        for (float y = y0 - step; y < y1 + step; y += step)
         {
-            float y = size.Y * 0.18f + (i + 0.5f) * (size.Y * 0.82f / 22f)
-                      + (float)Mathf.Sin((float)t * 0.7f + i * 1.7f) * 4f;
-            DrawLine(new Vector2(0, y), new Vector2(size.X, y), SeaBandColor, 1.5f);
+            float yy = y + (float)Mathf.Sin((y + (float)t * 40f) * 0.02f) * 5f + phase;
+            DrawLine(new Vector2(x0, yy), new Vector2(x1, yy), SeaBandColor, 1.5f);
         }
 
         // Islands.

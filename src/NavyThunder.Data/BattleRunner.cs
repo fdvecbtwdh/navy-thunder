@@ -109,7 +109,7 @@ public sealed class BattleRunner
         Flooding = new FloodingSystem(Registry, Fire);
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);
-        var ai = new SimpleNavalAISystem(Registry) { Guns = Guns };
+        NavalAi = new SimpleNavalAISystem(Registry) { Guns = Guns };
         var damageControl = new DamageControlSystem { Fire = Fire, Flooding = Flooding };
         var adjudicator = new KillAdjudicatorSystem(Registry);
         DamageControl = damageControl;
@@ -152,7 +152,7 @@ public sealed class BattleRunner
                 DamageControl.Ships.Add(ship);
                 Adjudicator.Ships.Add(ship);
                 navigation.Ships.Add(ship);
-                ai.RegisterShip(ship);
+                NavalAi.RegisterShip(ship);
                 Guns.RegisterShip(ship);
 
                 var armor = ShipFactory.BuildArmorTarget(ship);
@@ -241,7 +241,7 @@ public sealed class BattleRunner
         World.AddSystem(Flooding);
         World.AddSystem(Fire);
         World.AddSystem(navigation);
-        World.AddSystem(ai);
+        World.AddSystem(NavalAi);
         World.AddSystem(Guns);
         World.AddSystem(damageControl);
         World.AddSystem(adjudicator);
@@ -249,6 +249,25 @@ public sealed class BattleRunner
         World.AddSystem(FlightModel);
         World.AddSystem(Torpedoes);
         World.AddSystem(Battle);
+    }
+
+    /// <summary>Naval AI (public for diagnostics and player-control handover).</summary>
+    public SimpleNavalAISystem NavalAi { get; private set; } = null!;
+
+    /// <summary>Ship under player helm control (R2.2); excluded from naval AI orders.</summary>
+    public Ship? PlayerShip { get; private set; }
+
+    /// <summary>Hands helm+gunnery control of a ship to the player (R2.2).</summary>
+    public void HandControlToPlayer(string targetId)
+    {
+        var ship = Ships.FirstOrDefault(sh => sh.TargetId == targetId);
+        if (ship is null)
+        {
+            return;
+        }
+
+        NavalAi.Ships.Remove(ship);
+        PlayerShip = ship;
     }
 
     private StrikeMission BuildStrikeMission(Ship targetShip, string missionKind)
