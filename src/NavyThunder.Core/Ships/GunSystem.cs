@@ -98,6 +98,21 @@ public sealed class GunSystem : ISimulationSystem
 
     public void Engage(string shipId, string gunId, GunOrder order) => _orders[(shipId, gunId)] = order;
 
+    /// <summary>Worst (largest) reload remaining across a ship's guns; 0 = all ready (R2.3 HUD).</summary>
+    public double ReloadRemainingOf(string shipId)
+    {
+        double worst = 0;
+        foreach (var gun in _guns)
+        {
+            if (gun.Ship.TargetId == shipId && gun.ReloadRemainingS > worst)
+            {
+                worst = gun.ReloadRemainingS;
+            }
+        }
+
+        return worst;
+    }
+
     public void CeaseFire(string shipId, string gunId) => _orders.Remove((shipId, gunId));
 
     public GunOrder? GetOrder(string shipId, string gunId) =>

@@ -80,6 +80,63 @@ public partial class BattleView : Node2D
     private Camera2D? _camera;
     private Label? _hud;
 
+    private Ship? _aimTarget;
+
+    /// <summary>Mouse position in battle metres (canvas centre = battle origin).</summary>
+    private Vec3 MouseWorld() =>
+        new((GetGlobalMousePosition().X - GetViewportRect().Size.X / 2f) / PixelsPerMeter, 0,
+            (GetGlobalMousePosition().Y - GetViewportRect().Size.Y / 2f) / PixelsPerMeter);
+
+    /// <summary>R2.3 fire control: engage the enemy under the cursor, cease otherwise.</summary>
+    private void ApplyFireControl()
+    {
+        if (_playerShip is null || !_playerShip.Alive || _runner is null)
+        {
+            return;
+        }
+
+        var mouse = MouseWorld();
+        Ship? hover = null;
+        double best = double.MaxValue;
+        foreach (var ship in _runner.Ships)
+        {
+            if (!ship.Alive || ship.Team?.Id == _playerShip.Team?.Id)
+            {
+                continue;
+            }
+
+            double d = Vec3.Distance(ship.WorldPosition, mouse);
+            double capture = System.Math.Max(120, ship.Definition.LengthM);
+            if (d < capture && d < best)
+            {
+                best = d;
+                hover = ship;
+            }
+        }
+
+        _aimTarget = hover;
+        foreach (var gun in _playerShip.Definition.Guns)
+        {
+            if (hover is null)
+            {
+                _runner.Guns.CeaseFire(_playerShip.TargetId, gun.Id);
+                continue;
+            }
+
+            var victim = hover;
+            _runner.Guns.Engage(_playerShip.TargetId, gun.Id, new GunOrder
+            {
+                TargetId = victim.TargetId,
+                TargetPosition = () => victim.WorldPosition,
+                TargetVelocity = () => new Vec3(
+                    System.Math.Sin(victim.HeadingDeg * System.Math.PI / 180.0) * victim.SpeedKnots * 0.514444,
+                    0,
+                    System.Math.Cos(victim.HeadingDeg * System.Math.PI / 180.0) * victim.SpeedKnots * 0.514444),
+                TargetLengthM = () => victim.Definition.LengthM,
+            });
+        }
+    }
+
     /// <summary>Per-frame helm input: W/S throttle, A/D rudder, X centers rudder.</summary>
     private void ApplyHelm(double delta)
     {
@@ -130,6 +187,7 @@ public partial class BattleView : Node2D
         }
 
         ApplyHelm(delta);
+        ApplyFireControl();
 
         if (_playerShip is not null && _camera is not null)
         {
@@ -242,6 +300,25 @@ public partial class BattleView : Node2D
 
             DrawString(ThemeDB.FallbackFont, pos + new Vector2(12, -12),
                 ship.TargetId, HorizontalAlignment.Left, -1, 12, Colors.LightGray);
+        }
+
+        // R2.3 aim indicator: ring on the hovered enemy + reload status.
+        if (_aimTarget is { Alive: true } aim)
+        {
+            var ap = ToScreen(aim.WorldPosition);
+            float rr = (float)aim.Definition.LengthM * PixelsPerMeter;
+            DrawArc(ap, rr + 8f, 0, Mathf.Tau, 48, Colors.Orange, 2f);
+            DrawArc(ToScreen(MouseWorld()), 6f, 0, Mathf.Tau, 24,
+                new Color(1f, 0.6f, 0.1f, 0.8f), 1.5f);
+        }
+
+        if (_playerShip is { Alive: true } && _hud is not null && _runner is not null)
+        {
+            double reload = _runner.Guns.ReloadRemainingOf(_playerShip.TargetId);
+            string gunState = reload > 0 ? $"RELOAD {reload:0.0}s" : "GUNS READY";
+            DrawString(ThemeDB.FallbackFont, new Vector2(16, 88),
+                $"{gunState}  |  hover an enemy to engage",
+                HorizontalAlignment.Left, -1, 14, Colors.Orange);
         }
     }
 }
