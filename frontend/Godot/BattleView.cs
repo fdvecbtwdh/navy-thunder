@@ -52,12 +52,7 @@ public partial class BattleView : Node2D
     public override void _Ready()
     {
         AppEnv.Install();
-        string repoRoot = ProjectSettings.GlobalizePath("res://");
-        while (repoRoot is not null && !File.Exists(Path.Combine(repoRoot, "NavyThunder.slnx")))
-        {
-            var parent = Directory.GetParent(repoRoot);
-            repoRoot = parent?.FullName;
-        }
+        string repoRoot = FindRepoRoot();
         if (repoRoot is null)
         {
             GD.PushError("repo root not found above the Godot project");
@@ -108,6 +103,24 @@ public partial class BattleView : Node2D
         GD.Print($"R2.2: battle wired, ships={_runner.Ships.Count}, " +
                  $"player={_playerShip?.TargetId ?? "none"}, result={_runner.Battle.Result}");
         AppEnv.Info($"battle wired: ships={_runner.Ships.Count} player={_playerShip?.TargetId ?? "none"}");
+    }
+
+    /// <summary>Packaged builds keep data/ next to the exe; dev runs walk to the sln.</summary>
+    private static string FindRepoRoot()
+    {
+        var exeDir = Path.GetDirectoryName(OS.GetExecutablePath());
+        if (exeDir is not null && Directory.Exists(Path.Combine(exeDir, "data")))
+        {
+            return exeDir;
+        }
+
+        var dir = ProjectSettings.GlobalizePath("res://");
+        while (dir is not null && !File.Exists(Path.Combine(dir, "NavyThunder.slnx")))
+        {
+            dir = Directory.GetParent(dir)?.FullName;
+        }
+
+        return dir;
     }
 
     private Ship? _playerShip;
@@ -395,6 +408,11 @@ public partial class BattleView : Node2D
             };
         }
         QueueRedraw();
+        AppEnv.Info($"R5.2 full-chain PASS: report shown winner={winner} shipsLost={lost} salvos={_runner.Battle.GunsFired}");
+        if (OS.GetEnvironment("NT_FRONTEND_AUTO") == "1")
+        {
+            GetTree().CreateTimer(2.0).Timeout += () => GetTree().Quit();
+        }
         GD.Print($"R2.6 report shown: winner={winner} shipsLost={lost}");
     }
 

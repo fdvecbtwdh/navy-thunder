@@ -134,6 +134,24 @@ public partial class MenuView : CanvasLayer
 
         root.Ready += () => root.Position = -root.Size / 2f;
 
+        // R5.2: automated full-chain verification (menu -> battle -> report).
+        if (OS.GetEnvironment("NT_FRONTEND_AUTO") == "1")
+        {
+            var envShip = OS.GetEnvironment("NT_FRONTEND_SHIP");
+            if (envShip.Length > 0 && _shipIds.Contains(envShip))
+            {
+                SessionState.SelectedShipId = envShip;
+            }
+            else if (_shipIds.Count > 0)
+            {
+                SessionState.SelectedShipId = _shipIds[Math.Max(0, _shipPicker.Selected)];
+            }
+
+            AppEnv.Info("AUTO flow: starting battle with " + SessionState.SelectedShipId);
+            var tree = GetTree();
+            tree.CreateTimer(1.5).Timeout += () => GetTree().ChangeSceneToFile("res://Main.tscn");
+        }
+
         var shot = OS.GetEnvironment("NT_FRONTEND_SHOT");
         if (shot.Length > 0)
         {
@@ -152,13 +170,19 @@ public partial class MenuView : CanvasLayer
         var result = new List<(string, string)>();
         try
         {
-            string repoRoot = ProjectSettings.GlobalizePath("res://");
-            while (repoRoot is not null && !File.Exists(System.IO.Path.Combine(repoRoot, "NavyThunder.slnx")))
+            var exeDir = System.IO.Path.GetDirectoryName(OS.GetExecutablePath());
+            var fleet = System.IO.Path.Combine(exeDir ?? "", "data", "ships", "generated_fleet.json");
+            if (!System.IO.File.Exists(fleet))
             {
-                repoRoot = System.IO.Directory.GetParent(repoRoot)?.FullName;
+                string repoRoot = ProjectSettings.GlobalizePath("res://");
+                while (repoRoot is not null && !File.Exists(System.IO.Path.Combine(repoRoot, "NavyThunder.slnx")))
+                {
+                    repoRoot = System.IO.Directory.GetParent(repoRoot)?.FullName;
+                }
+
+                fleet = System.IO.Path.Combine(repoRoot!, "data", "ships", "generated_fleet.json");
             }
 
-            var fleet = System.IO.Path.Combine(repoRoot!, "data", "ships", "generated_fleet.json");
             var doc = System.Text.Json.JsonDocument.Parse(System.IO.File.ReadAllText(fleet));
             foreach (var ship in doc.RootElement.GetProperty("ships").EnumerateArray())
             {

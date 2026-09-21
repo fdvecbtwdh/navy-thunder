@@ -26,6 +26,8 @@ mkdir -p "$OUT"
 "$GODOT_EXE" --headless --path . --export-release "Windows Desktop" "$OUT/NavyThunder.exe"
 
 # 3) game data next to the executable (ships/shells/scenarios are read at runtime)
+# clean re-copy: merging a previous package would nest data/data and break validation
+rm -rf "$OUT/data" "$OUT/scenarios"
 cp -r "$ROOT/data" "$OUT/data"
 cp -r "$ROOT/scenarios" "$OUT/scenarios"
 mkdir -p "$OUT/assets/models"
