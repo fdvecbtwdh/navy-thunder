@@ -51,6 +51,7 @@ public partial class BattleView : Node2D
 
     public override void _Ready()
     {
+        AppEnv.Install();
         string repoRoot = ProjectSettings.GlobalizePath("res://");
         while (repoRoot is not null && !File.Exists(Path.Combine(repoRoot, "NavyThunder.slnx")))
         {
@@ -66,7 +67,12 @@ public partial class BattleView : Node2D
         var repo = DataRepository.LoadFromDirectory(Path.Combine(repoRoot, "data"));
         _assetsRoot = Path.Combine(repoRoot, "assets", "models");
         var scenario = BattleScenario.Load(Path.Combine(repoRoot, "scenarios", "bb_duel.json"));
-        _runner = new BattleRunner(repo, scenario);
+        var pick = OS.GetEnvironment("NT_FRONTEND_SHIP") is { } envShip && envShip.Length > 0
+            ? envShip
+            : SessionState.SelectedShipId;
+        _runner = pick is not null && repo.Ships.ContainsKey(pick)
+            ? new BattleRunner(repo, scenario, playerShipOverride: pick)
+            : new BattleRunner(repo, scenario);
         _shotPath = OS.GetEnvironment("NT_FRONTEND_SHOT");
 
         // R2.2: the first USN ship answers to the helm; the chase camera follows it.
@@ -94,6 +100,7 @@ public partial class BattleView : Node2D
 
         GD.Print($"R2.2: battle wired, ships={_runner.Ships.Count}, " +
                  $"player={_playerShip?.TargetId ?? "none"}, result={_runner.Battle.Result}");
+        AppEnv.Info($"battle wired: ships={_runner.Ships.Count} player={_playerShip?.TargetId ?? "none"}");
     }
 
     private Ship? _playerShip;
@@ -388,8 +395,10 @@ public partial class BattleView : Node2D
         GetViewportRect().Size / 2f
         + new Vector2((float)world.X * PixelsPerMeter, (float)world.Z * PixelsPerMeter);
 
-    private readonly List<(Vec3 Pos, double Time, bool Hit)> _effects = [];
+    private readonly List<(Vec3 Pos, double Time, int Kind)> _effects = []; // 0 splash, 1 hit, 2 muzzle, 3 detonation
     private long _fxCursor;
+    private float DrawColorAlpha = 1f;
+    private readonly Dictionary<string, Vec3> _shipMounts = [];
 
     /// <summary>Collects recent impacts/detonations for the effect layer.</summary>
     private void CollectEffects()
@@ -399,15 +408,26 @@ public partial class BattleView : Node2D
             return;
         }
 
+        foreach (var ship in _runner.Ships)
+        {
+            _shipMounts[ship.TargetId] = ship.WorldPosition;
+        }
+
         foreach (var e in _runner.World.Events.After(_fxCursor))
         {
             switch (e)
             {
                 case NavyThunder.Core.Ballistics.ShellDetonation d:
-                    _effects.Add((d.Position, d.Time, d.TargetId.Length > 0));
+                    _effects.Add((d.Position, d.Time, d.TargetId.Length > 0 ? 1 : 0));
                     break;
                 case NavyThunder.Core.Ballistics.ProjectileArmorImpact impact:
-                    _effects.Add((impact.Position, impact.Time, true));
+                    _effects.Add((impact.Position, impact.Time, 1));
+                    break;
+                case NavyThunder.Core.Ships.GunFired gf when _shipMounts.TryGetValue(gf.ShipId, out var mount):
+                    _effects.Add((mount, gf.Time, 2));
+                    break;
+                case NavyThunder.Core.Ships.MagazineDetonation mag:
+                    _effects.Add((mag.Position, mag.Time, 3));
                     break;
             }
         }
@@ -455,12 +475,21 @@ public partial class BattleView : Node2D
         // Ships: definition-driven placeholder silhouette (R3.1: data -> visuals).
         foreach (var ship in _runner.Ships)
         {
-            if (!ship.Alive)
+            // R3.2: sunk ships settle below the waterline and fade over 30 s.
+            float sinkAlpha = 1f;
+            if (!ship.Alive && ship.DestroyedTime is double sunkAt)
             {
-                continue;
+                float since = (float)(_runner.World.Time - sunkAt);
+                if (since > 30f)
+                {
+                    continue;
+                }
+
+                sinkAlpha = 1f - since / 30f;
             }
 
-            var pos = ToScreen(ship.WorldPosition);
+            var pos = ToScreen(ship.WorldPosition) + new Vector2(0, (1f - sinkAlpha) * 18f);
+            DrawColorAlpha = sinkAlpha;
             double rad = ship.HeadingDeg * System.Math.PI / 180.0;
             var forward = new Vector2((float)System.Math.Sin(rad), (float)System.Math.Cos(rad));
             var side = new Vector2(-forward.Y, forward.X);
@@ -471,6 +500,7 @@ public partial class BattleView : Node2D
             float halfB = (float)ship.Definition.BeamM * PixelsPerMeter / 2f + 1.5f;
 
             Color teamColor = ship.Team?.Id == "usn" ? Colors.DodgerBlue : Colors.IndianRed;
+            teamColor = new Color(teamColor.R, teamColor.G, teamColor.B, DrawColorAlpha);
 
             if (_hullOutlines.TryGetValue(ship.Definition.Id, out var outline))
             {
@@ -518,14 +548,24 @@ public partial class BattleView : Node2D
                 }
             }
 
-            // Fire marks on burning hulls.
-            if (_runner!.Fire.Fires.Any(f => f.Active &&
-                ship.Parts.Values.Any(pt => f.HostId == $"{ship.TargetId}/{pt.Definition.Id}")))
+            // Fire marks + rising smoke on burning hulls (R3.2).
+            bool burning = _runner!.Fire.Fires.Any(f => f.Active &&
+                ship.Parts.Values.Any(pt => f.HostId == $"{ship.TargetId}/{pt.Definition.Id}"));
+            if (burning && ship.Alive)
             {
                 var flicker = 0.5f + 0.5f * (float)System.Math.Sin(t * 9.0 + pos.X);
                 DrawCircle(pos + forward * halfL * 0.2f, halfB * (1.1f + flicker * 0.4f),
                     new Color(1f, 0.45f, 0.05f, 0.55f));
+                for (int puff = 0; puff < 4; puff++)
+                {
+                    float ph = ((float)t * 0.35f + puff * 0.25f) % 1f;
+                    var smokePos = pos + forward * halfL * 0.2f - new Vector2(0, ph * 46f);
+                    DrawCircle(smokePos, 4f + ph * 9f,
+                        new Color(0.25f, 0.25f, 0.27f, (1f - ph) * 0.35f * sinkAlpha));
+                }
             }
+
+            DrawColorAlpha = 1f;
             DrawLine(pos - forward * halfL * 2.2f, pos - forward * halfL,
                 new Color(1, 1, 1, 0.35f), 2f);                   // wake
 
@@ -533,20 +573,30 @@ public partial class BattleView : Node2D
                 ship.TargetId, HorizontalAlignment.Left, -1, 12, Colors.LightGray);
         }
 
-        // R2.5 hit feedback: fading splash (water) / flash (hit) rings.
+        // R2.5/R3.2 effect layer: splash / hit flash / muzzle flash / magazine blast.
         var simT = _runner.World.Time;
-        _effects.RemoveAll(e => simT - e.Time > 2.0);
+        _effects.RemoveAll(e => simT - e.Time > (e.Kind == 3 ? 4.0 : 2.0));
         foreach (var e in _effects)
         {
             float age = (float)(simT - e.Time);
-            float alpha = 1f - age / 2f;
+            float life = e.Kind == 3 ? 4f : 2f;
+            float alpha = 1f - age / life;
             var p = ToScreen(e.Pos);
-            float rr = 4f + age * 14f;
-            var col = e.Hit
-                ? new Color(1f, 0.55f, 0.15f, alpha)
-                : new Color(0.85f, 0.95f, 1f, alpha * 0.8f);
-            DrawArc(p, rr, 0, Mathf.Tau, 24, col, 2f);
-            DrawCircle(p, 3f, new Color(col.R, col.G, col.B, alpha * 0.6f));
+            var col = e.Kind switch
+            {
+                0 => new Color(0.85f, 0.95f, 1f, alpha * 0.8f),
+                2 => new Color(1f, 0.85f, 0.3f, alpha),
+                3 => new Color(1f, 0.35f, 0.05f, alpha),
+                _ => new Color(1f, 0.55f, 0.15f, alpha),
+            };
+            float rr = e.Kind switch
+            {
+                2 => 6f + age * 8f,
+                3 => 12f + age * 30f,
+                _ => 4f + age * 14f,
+            };
+            DrawArc(p, rr, 0, Mathf.Tau, 24, col, e.Kind == 3 ? 3.5f : 2f);
+            DrawCircle(p, e.Kind == 3 ? 8f : 3f, new Color(col.R, col.G, col.B, alpha * 0.6f));
         }
 
         // R2.3 aim indicator: ring on the hovered enemy + reload status.

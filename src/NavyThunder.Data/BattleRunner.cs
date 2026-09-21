@@ -92,8 +92,13 @@ public sealed class BattleRunner
     public List<NavyThunder.Core.Aviation.Aircraft> Aircraft { get; } = [];
     public BallisticsSystem Ballistics { get; }
 
-    public BattleRunner(DataRepository repo, BattleScenario scenario)
+    /// <summary>R3.4: when set, the first friendly spawn uses this ship id instead
+    /// (ship-selection flow); the rest of the scenario is untouched.</summary>
+    private readonly string? _playerShipOverride;
+
+    public BattleRunner(DataRepository repo, BattleScenario scenario, string? playerShipOverride = null)
     {
+        _playerShipOverride = playerShipOverride;
         World = new SimulationWorld(fixedDeltaTime: 0.02, masterSeed: scenario.Seed);
         Battle = new BattleSystem { Victory = new VictoryConditions { TimeLimitS = scenario.MaxDurationS } };
 
@@ -136,9 +141,16 @@ public sealed class BattleRunner
             var teamRecord = new Team { Id = team.Id, Name = team.Name };
             Battle.Teams.Add(teamRecord);
             int shipIndex = 0;
+            int teamIndex = scenario.Teams.ToList().IndexOf(team);
             foreach (var spawn in team.Ships)
             {
-                var ship = ShipFactory.Create(repo.Ships[spawn.Ship], $"{team.Id}-{shipIndex++}");
+                var shipId = spawn.Ship;
+                if (teamIndex == 0 && shipIndex == 0 && repo.Ships.ContainsKey(_playerShipOverride ?? ""))
+                {
+                    shipId = _playerShipOverride!; // R3.4 ship selection
+                }
+
+                var ship = ShipFactory.Create(repo.Ships[shipId], $"{team.Id}-{shipIndex++}");
                 ship.Team = teamRecord;
                 ship.WorldPosition = new Vec3(spawn.X, 0, spawn.Z);
                 ship.HeadingDeg = spawn.HeadingDeg;
