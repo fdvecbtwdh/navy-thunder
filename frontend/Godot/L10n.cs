@@ -5,8 +5,8 @@ namespace NavyThunder.Frontend;
 /// <summary>R5: single version source for menu/report/packaging.</summary>
 public static class GameVersion
 {
-    public const string Version = "0.9.0";
-    public const string Channel = "rc";
+    public const string Version = "1.0.0";
+    public const string Channel = "";
     public static string Full => Channel.Length > 0 ? $"{Version}-{Channel}" : Version;
 }
 
