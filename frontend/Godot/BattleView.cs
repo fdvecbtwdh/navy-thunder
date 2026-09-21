@@ -81,6 +81,12 @@ public partial class BattleView : Node2D
             LoadHullOutline(ship.Definition.Id);
         }
 
+        _audio = new AudioManager();
+        AddChild(_audio);
+        var settings = UserSettings.Load();
+        AudioManager.ApplyVolumes(settings.MasterVolume, settings.EffectsVolume, 0.6f);
+        _audio.StartAmbient();
+
         _runner.HandControlToPlayer(_runner.Ships[0].TargetId);
         _playerShip = _runner.PlayerShip;
         var cam = new Camera2D { Enabled = true };
@@ -398,6 +404,7 @@ public partial class BattleView : Node2D
     private readonly List<(Vec3 Pos, double Time, int Kind)> _effects = []; // 0 splash, 1 hit, 2 muzzle, 3 detonation
     private long _fxCursor;
     private float DrawColorAlpha = 1f;
+    private AudioManager? _audio;
     private readonly Dictionary<string, Vec3> _shipMounts = [];
 
     /// <summary>Collects recent impacts/detonations for the effect layer.</summary>

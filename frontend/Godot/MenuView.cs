@@ -55,6 +55,56 @@ public partial class MenuView : CanvasLayer
         var spacer = new Control { CustomMinimumSize = new Vector2(0, 16) };
         root.AddChild(spacer);
 
+        // R3.4 settings: volumes + language, persisted to settings.json.
+        var settingsBtn = new Button { Text = "SETTINGS" };
+        root.AddChild(settingsBtn);
+
+        var panel = new VBoxContainer { Visible = false };
+        panel.AddThemeConstantOverride("separation", 8);
+        root.AddChild(panel);
+
+        var masterLabel = new Label { Text = $"Master {_settings.MasterVolume:0.00}" };
+        var master = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05, Value = _settings.MasterVolume };
+        master.ValueChanged += v =>
+        {
+            _settings.MasterVolume = (float)v;
+            masterLabel.Text = $"Master {v:0.00}";
+            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
+            _settings.Save();
+        };
+        panel.AddChild(masterLabel);
+        panel.AddChild(master);
+
+        var fxLabel = new Label { Text = $"Effects {_settings.EffectsVolume:0.00}" };
+        var fx = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05, Value = _settings.EffectsVolume };
+        fx.ValueChanged += v =>
+        {
+            _settings.EffectsVolume = (float)v;
+            fxLabel.Text = $"Effects {v:0.00}";
+            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
+            _settings.Save();
+        };
+        panel.AddChild(fxLabel);
+        panel.AddChild(fx);
+
+        var lang = new OptionButton { };
+        lang.AddItem("中文 zh-CN");
+        lang.AddItem("English en");
+        lang.Selected = _settings.Language == "en" ? 1 : 0;
+        lang.ItemSelected += idx =>
+        {
+            _settings.Language = (long)idx == 1 ? "en" : "zh-CN";
+            AppEnv.Info("language: " + _settings.Language);
+            _settings.Save();
+        };
+        panel.AddChild(new Label { Text = "Language (UI text arrives with R3.5):" });
+        panel.AddChild(lang);
+
+        settingsBtn.Pressed += () => panel.Visible = !panel.Visible;
+
+        var spacer2 = new Control { CustomMinimumSize = new Vector2(0, 16) };
+        root.AddChild(spacer2);
+
         var start = new Button { Text = "START BATTLE" };
         start.Pressed += () =>
         {
