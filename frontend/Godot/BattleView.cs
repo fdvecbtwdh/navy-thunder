@@ -177,7 +177,10 @@ public partial class BattleView : Node2D
         }
 
         bool smoke = OS.GetEnvironment("NT_FRONTEND_SMOKE") == "1";
-        double budget = smoke ? 0.25 : delta * _simSpeed;
+        // NT_FRONTEND_QUICK=1 fast-forwards (~200x) to reach the report quickly.
+        double budget = OS.GetEnvironment("NT_FRONTEND_QUICK") == "1"
+            ? delta * 200.0
+            : smoke ? 0.25 : delta * _simSpeed;
         _smokeAccumulator += budget;
         while (_smokeAccumulator >= _runner.World.FixedDeltaTime
                && _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.Running)
@@ -220,10 +223,80 @@ public partial class BattleView : Node2D
             var img = GetViewport().GetTexture().GetImage();
             img.SavePng(_shotPath);
             _shotTaken = true;
-            GD.Print($"R2.1 shot saved: {_shotPath} at t={_runner.World.Time:0}s");
         }
 
+        // R2.6: the battle report replaces the fight once the adjudicator calls it.
+        if (_runner.Battle.Result != NavyThunder.Core.Battle.BattleResult.Running)
+        {
+            ShowReport();
+        }
+        else
+        {
+            QueueRedraw();
+        }
+    }
+
+    private bool _reportShown;
+
+    /// <summary>R2.6 battle report overlay: outcome, losses, and the way back out.</summary>
+    private void ShowReport()
+    {
+        if (_reportShown)
+        {
+            return;
+        }
+
+        _reportShown = true;
+        var report = new CanvasLayer { Layer = 20 };
+        AddChild(report);
+
+        var box = new VBoxContainer
+        {
+            AnchorLeft = 0.5f, AnchorRight = 0.5f,
+            AnchorTop = 0.5f, AnchorBottom = 0.5f,
+        };
+        box.AddThemeConstantOverride("separation", 14);
+        report.AddChild(box);
+
+        var winner = _runner.Battle.WinnerTeamId ?? "none";
+        var title = new Label
+        {
+            Text = _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.TeamWin
+                ? $"VICTORY - {winner.ToUpperInvariant()}"
+                : "BATTLE OVER - DRAW",
+        };
+        title.AddThemeFontSizeOverride("font_size", 36);
+        box.AddChild(title);
+
+        int lost = _runner.Ships.Count(s => s.Lost);
+        var detail = new Label
+        {
+            Text = $"duration {_runner.World.Time:0}s  |  ships lost {lost}/{_runner.Ships.Count}  |  " +
+                   $"salvos {_runner.Battle.GunsFired}\n" +
+                   string.Join("\n", _runner.Ships.Select(s =>
+                       $"{s.TargetId}: {(s.Lost ? $"LOST ({s.KillReason})" : $"alive, crew {s.CrewAlive}/{s.Definition.CrewTotal}")}")),
+        };
+        detail.AddThemeColorOverride("font_color", Colors.LightGray);
+        box.AddChild(detail);
+
+        var again = new Button { Text = "BACK TO MENU" };
+        again.Pressed += () => GetTree().ChangeSceneToFile("res://Menu.tscn");
+        box.AddChild(again);
+
+        box.Ready += () => box.Position = -box.Size / 2f;
+        if (_shotPath.Length > 0)
+        {
+            // Capture after the overlay has actually drawn (defer past this frame).
+            var tree = GetTree();
+            var path = _shotPath;
+            tree.CreateTimer(0.5).Timeout += () =>
+            {
+                var img = ((Viewport)tree.Root).GetTexture().GetImage();
+                img.SavePng(path);
+            };
+        }
         QueueRedraw();
+        GD.Print($"R2.6 report shown: winner={winner} shipsLost={lost}");
     }
 
     private Vector2 ToScreen(Vec3 world) =>
@@ -325,7 +398,7 @@ public partial class BattleView : Node2D
         var lines = new List<string> { helm, guns };
         foreach (var section in ship.Sections)
         {
-            double frac = section.Definition.Hp <= 0 ? 0 : section.Hp / section.Definition.Hp;
+            double frac = System.Math.Clamp(section.Hp / section.Definition.Hp, 0.0, 1.0);
             bool fire = _runner!.Fire.Fires.Any(f => f.Active && ship.Parts.Values.Any(pt =>
                 pt.Definition.SectionId == section.Definition.Id &&
                 f.HostId == $"{ship.TargetId}/{pt.Definition.Id}"));
