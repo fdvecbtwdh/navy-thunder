@@ -1,0 +1,3 @@
+battle 'r1_acceptance': 6 ships, seed 20260921
+diag: fires=11 rollCount=155 rollSuccess=11 penImpacts=73 aircraftLost=2 aaShots=1027 bursts=581 applications=72
+report -> C:/Users/gusiy/AppData/Local/Temp/soak_r2.json
