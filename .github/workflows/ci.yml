@@ -5,7 +5,8 @@ on:
   pull_request:
 
 jobs:
-  build-test-calibrate:
+  # Fast feedback: everything except the three dedicated scenario-battle gates.
+  unit-gates:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,9 +15,43 @@ jobs:
           dotnet-version: 10.0.x
       - name: Build
         run: dotnet build NavyThunder.slnx -c Release
-      - name: Test
-        run: dotnet test NavyThunder.slnx -c Release
+      - name: Unit and scenario tests (excl. perf/golden/acceptance gates)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "FullyQualifiedName!~PerformanceBudget&FullyQualifiedName!~GoldenFile&FullyQualifiedName!~HeadlessAcceptance"
       - name: Data schema validation (full dataset load)
         run: dotnet run --project src/NavyThunder.ProtectionAnalysis -c Release -- summary
       - name: Calibration gate (stat-card regression)
         run: dotnet run --project src/NavyThunder.ProtectionAnalysis -c Release -- report
+
+  # R1.6 gate: the heaviest supported engagement must simulate >= 1x real time.
+  performance-budget-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build NavyThunder.slnx -c Release
+      - name: Performance budget gate (6v6 >= 1x realtime, fragment burst bounded)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "FullyQualifiedName~PerformanceBudget"
+
+  # W4.3 gate: the deterministic bb_duel fingerprint must match the committed golden.
+  golden-file-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build NavyThunder.slnx -c Release
+      - name: Golden-file fingerprint gate (bb_duel battle summary)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "FullyQualifiedName~GoldenFile"
