@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
-"""Generate data/shells/wt_naval_shells.json (kind: shellSet) from the AP bullets
-measured in the fleet's main-gun blks (refs recorded by extract_ship_weapons.py).
+"""Generate a shellSet (AP or HE) from the bullets measured in the fleet's
+main-gun blks (refs recorded by extract_ship_weapons.py).
 
-Each distinct caliber gets one AP shell carrying the datamine de Marre K, mass,
-muzzle velocity and explosive mass. The engine's fuse rules (fuseDelayS,
-explodeThresholdMm) are engine-side approximations flagged in the source notes.
+--mode ap (default): data/shells/wt_naval_shells.json — one AP shell per
+distinct caliber, carrying the datamine de Marre K.
+--mode he: data/shells/wt_naval_he_shells.json — the biggest-filler HE/Common
+bullet per caliber (category HE: x1 ignition multiplier in the damage bridge).
+
+Fuse rules (fuseDelayS/explodeThresholdMm) are engine-side approximations
+flagged in the source notes.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -18,9 +23,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from blk_decode import decode_blk, load_namemap  # noqa: E402
 
 
-def ap_bullet_from_gun(path: Path, nm) -> dict | None:
+def bullets_of(path: Path, nm):
     blk = decode_blk(path.read_bytes(), nm)
-    best = None
     bullets = []
     if blk.blocks.get("bullet"):
         bullets.append(blk.blocks["bullet"][0])
@@ -30,32 +34,56 @@ def ap_bullet_from_gun(path: Path, nm) -> dict | None:
             for sub in b.blocks.values():
                 for s2 in sub:
                     bullets.extend(s2.blocks.get("bullet", []))
+    recs = []
     for bu in bullets:
         dmg = bu.blocks.get("damage", [None])[0]
         kinetic = dmg.blocks.get("kinetic", [None])[0] if dmg is not None else None
         dm_k = kinetic.get("demarrePenetrationK") if kinetic is not None else None
-        if dm_k is None or dm_k < 0.5:
-            continue
-        rec = {
+        recs.append((dm_k, {
             "massKg": bu.get("mass"),
             "caliberMm": (bu.get("caliber") or 0) * 1000.0,
             "muzzleVelMs": bu.get("speed"),
             "explosiveMassKg": bu.get("explosiveMass") or 0.0,
             "demarrePenetrationK": dm_k,
-        }
-        # prefer the heaviest AP (naval AP fill is small; heavier = later APC)
-        if best is None or rec["massKg"] > best["massKg"]:
-            best = rec
-    return best
+        }))
+    return recs
+
+
+def pick_bullet(path: Path, nm, mode: str):
+    best = None
+    seen = set()
+    for dm_k, rec in bullets_of(path, nm):
+        if rec["massKg"] is None or rec["muzzleVelMs"] is None:
+            continue
+        is_ap = dm_k is not None and dm_k >= 0.5
+        if mode == "ap" and not is_ap:
+            continue
+        if mode == "he" and is_ap:
+            continue
+        sig = (round(rec["massKg"], 1), dm_k)
+        if sig in seen:
+            continue
+        seen.add(sig)
+        if mode == "ap":
+            if best is None or rec["massKg"] > best[0]["massKg"]:
+                best = (rec, dm_k)
+        else:
+            if best is None or rec["explosiveMassKg"] > best[0]["explosiveMassKg"]:
+                best = (rec, dm_k or 0.0)
+    return best  # (rec, dm_k) or None
 
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", choices=["ap", "he"], default="ap")
     ap.add_argument("--weapons-dir", default="_wt_audit/weapons/gamedata/weapons")
     ap.add_argument("--namemap", default="_wt_audit/nm_full.bin")
     ap.add_argument("--weapons-ref", default="data/reference/wt_ship_weapons.json")
-    ap.add_argument("--out", default="data/shells/wt_naval_shells.json")
+    ap.add_argument("--out", default=None)
     args = ap.parse_args()
+    out = args.out or (
+        "data/shells/wt_naval_shells.json" if args.mode == "ap"
+        else "data/shells/wt_naval_he_shells.json")
 
     nm = load_namemap(open(args.namemap, "rb").read())
     doc = json.loads(Path(args.weapons_ref).read_text(encoding="utf-8"))
@@ -74,45 +102,48 @@ def main():
                 print(f"  skip (no gun blk): {rel}")
                 continue
             p = cand[0]
-        apb = ap_bullet_from_gun(p, nm)
-        if not apb:
-            print(f"  skip (no AP bullet): {p.name}")
+        picked = pick_bullet(p, nm, args.mode)
+        if picked is None:
+            print(f"  skip (no {args.mode.upper()} bullet): {p.name}")
             continue
-        if apb["caliberMm"] < 100:
-            print(f"  skip (sub-100mm AA round): {p.name}")
+        rec, dm_k = picked
+        if rec["caliberMm"] < 100:
+            print(f"  skip (sub-100mm): {p.name}")
             continue
         # nominal caliber comes from the gun file name ("380mm_52_skc_34..."),
         # the measured bullet caliber (379.6) stays in caliberMm
-        import re
         m = re.search(r"(\d+)mm", p.stem)
-        cal = int(m.group(1)) if m else round(apb["caliberMm"])
-        shells = [sh for sh in shells if sh["id"] != f"wt_{cal}mm_ap"]
+        cal = int(m.group(1)) if m else round(rec["caliberMm"])
+        shells = [sh for sh in shells if sh["id"] != f"wt_{cal}mm_{args.mode}"]
+        fuse_delay = 0.03 if args.mode == "ap" else 0.0
+        threshold = round(rec["caliberMm"] * 0.1, 1) if args.mode == "ap" else 5.0
         shells.append({
-            "id": f"wt_{cal}mm_ap",
-            "displayName": f"{cal}mm AP (wt extract)",
-            "category": "AP",
-            "caliberMm": apb["caliberMm"],
-            "massKg": apb["massKg"],
-            "muzzleVelocityMs": apb["muzzleVelMs"],
-            "explosiveMassKg": round(apb["explosiveMassKg"], 2),
-            "fuseDelayS": 0.03,
-            "explodeThresholdMm": round(apb["caliberMm"] * 0.1, 1),
-            "demarrePenetrationK": apb["demarrePenetrationK"],
+            "id": f"wt_{cal}mm_{args.mode}",
+            "displayName": f"{cal}mm {args.mode.upper()} (wt extract)",
+            "category": "AP" if args.mode == "ap" else "HE",
+            "caliberMm": rec["caliberMm"],
+            "massKg": rec["massKg"],
+            "muzzleVelocityMs": rec["muzzleVelMs"],
+            "explosiveMassKg": round(rec["explosiveMassKg"], 2),
+            "fuseDelayS": fuse_delay,
+            "explodeThresholdMm": threshold,
+            "demarrePenetrationK": dm_k,
             "source": {
                 "origin": "wt_client_extract",
-                "notes": "AP bullet measured from the client gun blk "
+                "notes": f"{args.mode.upper()} bullet measured from the client gun blk "
                          f"({Path(ref).name}); fuseDelay/threshold are engine "
                          "approximations; dragCoefficientScale left at 1.0 "
                          "(no official range table fitted yet).",
                 "versionStamp": "extracted 2026-09-21",
             },
         })
-        print(f"  wt_{cal}mm_ap: {apb['massKg']:.0f}kg {apb['muzzleVelMs']:.0f}m/s K={apb['demarrePenetrationK']}")
+        print(f"  wt_{cal}mm_{args.mode}: {rec['massKg']:.0f}kg {rec['muzzleVelMs']:.0f}m/s "
+              f"fill={rec['explosiveMassKg']:.1f}kg K={dm_k}")
 
     doc = {"schemaVersion": 1, "kind": "shellSet", "shells": shells}
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
-    print(f"{len(shells)} shells -> {args.out}")
+    Path(out).parent.mkdir(parents=True, exist_ok=True)
+    Path(out).write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+    print(f"{len(shells)} shells -> {out}")
 
 
 if __name__ == "__main__":

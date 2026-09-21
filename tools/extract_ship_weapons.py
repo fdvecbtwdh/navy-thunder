@@ -149,7 +149,7 @@ def extract_ship(unit_blk_path: Path, weapons_dir: Path, nm):
             "turrets": main["mounts"],
             "traverseDegPerS": main["traverse"],
             "gunRef": gun_refs[str(main_mm)],
-            **{k: main["gun"][k] for k in ("shellMassKg", "muzzleVelMs", "explosiveMassKg", "reloadS")},
+            **{k: main["gun"][k] for k in ("shellMassKg", "muzzleVelMs", "explosiveMassKg", "reloadS", "heBullet")},
         },
         "secondaries": secondaries,
         "allCalibers": {str(k): groups[k]["mounts"] for k in sorted(groups, reverse=True)},

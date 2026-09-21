@@ -127,7 +127,7 @@ def load_wt_units(path="data/reference/wt_ship_units.json"):
     return {s["id"]: s for s in doc.get("ships", [])}
 
 
-def build_guns(name, cls, deck_y, half_b, turret_group_count, barrels, shell, rpm, range_m, traverse):
+def build_guns(name, cls, deck_y, half_b, turret_group_count, barrels, shell, rpm, range_m, traverse, he_shell=None):
     guns = []
     for g in range(turret_group_count):
         guns.append({
@@ -136,6 +136,7 @@ def build_guns(name, cls, deck_y, half_b, turret_group_count, barrels, shell, rp
             "rangeM": range_m,
             "traverseDegPerS": traverse,
             "horizontalMrad": 2.5, "verticalMrad": 1.5,
+            **({"heShellId": he_shell} if he_shell else {}),
         })
     return guns
 
@@ -144,7 +145,7 @@ def capital_like(cls):
     return cls in ("Battleship", "Battlecruiser", "Cruiser")
 
 
-def build_ship(row, wt_units, wt_weapons, shell_catalog):
+def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
     (name, cls, disp, length, beam, draft, crew, repair, survive,
      belt_mm, deck_mm, turret_groups, generation) = row
 
@@ -289,8 +290,11 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog):
 
     turn_rate = CLASS_MOBILITY[cls][1]
     default_traverse = 6 if capital_like(cls) else 12
+    he_shell = None
+    if wpn and wpn.get("heBullet") and wpn["heBullet"].get("caliberMm", 0) >= 100:
+        he_shell = pick_shell(he_catalog, wpn["heBullet"]["caliberMm"])
     guns = build_guns(name, cls, deck_y, half_b, turret_groups, barrels,
-                      shell, rpm, range_m, traverse or default_traverse)
+                      shell, rpm, range_m, traverse or default_traverse, he_shell)
 
     # R3 secondaries: measured 100-155mm batteries fire as independent groups
     # (own range/rpm/shell). Each gets small open turret parts so the
@@ -374,6 +378,14 @@ def pick_shell(catalog, cal_mm):
         t[0]))[0]
 
 
+def load_shell_set(path):
+    p = Path(path)
+    if not p.exists():
+        return []
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    return [(sh["id"], sh.get("caliberMm") or 0) for sh in doc.get("shells", [])]
+
+
 def load_shell_catalog(shells_dir="data/shells"):
     """[(shellId, caliberMm)] across every shellSet on disk."""
     cat = []
@@ -401,7 +413,8 @@ def main():
     wt_units = load_wt_units()
     wt_weapons = load_wt_weapons()
     shell_catalog = load_shell_catalog()
-    ships = [build_ship(row, wt_units, wt_weapons, shell_catalog) for row in FLEET]
+    he_catalog = load_shell_set("data/shells/wt_naval_he_shells.json")
+    ships = [build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog) for row in FLEET]
     doc = {
         "schemaVersion": 1,
         "kind": "shipSet",

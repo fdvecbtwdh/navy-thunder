@@ -14,7 +14,14 @@
     "shellMassKg": 800.7999877929688,
     "muzzleVelMs": 820.0,
     "explosiveMassKg": 62.88999938964844,
-    "reloadS": 22.72727285042282
+    "reloadS": 22.72727285042282,
+    "heBullet": {
+     "massKg": 800.7999877929688,
+     "caliberMm": 379.9999952316284,
+     "muzzleVelMs": 820.0,
+     "explosiveMassKg": 62.88999938964844,
+     "demarrePenetrationK": 0.1599999964237213
+    }
    },
    "secondaries": [
     {
@@ -56,7 +63,14 @@
     "shellMassKg": 635.5800170898438,
     "muzzleVelMs": 780.0,
     "explosiveMassKg": 62.400001525878906,
-    "reloadS": 30.03002897112296
+    "reloadS": 30.03002897112296,
+    "heBullet": {
+     "massKg": 621.0,
+     "caliberMm": 356.00000619888306,
+     "muzzleVelMs": 805.0,
+     "explosiveMassKg": 29.520000457763672,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -97,7 +111,14 @@
     "shellMassKg": 862.0,
     "muzzleVelMs": 803.0,
     "explosiveMassKg": 69.66999816894531,
-    "reloadS": 29.940120529874598
+    "reloadS": 29.940120529874598,
+    "heBullet": {
+     "massKg": 862.0,
+     "caliberMm": 405.9999883174896,
+     "muzzleVelMs": 803.0,
+     "explosiveMassKg": 69.66999816894531,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -128,7 +149,14 @@
     "shellMassKg": 25.0,
     "muzzleVelMs": 792.0,
     "explosiveMassKg": 3.2880001068115234,
-    "reloadS": 2.7777776673988104
+    "reloadS": 2.7777776673988104,
+    "heBullet": {
+     "massKg": 25.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -147,7 +175,14 @@
     "shellMassKg": 25.0,
     "muzzleVelMs": 762.0,
     "explosiveMassKg": null,
-    "reloadS": 4.999999925494195
+    "reloadS": 4.999999925494195,
+    "heBullet": {
+     "massKg": 25.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 762.0,
+     "explosiveMassKg": null,
+     "demarrePenetrationK": null
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -164,7 +199,14 @@
     "shellMassKg": 25.0,
     "muzzleVelMs": 792.0,
     "explosiveMassKg": 3.2880001068115234,
-    "reloadS": 2.7777776673988104
+    "reloadS": 2.7777776673988104,
+    "heBullet": {
+     "massKg": 25.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -183,7 +225,14 @@
     "shellMassKg": 25.0,
     "muzzleVelMs": 792.0,
     "explosiveMassKg": 3.2880001068115234,
-    "reloadS": 2.7777776673988104
+    "reloadS": 2.7777776673988104,
+    "heBullet": {
+     "massKg": 25.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -202,7 +251,14 @@
     "shellMassKg": 23.0,
     "muzzleVelMs": 910.0,
     "explosiveMassKg": 2.200000047683716,
-    "reloadS": 6.002400822086132
+    "reloadS": 6.002400822086132,
+    "heBullet": {
+     "massKg": 23.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 910.0,
+     "explosiveMassKg": 2.200000047683716,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -220,7 +276,14 @@
     "shellMassKg": 23.0,
     "muzzleVelMs": 910.0,
     "explosiveMassKg": 2.200000047683716,
-    "reloadS": 6.002400822086132
+    "reloadS": 6.002400822086132,
+    "heBullet": {
+     "massKg": 23.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 910.0,
+     "explosiveMassKg": 2.200000047683716,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -238,7 +301,14 @@
     "shellMassKg": 22.68000030517578,
     "muzzleVelMs": 808.0,
     "explosiveMassKg": 3.0,
-    "reloadS": 4.999999925494195
+    "reloadS": 4.999999925494195,
+    "heBullet": {
+     "massKg": 22.68000030517578,
+     "caliberMm": 119.99999731779099,
+     "muzzleVelMs": 808.0,
+     "explosiveMassKg": 3.0,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [
     {
@@ -270,7 +340,14 @@
     "shellMassKg": 25.0,
     "muzzleVelMs": 792.0,
     "explosiveMassKg": 3.2880001068115234,
-    "reloadS": 2.7777776673988104
+    "reloadS": 2.7777776673988104,
+    "heBullet": {
+     "massKg": 25.0,
+     "caliberMm": 127.00000405311584,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [],
    "allCalibers": {
@@ -288,7 +365,14 @@
     "shellMassKg": 47.599998474121094,
     "muzzleVelMs": 812.0,
     "explosiveMassKg": 6.0,
-    "reloadS": 5.98802410597492
+    "reloadS": 5.98802410597492,
+    "heBullet": {
+     "massKg": 47.599998474121094,
+     "caliberMm": 151.99999511241913,
+     "muzzleVelMs": 812.0,
+     "explosiveMassKg": 6.0,
+     "demarrePenetrationK": 0.15000000596046448
+    }
    },
    "secondaries": [
     {
@@ -318,7 +402,14 @@
     "shellMassKg": 117.9000015258789,
     "muzzleVelMs": 823.0,
     "explosiveMassKg": 4.940000057220459,
-    "reloadS": 15.151515233615214
+    "reloadS": 15.151515233615214,
+    "heBullet": {
+     "massKg": 117.9000015258789,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 823.0,
+     "explosiveMassKg": 4.940000057220459,
+     "demarrePenetrationK": 0.3799999952316284
+    }
    },
    "secondaries": [
     {
@@ -349,7 +440,14 @@
     "shellMassKg": 117.9000015258789,
     "muzzleVelMs": 823.0,
     "explosiveMassKg": 4.940000057220459,
-    "reloadS": 17.14383695324515
+    "reloadS": 17.14383695324515,
+    "heBullet": {
+     "massKg": 117.9000015258789,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 823.0,
+     "explosiveMassKg": 4.940000057220459,
+     "demarrePenetrationK": 0.3799999952316284
+    }
    },
    "secondaries": [
     {
@@ -380,7 +478,14 @@
     "shellMassKg": 125.4000015258789,
     "muzzleVelMs": 835.0,
     "explosiveMassKg": 8.15999984741211,
-    "reloadS": 12.048193229648177
+    "reloadS": 12.048193229648177,
+    "heBullet": {
+     "massKg": 125.4000015258789,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 835.0,
+     "explosiveMassKg": 8.15999984741211,
+     "demarrePenetrationK": 0.1599999964237213
+    }
    },
    "secondaries": [
     {
@@ -410,7 +515,14 @@
     "shellMassKg": 125.4000015258789,
     "muzzleVelMs": 835.0,
     "explosiveMassKg": 8.15999984741211,
-    "reloadS": 12.048193229648177
+    "reloadS": 12.048193229648177,
+    "heBullet": {
+     "massKg": 125.4000015258789,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 835.0,
+     "explosiveMassKg": 8.15999984741211,
+     "demarrePenetrationK": 0.1599999964237213
+    }
    },
    "secondaries": [
     {
@@ -441,7 +553,14 @@
     "shellMassKg": 122.0,
     "muzzleVelMs": 925.0,
     "explosiveMassKg": 8.883999824523926,
-    "reloadS": 12.004801644172264
+    "reloadS": 12.004801644172264,
+    "heBullet": {
+     "massKg": 122.0,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 925.0,
+     "explosiveMassKg": 8.883999824523926,
+     "demarrePenetrationK": 0.1599999964237213
+    }
    },
    "secondaries": [
     {
@@ -472,7 +591,14 @@
     "shellMassKg": 117.9000015258789,
     "muzzleVelMs": 853.0,
     "explosiveMassKg": 4.940000057220459,
-    "reloadS": 17.14383695324515
+    "reloadS": 17.14383695324515,
+    "heBullet": {
+     "massKg": 117.9000015258789,
+     "caliberMm": 202.9999941587448,
+     "muzzleVelMs": 853.0,
+     "explosiveMassKg": 4.940000057220459,
+     "demarrePenetrationK": 0.3799999952316284
+    }
    },
    "secondaries": [
     {
@@ -503,7 +629,14 @@
     "shellMassKg": 635.0,
     "muzzleVelMs": 823.0,
     "explosiveMassKg": 47.619998931884766,
-    "reloadS": 39.99999940395356
+    "reloadS": 39.99999940395356,
+    "heBullet": {
+     "massKg": 635.0,
+     "caliberMm": 356.00000619888306,
+     "muzzleVelMs": 823.0,
+     "explosiveMassKg": 47.619998931884766,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -534,7 +667,14 @@
     "shellMassKg": 862.0,
     "muzzleVelMs": 803.0,
     "explosiveMassKg": 69.66999816894531,
-    "reloadS": 39.99999940395356
+    "reloadS": 39.99999940395356,
+    "heBullet": {
+     "massKg": 862.0,
+     "caliberMm": 405.9999883174896,
+     "muzzleVelMs": 803.0,
+     "explosiveMassKg": 69.66999816894531,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -565,7 +705,14 @@
     "shellMassKg": 862.0,
     "muzzleVelMs": 803.0,
     "explosiveMassKg": 69.66999816894531,
-    "reloadS": 29.940120529874598
+    "reloadS": 29.940120529874598,
+    "heBullet": {
+     "massKg": 862.0,
+     "caliberMm": 405.9999883174896,
+     "muzzleVelMs": 803.0,
+     "explosiveMassKg": 69.66999816894531,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -597,7 +744,14 @@
     "shellMassKg": 862.0,
     "muzzleVelMs": 803.0,
     "explosiveMassKg": 69.66999816894531,
-    "reloadS": 29.940120529874598
+    "reloadS": 29.940120529874598,
+    "heBullet": {
+     "massKg": 862.0,
+     "caliberMm": 405.9999883174896,
+     "muzzleVelMs": 803.0,
+     "explosiveMassKg": 69.66999816894531,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -628,7 +782,14 @@
     "shellMassKg": 936.0,
     "muzzleVelMs": 805.0,
     "explosiveMassKg": 44.29999923706055,
-    "reloadS": 21.50537583411451
+    "reloadS": 21.50537583411451,
+    "heBullet": {
+     "massKg": 936.0,
+     "caliberMm": 409.9999964237213,
+     "muzzleVelMs": 805.0,
+     "explosiveMassKg": 44.29999923706055,
+     "demarrePenetrationK": 0.18000000715255737
+    }
    },
    "secondaries": [
     {
@@ -669,7 +830,14 @@
     "shellMassKg": 881.0,
     "muzzleVelMs": 752.0,
     "explosiveMassKg": 61.66999816894531,
-    "reloadS": 30.211478980697596
+    "reloadS": 30.211478980697596,
+    "heBullet": {
+     "massKg": 881.0,
+     "caliberMm": 381.00001215934753,
+     "muzzleVelMs": 752.0,
+     "explosiveMassKg": 61.66999816894531,
+     "demarrePenetrationK": 0.4000000059604645
+    }
    },
    "secondaries": [
     {

@@ -16,7 +16,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 28.75,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 2160.0,
@@ -298,7 +299,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 10.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 1600.0,
@@ -579,7 +581,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 25.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 3000.0,
@@ -861,7 +864,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 25.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 3000.0,
@@ -1143,7 +1147,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 2300.0,
@@ -1425,7 +1430,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 1970.0,
@@ -1977,7 +1983,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 10.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_120mm_he"
     },
     {
      "id": "rn_tribal_gun_sec1",
@@ -2286,7 +2293,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 25.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     },
     {
      "id": "uss_atlanta_gun_B",
@@ -2297,7 +2305,8 @@
      "rangeM": 15000,
      "traverseDegPerS": 25.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_127mm_he"
     }
    ],
    "displacementT": 8800.0,
@@ -2637,7 +2646,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 5.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_152mm_he"
     },
     {
      "id": "uss_brooklyn_gun_B",
@@ -2648,7 +2658,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 5.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_152mm_he"
     },
     {
      "id": "uss_brooklyn_gun_sec1",
@@ -3015,7 +3026,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 5.300000190734863,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_baltimore_gun_B",
@@ -3026,7 +3038,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 5.300000190734863,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_baltimore_gun_sec1",
@@ -3393,7 +3406,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_new_orleans_gun_B",
@@ -3404,7 +3418,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_new_orleans_gun_sec1",
@@ -3771,7 +3786,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "ijn_myoko_gun_B",
@@ -3782,7 +3798,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "ijn_myoko_gun_sec1",
@@ -4149,7 +4166,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "ijn_mogami_gun_B",
@@ -4160,7 +4178,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "ijn_mogami_gun_sec1",
@@ -4527,7 +4546,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 8.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "dkm_prinz_eugen_gun_B",
@@ -4538,7 +4558,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 8.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "dkm_prinz_eugen_gun_sec1",
@@ -5244,7 +5265,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_northampton_gun_B",
@@ -5255,7 +5277,8 @@
      "rangeM": 18000,
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_203mm_he"
     },
     {
      "id": "uss_northampton_gun_sec1",
@@ -5961,7 +5984,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "uss_nevada_gun_B",
@@ -5972,7 +5996,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "uss_nevada_gun_C",
@@ -5983,7 +6008,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "uss_nevada_gun_sec1",
@@ -7140,7 +7166,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_colorado_gun_B",
@@ -7151,7 +7178,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_colorado_gun_C",
@@ -7162,7 +7190,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_colorado_gun_sec1",
@@ -7559,7 +7588,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_north_carolina_gun_B",
@@ -7570,7 +7600,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_north_carolina_gun_C",
@@ -7581,7 +7612,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_north_carolina_gun_sec1",
@@ -7978,7 +8010,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_south_dakota_gun_B",
@@ -7989,7 +8022,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_south_dakota_gun_C",
@@ -8000,7 +8034,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_south_dakota_gun_sec1",
@@ -8397,7 +8432,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_iowa_gun_B",
@@ -8408,7 +8444,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_iowa_gun_C",
@@ -8419,7 +8456,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_406mm_he"
     },
     {
      "id": "uss_iowa_gun_sec1",
@@ -9196,7 +9234,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "ijn_kongo_gun_B",
@@ -9207,7 +9246,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "ijn_kongo_gun_C",
@@ -9218,7 +9258,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_356mm_he"
     },
     {
      "id": "ijn_kongo_gun_sec1",
@@ -9642,7 +9683,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_410mm_he"
     },
     {
      "id": "ijn_nagato_gun_B",
@@ -9653,7 +9695,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_410mm_he"
     },
     {
      "id": "ijn_nagato_gun_C",
@@ -9664,7 +9707,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_410mm_he"
     },
     {
      "id": "ijn_nagato_gun_sec1",
@@ -10088,7 +10132,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_381mm_he"
     },
     {
      "id": "rn_renown_gun_B",
@@ -10099,7 +10144,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_381mm_he"
     },
     {
      "id": "rn_renown_gun_C",
@@ -10110,7 +10156,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_381mm_he"
     },
     {
      "id": "rn_renown_gun_sec1",
@@ -10507,7 +10554,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_380mm_he"
     },
     {
      "id": "rms_bismarck_gun_B",
@@ -10518,7 +10566,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_380mm_he"
     },
     {
      "id": "rms_bismarck_gun_C",
@@ -10529,7 +10578,8 @@
      "rangeM": 30000,
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
-     "verticalMrad": 1.5
+     "verticalMrad": 1.5,
+     "heShellId": "wt_380mm_he"
     },
     {
      "id": "rms_bismarck_gun_sec1",

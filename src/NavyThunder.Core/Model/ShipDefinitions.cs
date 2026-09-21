@@ -153,6 +153,9 @@ public sealed record NavalGunDefinition
 
     public required string ShellId { get; init; }
 
+    /// <summary>Optional alternate shell (HE) the crew can switch to (R3 player toggle).</summary>
+    public string? HeShellId { get; init; }
+
     public required int Barrels { get; init; }
 
     /// <summary>Cyclic rate per barrel (rounds/minute) with ready-rack supply.</summary>

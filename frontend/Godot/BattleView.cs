@@ -224,6 +224,34 @@ public partial class BattleView : Node2D
         }
     }
 
+    private bool _playerHe;
+    private bool _rHeld;
+
+    /// <summary>R3: R toggles the main battery between AP and HE for every player gun.</summary>
+    private void ApplyShellToggle()
+    {
+        if (_playerShip is null || _runner is null)
+        {
+            return;
+        }
+
+        bool rHeld = Input.IsKeyPressed(Key.R);
+        if (rHeld && !_rHeld)
+        {
+            _playerHe = !_playerHe;
+            foreach (var gun in _playerShip.Definition.Guns)
+            {
+                string? shell = _playerHe ? gun.HeShellId : null;
+                if (shell is not null || !_playerHe)
+                {
+                    _runner.Guns.SetShell(_playerShip.TargetId, gun.Id, shell);
+                }
+            }
+        }
+
+        _rHeld = rHeld;
+    }
+
     public override void _Process(double delta)
     {
         if (_runner is null)
@@ -246,6 +274,7 @@ public partial class BattleView : Node2D
 
         ApplyHelm(delta);
         ApplyFireControl();
+        ApplyShellToggle();
         CollectEffects();
 
         if (_playerShip is not null && _camera is not null)
@@ -540,8 +569,10 @@ public partial class BattleView : Node2D
               $"THR {ship.ThrottleCommand:0.00}  RUD {ship.RudderCommand:+0.00;-0.00;0.00}"
             : $"{ship.TargetId} DESTROYED";
         double reload = _runner!.Guns.ReloadRemainingOf(ship.TargetId);
+        string shellType = _playerHe ? "HE" : "AP";
         string guns = ship.Alive
-            ? (reload > 0 ? $"GUNS reloading {reload:0.0}s" : "GUNS ready") + "  |  hover an enemy to engage"
+            ? (reload > 0 ? $"GUNS reloading {reload:0.0}s" : "GUNS ready") +
+              $"  SHELL {shellType}  |  hover an enemy to engage"
             : "";
 
         // Hull sections: hp bar + fire/flood markers (R2.4 damage HUD).
@@ -560,7 +591,7 @@ public partial class BattleView : Node2D
                       (section.Destroyed ? "  DESTROYED" : ""));
         }
 
-        lines.Add($"CREW {ship.CrewAlive}/{ship.Definition.CrewTotal}  |  W/S throttle  A/D rudder  X center  " +
+        lines.Add($"CREW {ship.CrewAlive}/{ship.Definition.CrewTotal}  |  W/S throttle  A/D rudder  X center  R shell  " +
                   $"|  t={_runner!.World.Time:0}s");
         return string.Join("\n", lines);
     }

@@ -45,6 +45,7 @@ public sealed class GunSystem : ISimulationSystem
         public required Vec3 MountPosition; // ship-local
         public double ReloadRemainingS;
         public double TurretHeadingDeg; // relative to ship heading
+        public string? ShellOverride;   // crew-selected shell (AP/HE toggle)
     }
 
     private readonly IReadOnlyDictionary<string, ShellDefinition> _shells;
@@ -115,6 +116,32 @@ public sealed class GunSystem : ISimulationSystem
 
     public void CeaseFire(string shipId, string gunId) => _orders.Remove((shipId, gunId));
 
+    /// <summary>Crew shell selection (R3 AP/HE toggle); null reverts to the data shell.</summary>
+    public void SetShell(string shipId, string gunId, string? shellId)
+    {
+        foreach (var gun in _guns)
+        {
+            if (gun.Ship.TargetId == shipId && gun.Definition.Id == gunId)
+            {
+                gun.ShellOverride = shellId;
+            }
+        }
+    }
+
+    /// <summary>Current shell of a ship's first gun (HUD readout).</summary>
+    public string ShellOf(string shipId)
+    {
+        foreach (var gun in _guns)
+        {
+            if (gun.Ship.TargetId == shipId)
+            {
+                return gun.ShellOverride ?? gun.Definition.ShellId;
+            }
+        }
+
+        return "";
+    }
+
     public GunOrder? GetOrder(string shipId, string gunId) =>
         _orders.TryGetValue((shipId, gunId), out var order) ? order : null;
 
@@ -140,7 +167,7 @@ public sealed class GunSystem : ISimulationSystem
                 continue;
             }
 
-            if (!_shells.TryGetValue(gun.Definition.ShellId, out var shell))
+            if (!_shells.TryGetValue(gun.ShellOverride ?? gun.Definition.ShellId, out var shell))
             {
                 continue;
             }
