@@ -1,5 +1,6 @@
 using Godot;
 using NavyThunder.Core.Mathematics;
+using NavyThunder.Core.Model;
 using NavyThunder.Core.Ships;
 using NavyThunder.Data;
 
@@ -25,7 +26,20 @@ public partial class BattleView : Node2D
     private static readonly Color SeaBandColor = new(0.10f, 0.28f, 0.40f);
     private static readonly Color SkyColor = new(0.55f, 0.70f, 0.82f);
     private static readonly Color IslandColor = new(0.30f, 0.36f, 0.22f);
-    private const float PixelsPerMeter = 0.095f;
+    private static float PixelsPerMeter = 0.14f;
+    private const float ZoomMin = 0.04f;
+    private const float ZoomMax = 0.6f;
+
+    /// <summary>Mouse-wheel battle zoom (R3.1: inspect silhouettes at hull scale).</summary>
+    public override void _UnhandledInput(InputEvent e)
+    {
+        if (e is InputEventMouseButton m && m.Pressed &&
+            (m.ButtonIndex == MouseButton.WheelUp || m.ButtonIndex == MouseButton.WheelDown))
+        {
+            float factor = m.ButtonIndex == MouseButton.WheelUp ? 1.15f : 1f / 1.15f;
+            PixelsPerMeter = System.Math.Clamp(PixelsPerMeter * factor, ZoomMin, ZoomMax);
+        }
+    }
 
     // Decorative islands (world coordinates, metres).
     private static readonly (float X, float Z, float Radius)[] Islands =
@@ -368,7 +382,7 @@ public partial class BattleView : Node2D
             return;
         }
 
-        // Ships: oriented hull rectangle + wake.
+        // Ships: definition-driven placeholder silhouette (R3.1: data -> visuals).
         foreach (var ship in _runner.Ships)
         {
             if (!ship.Alive)
@@ -380,17 +394,59 @@ public partial class BattleView : Node2D
             double rad = ship.HeadingDeg * System.Math.PI / 180.0;
             var forward = new Vector2((float)System.Math.Sin(rad), (float)System.Math.Cos(rad));
             var side = new Vector2(-forward.Y, forward.X);
+            Vector2 Local(double lx, double lz) =>
+                pos + forward * (float)(lz * PixelsPerMeter) + side * (float)(lx * PixelsPerMeter);
 
             float halfL = (float)ship.Definition.LengthM * PixelsPerMeter / 2f;
             float halfB = (float)ship.Definition.BeamM * PixelsPerMeter / 2f + 1.5f;
-            var p1 = pos + forward * halfL + side * halfB;
-            var p2 = pos + forward * halfL - side * halfB;
-            var p3 = pos - forward * halfL - side * halfB;
-            var p4 = pos - forward * halfL + side * halfB;
 
             Color teamColor = ship.Team?.Id == "usn" ? Colors.DodgerBlue : Colors.IndianRed;
-            DrawColoredPolygon(new[] { p1, p2, p3, p4 }, teamColor);
-            DrawCircle(pos, halfB, teamColor.Darkened(0.25f)); // superstructure
+
+            // Hull: pointed bow, tapered stern, parallel midbody (ship-shaped, not a box).
+            var hull = new Vector2[10]
+            {
+                Local(0, ship.Definition.LengthM / 2f),                       // bow tip
+                Local(ship.Definition.BeamM * 0.38, ship.Definition.LengthM * 0.30),
+                Local(ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
+                Local(ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
+                Local(ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
+                Local(ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
+                Local(-ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
+                Local(-ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
+                Local(-ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
+                Local(-ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
+            };
+            DrawColoredPolygon(hull, teamColor);
+
+            // Deck line + superstructure + funnels from turret/structural parts.
+            foreach (var part in ship.Parts.Values)
+            {
+                var center = part.Center;
+                switch (part.Definition.Kind)
+                {
+                    case PartKind.Turret:
+                        DrawCircle(Local(center.X, center.Z), System.Math.Max(2f, halfB * 0.55f),
+                            teamColor.Darkened(0.35f));
+                        break;
+                    case PartKind.Boiler:
+                        DrawCircle(Local(center.X, center.Z), System.Math.Max(2.5f, halfB * 0.5f),
+                            new Color(0.2f, 0.2f, 0.22f));
+                        break;
+                    case PartKind.Magazine when part.Destroyed:
+                        DrawCircle(Local(center.X, center.Z), System.Math.Max(2.5f, halfB * 0.7f),
+                            new Color(0.9f, 0.3f, 0.1f, 0.8f));
+                        break;
+                }
+            }
+
+            // Fire marks on burning hulls.
+            if (_runner!.Fire.Fires.Any(f => f.Active &&
+                ship.Parts.Values.Any(pt => f.HostId == $"{ship.TargetId}/{pt.Definition.Id}")))
+            {
+                var flicker = 0.5f + 0.5f * (float)System.Math.Sin(t * 9.0 + pos.X);
+                DrawCircle(pos + forward * halfL * 0.2f, halfB * (1.1f + flicker * 0.4f),
+                    new Color(1f, 0.45f, 0.05f, 0.55f));
+            }
             DrawLine(pos - forward * halfL * 2.2f, pos - forward * halfL,
                 new Color(1, 1, 1, 0.35f), 2f);                   // wake
 
