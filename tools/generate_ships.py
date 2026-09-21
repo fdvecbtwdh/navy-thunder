@@ -52,7 +52,7 @@ FLEET = [
 # cross-matches variants (uss_california hit a rocket cruiser). None = no trusted match.
 WT_ID = {
     "uss_fletcher": "us_destroyer_fletcher",
-    "uss_sims": "uss_dd_sims",
+    "uss_sims": "uss_dd_sims_guns",
     "uss_gearing": "us_destroyer_gearing",
     "uss_sumner": "us_destroyer_sumner",
     "ijn_kagero": "jp_destroyer_kagero",
@@ -60,7 +60,7 @@ WT_ID = {
     "dkm_z23": None,
     "rn_tribal": "uk_destroyer_tribal",
     "uss_atlanta": "us_cruiser_atlanta_class_atlanta",
-    "uss_brooklyn": "uss_brooklyn",
+    "uss_brooklyn": "us_cruiser_brooklyn_class_brooklyn",
     "uss_baltimore": "us_cruiser_baltimore_class",
     "uss_new_orleans": "us_cruiser_new_orleans_class",
     "ijn_myoko": "jp_cruiser_myoko",
@@ -144,7 +144,7 @@ def capital_like(cls):
     return cls in ("Battleship", "Battlecruiser", "Cruiser")
 
 
-def build_ship(row, wt_units, wt_weapons):
+def build_ship(row, wt_units, wt_weapons, shell_catalog):
     (name, cls, disp, length, beam, draft, crew, repair, survive,
      belt_mm, deck_mm, turret_groups, generation) = row
 
@@ -171,7 +171,9 @@ def build_ship(row, wt_units, wt_weapons):
         # traverse and shell mass are measured values.
         total_barrels = battery[0] if battery else wpn["turrets"]
         barrels = max(1, round(total_barrels / turret_groups))
-        shell = CAPITAL_SHELL if wpn["caliberMm"] >= 280 else LIGHT_SHELL
+        # nearest-caliber shell across the whole catalog (wt + usn families),
+        # excluding AA mounts' rounds and preferring the calibrated defaults
+        shell = pick_shell(shell_catalog, wpn["caliberMm"])
         rpm = max(1.0, 60.0 / wpn["reloadS"])
         range_m = 30000 if wpn["caliberMm"] >= 280 else (18000 if wpn["caliberMm"] > 130 else 15000)
         traverse = wpn.get("traverseDegPerS") or (6 if wpn["caliberMm"] >= 280 else 12)
@@ -329,17 +331,53 @@ def build_ship(row, wt_units, wt_weapons):
     }
 
 
+def pick_shell(catalog, cal_mm):
+    """Nearest-caliber surface-action shell: AA rounds excluded, the two
+    calibrated default families win ties, then AP/common, then id order."""
+    tol = max(3.0, cal_mm * 0.02)
+    cands = [t for t in catalog if abs(t[1] - cal_mm) <= tol]
+    if not cands:
+        cands = [min(catalog, key=lambda t: (abs(t[1] - cal_mm), t[0]))]
+    pool = [t for t in cands if "aa" not in t[0].lower()] or cands
+    cal_by_id = {t[0]: t[1] for t in catalog}
+    for pref in (LIGHT_SHELL, CAPITAL_SHELL):
+        # calibrated defaults win only at their own caliber (e.g. 127mm mounts)
+        if pref in cal_by_id and abs(cal_by_id[pref] - cal_mm) <= 0.5:
+            return pref
+    return min(pool, key=lambda t: (
+        abs(t[1] - cal_mm),
+        0 if any(k in t[0].lower() for k in ("ap", "common", "sap")) else 1,
+        t[0]))[0]
+
+
+def load_shell_catalog(shells_dir="data/shells"):
+    """[(shellId, caliberMm)] across every shellSet on disk."""
+    cat = []
+    for p in sorted(Path(shells_dir).glob("*.json")):
+        try:
+            doc = json.loads(p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        if doc.get("kind") != "shellSet":
+            continue
+        for sh in doc.get("shells", []):
+            cat.append((sh["id"], sh.get("caliberMm") or 0))
+    return cat
+
+
 def load_wt_weapons(path="data/reference/wt_ship_weapons.json"):
     p = Path(path)
     if not p.exists():
         return {}
-    return json.loads(p.read_text(encoding="utf-8"))
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    return {s["id"]: s for s in doc.get("ships", [])}
 
 
 def main():
     wt_units = load_wt_units()
     wt_weapons = load_wt_weapons()
-    ships = [build_ship(row, wt_units, wt_weapons) for row in FLEET]
+    shell_catalog = load_shell_catalog()
+    ships = [build_ship(row, wt_units, wt_weapons, shell_catalog) for row in FLEET]
     doc = {
         "schemaVersion": 1,
         "kind": "shipSet",

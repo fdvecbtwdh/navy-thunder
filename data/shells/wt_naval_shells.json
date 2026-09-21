@@ -1,0 +1,227 @@
+{
+ "schemaVersion": 1,
+ "kind": "shellSet",
+ "shells": [
+  {
+   "id": "wt_410mm_ap",
+   "displayName": "410mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 409.9999964237213,
+   "massKg": 1024.199951171875,
+   "muzzleVelocityMs": 780.0,
+   "explosiveMassKg": 14.89,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 41.0,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (410mm_45_type_3_mod_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_406mm_ap",
+   "displayName": "406mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 405.9999883174896,
+   "massKg": 1225.0,
+   "muzzleVelocityMs": 701.0,
+   "explosiveMassKg": 18.55,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 40.6,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (406mm_45_mk6_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_381mm_ap",
+   "displayName": "381mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 381.00001215934753,
+   "massKg": 879.0,
+   "muzzleVelocityMs": 749.0,
+   "explosiveMassKg": 22.0,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 38.1,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (381mm_42_bl_mk1_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_380mm_ap",
+   "displayName": "380mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 379.9999952316284,
+   "massKg": 800.7999877929688,
+   "muzzleVelocityMs": 820.0,
+   "explosiveMassKg": 35.04,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 38.0,
+   "demarrePenetrationK": 0.8700000047683716,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (380mm_52_skc_34_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_356mm_ap",
+   "displayName": "356mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 356.00000619888306,
+   "massKg": 680.3800048828125,
+   "muzzleVelocityMs": 792.0,
+   "explosiveMassKg": 10.38,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 35.6,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (356mm_45_14inch_mk12_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_203mm_ap",
+   "displayName": "203mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 202.9999941587448,
+   "massKg": 117.9000015258789,
+   "muzzleVelocityMs": 853.0,
+   "explosiveMassKg": 1.65,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 20.3,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (203mm_55_8inch_mk9_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_152mm_ap",
+   "displayName": "152mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 151.99999511241913,
+   "massKg": 58.900001525878906,
+   "muzzleVelocityMs": 762.0,
+   "explosiveMassKg": 0.88,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 15.2,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (152mm_6inch_47_mk_16_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_150mm_ap",
+   "displayName": "150mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 150.00000596046448,
+   "massKg": 45.5,
+   "muzzleVelocityMs": 875.0,
+   "explosiveMassKg": 1.1,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 15.0,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (150mm_55_skc_28_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_140mm_ap",
+   "displayName": "140mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 140.00000059604645,
+   "massKg": 37.900001525878906,
+   "muzzleVelocityMs": 701.0,
+   "explosiveMassKg": 2.69,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 14.0,
+   "demarrePenetrationK": 0.5699999928474426,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (140mm_50_3rd_year_type_14_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_120mm_ap",
+   "displayName": "120mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 119.99999731779099,
+   "massKg": 22.68000030517578,
+   "muzzleVelocityMs": 808.0,
+   "explosiveMassKg": 0.9,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 12.0,
+   "demarrePenetrationK": 0.8999999761581421,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (120mm_45_4_7in_mark12_cp19_mount_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_114mm_ap",
+   "displayName": "114mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 114.00000005960464,
+   "massKg": 23.0,
+   "muzzleVelocityMs": 746.0,
+   "explosiveMassKg": 0.91,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 11.4,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (114mm_45_qf_mk4_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_105mm_ap",
+   "displayName": "105mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 104.99999672174454,
+   "massKg": 15.800000190734863,
+   "muzzleVelocityMs": 860.0,
+   "explosiveMassKg": 0.24,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 10.5,
+   "demarrePenetrationK": 1.0,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (105mm_60_sk_c33_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  },
+  {
+   "id": "wt_102mm_ap",
+   "displayName": "102mm AP (wt extract)",
+   "category": "AP",
+   "caliberMm": 101.99999809265137,
+   "massKg": 17.350000381469727,
+   "muzzleVelocityMs": 811.0,
+   "explosiveMassKg": 0.6,
+   "fuseDelayS": 0.03,
+   "explodeThresholdMm": 10.2,
+   "demarrePenetrationK": 0.6499999761581421,
+   "source": {
+    "origin": "wt_client_extract",
+    "notes": "AP bullet measured from the client gun blk (102mm_45_4in_qf_mark16_21_naval_user_cannon.blk); fuseDelay/threshold are engine approximations; dragCoefficientScale left at 1.0 (no official range table fitted yet).",
+    "versionStamp": "extracted 2026-09-21"
+   }
+  }
+ ]
+}
