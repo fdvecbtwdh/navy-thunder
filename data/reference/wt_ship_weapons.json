@@ -16,6 +16,28 @@
     "explosiveMassKg": 62.88999938964844,
     "reloadS": 22.72727285042282
    },
+   "secondaries": [
+    {
+     "caliberMm": 150,
+     "barrels": 12,
+     "traverseDegPerS": 8.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/150mm_55_skc_28_naval_user_cannon.blk",
+     "shellMassKg": 45.5,
+     "muzzleVelMs": 875.0,
+     "explosiveMassKg": 3.640000104904175,
+     "reloadS": 7.518796918350264
+    },
+    {
+     "caliberMm": 105,
+     "barrels": 16,
+     "traverseDegPerS": 10.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/105mm_60_sk_c33_df_naval_user_cannon.blk",
+     "shellMassKg": 15.100000381469727,
+     "muzzleVelMs": 900.0,
+     "explosiveMassKg": 1.5499999523162842,
+     "reloadS": 3.636363557547579
+    }
+   ],
    "allCalibers": {
     "380": 8,
     "150": 12,
@@ -36,6 +58,28 @@
     "explosiveMassKg": 62.400001525878906,
     "reloadS": 30.03002897112296
    },
+   "secondaries": [
+    {
+     "caliberMm": 152,
+     "barrels": 8,
+     "traverseDegPerS": 5.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/152mm_50_type_41_naval_user_cannon.blk",
+     "shellMassKg": 45.2599983215332,
+     "muzzleVelMs": 850.0,
+     "explosiveMassKg": 2.880000114440918,
+     "reloadS": 6.024096614824089
+    },
+    {
+     "caliberMm": 127,
+     "barrels": 12,
+     "traverseDegPerS": 6.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_5_40_type_89_naval_user_cannon.blk",
+     "shellMassKg": 23.0,
+     "muzzleVelMs": 720.0,
+     "explosiveMassKg": 1.7799999713897705,
+     "reloadS": 4.286326610203636
+    }
+   ],
    "allCalibers": {
     "356": 8,
     "152": 8,
@@ -55,6 +99,18 @@
     "explosiveMassKg": 69.66999816894531,
     "reloadS": 29.940120529874598
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 20,
+     "traverseDegPerS": 25.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_38_mk12_turret_mk28_twin_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 2.7777776673988104
+    }
+   ],
    "allCalibers": {
     "406": 9,
     "127": 20,
@@ -74,6 +130,7 @@
     "explosiveMassKg": 3.2880001068115234,
     "reloadS": 2.7777776673988104
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 5,
     "40": 2,
@@ -92,6 +149,7 @@
     "explosiveMassKg": null,
     "reloadS": 4.999999925494195
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 4
    }
@@ -108,6 +166,7 @@
     "explosiveMassKg": 3.2880001068115234,
     "reloadS": 2.7777776673988104
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 6,
     "40": 16,
@@ -126,6 +185,7 @@
     "explosiveMassKg": 3.2880001068115234,
     "reloadS": 2.7777776673988104
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 6,
     "40": 12,
@@ -144,6 +204,7 @@
     "explosiveMassKg": 2.200000047683716,
     "reloadS": 6.002400822086132
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 6,
     "25": 8
@@ -161,6 +222,7 @@
     "explosiveMassKg": 2.200000047683716,
     "reloadS": 6.002400822086132
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 6,
     "13": 4
@@ -178,6 +240,18 @@
     "explosiveMassKg": 3.0,
     "reloadS": 4.999999925494195
    },
+   "secondaries": [
+    {
+     "caliberMm": 102,
+     "barrels": 2,
+     "traverseDegPerS": 7.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/102mm_45_4in_qf_mark16_21_naval_user_cannon.blk",
+     "shellMassKg": 15.880000114440918,
+     "muzzleVelMs": 811.0,
+     "explosiveMassKg": 1.5499999523162842,
+     "reloadS": 3.0303029098896115
+    }
+   ],
    "allCalibers": {
     "120": 6,
     "102": 2,
@@ -198,6 +272,7 @@
     "explosiveMassKg": 3.2880001068115234,
     "reloadS": 2.7777776673988104
    },
+   "secondaries": [],
    "allCalibers": {
     "127": 16,
     "28": 12
@@ -215,6 +290,18 @@
     "explosiveMassKg": 6.0,
     "reloadS": 5.98802410597492
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 20.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_25_5inch_mk13_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 3.0303029098896115
+    }
+   ],
    "allCalibers": {
     "152": 15,
     "127": 8,
@@ -233,6 +320,18 @@
     "explosiveMassKg": 4.940000057220459,
     "reloadS": 15.151515233615214
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 12,
+     "traverseDegPerS": 25.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_38_mk12_turret_mk32_twin_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 2.7777776673988104
+    }
+   ],
    "allCalibers": {
     "203": 9,
     "127": 12,
@@ -252,6 +351,18 @@
     "explosiveMassKg": 4.940000057220459,
     "reloadS": 17.14383695324515
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 20.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_25_5inch_mk13_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 3.0303029098896115
+    }
+   ],
    "allCalibers": {
     "203": 9,
     "127": 8,
@@ -271,6 +382,18 @@
     "explosiveMassKg": 8.15999984741211,
     "reloadS": 12.048193229648177
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 6.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_5_40_type_89_naval_user_cannon.blk",
+     "shellMassKg": 23.0,
+     "muzzleVelMs": 720.0,
+     "explosiveMassKg": 1.7799999713897705,
+     "reloadS": 4.286326610203636
+    }
+   ],
    "allCalibers": {
     "203": 10,
     "127": 8,
@@ -289,6 +412,18 @@
     "explosiveMassKg": 8.15999984741211,
     "reloadS": 12.048193229648177
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 6.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_5_40_type_89_naval_user_cannon.blk",
+     "shellMassKg": 23.0,
+     "muzzleVelMs": 720.0,
+     "explosiveMassKg": 1.7799999713897705,
+     "reloadS": 4.286326610203636
+    }
+   ],
    "allCalibers": {
     "203": 10,
     "127": 8,
@@ -308,6 +443,18 @@
     "explosiveMassKg": 8.883999824523926,
     "reloadS": 12.004801644172264
    },
+   "secondaries": [
+    {
+     "caliberMm": 105,
+     "barrels": 12,
+     "traverseDegPerS": 10.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/105mm_60_sk_c33_naval_user_cannon.blk",
+     "shellMassKg": 15.100000381469727,
+     "muzzleVelMs": 900.0,
+     "explosiveMassKg": 1.5499999523162842,
+     "reloadS": 3.636363557547579
+    }
+   ],
    "allCalibers": {
     "203": 8,
     "105": 12,
@@ -327,6 +474,18 @@
     "explosiveMassKg": 4.940000057220459,
     "reloadS": 17.14383695324515
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 20.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_25_5inch_mk13_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 3.0303029098896115
+    }
+   ],
    "allCalibers": {
     "203": 9,
     "127": 8,
@@ -346,6 +505,18 @@
     "explosiveMassKg": 47.619998931884766,
     "reloadS": 39.99999940395356
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 16,
+     "traverseDegPerS": 25.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_38_mk12_turret_mk32_twin_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 2.7777776673988104
+    }
+   ],
    "allCalibers": {
     "356": 10,
     "127": 16,
@@ -365,6 +536,18 @@
     "explosiveMassKg": 69.66999816894531,
     "reloadS": 39.99999940395356
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 18,
+     "traverseDegPerS": 8.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_51_mk7_naval_user_cannon.blk",
+     "shellMassKg": 22.68000030517578,
+     "muzzleVelMs": 960.0,
+     "explosiveMassKg": 0.7799999713897705,
+     "reloadS": 6.666666401757145
+    }
+   ],
    "allCalibers": {
     "406": 8,
     "127": 18,
@@ -384,6 +567,18 @@
     "explosiveMassKg": 69.66999816894531,
     "reloadS": 29.940120529874598
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 20,
+     "traverseDegPerS": 25.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_38_mk12_turret_mk28_twin_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 2.7777776673988104
+    }
+   ],
    "allCalibers": {
     "406": 9,
     "127": 20,
@@ -404,6 +599,18 @@
     "explosiveMassKg": 69.66999816894531,
     "reloadS": 29.940120529874598
    },
+   "secondaries": [
+    {
+     "caliberMm": 127,
+     "barrels": 16,
+     "traverseDegPerS": 25.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_38_mk12_turret_mk28_twin_naval_user_cannon.blk",
+     "shellMassKg": 25.0,
+     "muzzleVelMs": 792.0,
+     "explosiveMassKg": 3.2880001068115234,
+     "reloadS": 2.7777776673988104
+    }
+   ],
    "allCalibers": {
     "406": 9,
     "127": 16,
@@ -423,6 +630,28 @@
     "explosiveMassKg": 44.29999923706055,
     "reloadS": 21.50537583411451
    },
+   "secondaries": [
+    {
+     "caliberMm": 140,
+     "barrels": 18,
+     "traverseDegPerS": 8.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/140mm_50_3rd_year_type_14_naval_user_cannon.blk",
+     "shellMassKg": 37.869998931884766,
+     "muzzleVelMs": 840.0,
+     "explosiveMassKg": 2.859999895095825,
+     "reloadS": 6.002400822086132
+    },
+    {
+     "caliberMm": 127,
+     "barrels": 8,
+     "traverseDegPerS": 6.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/127mm_5_40_type_89_naval_user_cannon.blk",
+     "shellMassKg": 23.0,
+     "muzzleVelMs": 720.0,
+     "explosiveMassKg": 1.7799999713897705,
+     "reloadS": 4.286326610203636
+    }
+   ],
    "allCalibers": {
     "410": 8,
     "140": 18,
@@ -442,6 +671,18 @@
     "explosiveMassKg": 61.66999816894531,
     "reloadS": 30.211478980697596
    },
+   "secondaries": [
+    {
+     "caliberMm": 114,
+     "barrels": 20,
+     "traverseDegPerS": 20.0,
+     "gunRef": "gameData/Weapons/navalModels_weapons/114mm_45_qf_mk4_naval_user_cannon.blk",
+     "shellMassKg": 24.950000762939453,
+     "muzzleVelMs": 746.0,
+     "explosiveMassKg": 1.809999942779541,
+     "reloadS": 3.0303029098896115
+    }
+   ],
    "allCalibers": {
     "381": 6,
     "114": 20,

@@ -1978,6 +1978,17 @@
      "traverseDegPerS": 10.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "rn_tribal_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_102mm_ap",
+     "barrels": 2,
+     "roundsPerMinute": 19.80000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 7.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 1960.0,
@@ -2187,6 +2198,22 @@
      "buoyancySharePct": 43.0,
      "open": true,
      "turretGroup": "A"
+    },
+    {
+     "id": "rn_tribal_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "rn_tribal_mid1",
+     "hp": 8,
+     "crew": 5,
+     "xMinM": 16.1,
+     "xMaxM": 24.1,
+     "yMinM": 2.2,
+     "yMaxM": 5.7,
+     "zMinM": -2.6,
+     "zMaxM": 2.6,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -2622,6 +2649,17 @@
      "traverseDegPerS": 5.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_brooklyn_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 19.80000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 20.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 12000.0,
@@ -2889,6 +2927,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_brooklyn_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_brooklyn_mid1",
+     "hp": 48,
+     "crew": 17,
+     "xMinM": 28.4,
+     "xMaxM": 36.4,
+     "yMinM": 5.3,
+     "yMaxM": 8.8,
+     "zMinM": -6.5,
+     "zMaxM": 6.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -2973,6 +3027,17 @@
      "traverseDegPerS": 5.300000190734863,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_baltimore_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 12,
+     "roundsPerMinute": 21.600000858306885,
+     "rangeM": 12000,
+     "traverseDegPerS": 25.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 15000.0,
@@ -3240,6 +3305,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_baltimore_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_baltimore_mid1",
+     "hp": 60,
+     "crew": 23,
+     "xMinM": 31.9,
+     "xMaxM": 39.9,
+     "yMinM": 5.5,
+     "yMaxM": 9.0,
+     "zMinM": -7.8,
+     "zMaxM": 7.8,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -3324,6 +3405,17 @@
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_new_orleans_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 19.80000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 20.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 13000.0,
@@ -3591,6 +3683,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_new_orleans_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_new_orleans_mid1",
+     "hp": 52,
+     "crew": 17,
+     "xMinM": 27.3,
+     "xMaxM": 35.3,
+     "yMinM": 5.2,
+     "yMaxM": 8.7,
+     "zMinM": -6.4,
+     "zMaxM": 6.4,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -3675,6 +3783,17 @@
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_myoko_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 13.998000025749205,
+     "rangeM": 12000,
+     "traverseDegPerS": 6.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 14500.0,
@@ -3942,6 +4061,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "ijn_myoko_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "ijn_myoko_mid1",
+     "hp": 58,
+     "crew": 18,
+     "xMinM": 31.7,
+     "xMaxM": 39.7,
+     "yMinM": 4.8,
+     "yMaxM": 8.3,
+     "zMinM": -6.8,
+     "zMaxM": 6.8,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -4026,6 +4161,17 @@
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_mogami_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 13.998000025749205,
+     "rangeM": 12000,
+     "traverseDegPerS": 6.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 13200.0,
@@ -4293,6 +4439,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "ijn_mogami_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "ijn_mogami_mid1",
+     "hp": 53,
+     "crew": 17,
+     "xMinM": 31.0,
+     "xMaxM": 39.0,
+     "yMinM": 4.5,
+     "yMaxM": 8.0,
+     "zMinM": -6.0,
+     "zMaxM": 6.0,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -4377,6 +4539,17 @@
      "traverseDegPerS": 8.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "dkm_prinz_eugen_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_105mm_ap",
+     "barrels": 12,
+     "roundsPerMinute": 16.50000035762787,
+     "rangeM": 12000,
+     "traverseDegPerS": 10.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 17800.0,
@@ -4644,6 +4817,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "dkm_prinz_eugen_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "dkm_prinz_eugen_mid1",
+     "hp": 71,
+     "crew": 38,
+     "xMinM": 33.1,
+     "xMaxM": 41.1,
+     "yMinM": 5.5,
+     "yMaxM": 9.0,
+     "zMinM": -8.0,
+     "zMaxM": 8.0,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -5067,6 +5256,17 @@
      "traverseDegPerS": 3.5999999046325684,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_northampton_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 19.80000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 20.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 12800.0,
@@ -5334,6 +5534,22 @@
      "buoyancySharePct": 42.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_northampton_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_northampton_mid1",
+     "hp": 51,
+     "crew": 12,
+     "xMinM": 27.8,
+     "xMaxM": 35.8,
+     "yMinM": 5.5,
+     "yMaxM": 9.0,
+     "zMinM": -6.4,
+     "zMaxM": 6.4,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -5768,6 +5984,17 @@
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_nevada_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 16,
+     "roundsPerMinute": 21.600000858306885,
+     "rangeM": 12000,
+     "traverseDegPerS": 25.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 34000.0,
@@ -6065,6 +6292,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_nevada_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_nevada_mid1",
+     "hp": 136,
+     "crew": 30,
+     "xMinM": 27.1,
+     "xMaxM": 35.1,
+     "yMinM": 6.8,
+     "yMaxM": 10.3,
+     "zMinM": -11.5,
+     "zMaxM": 11.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -6920,6 +7163,17 @@
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_colorado_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 18,
+     "roundsPerMinute": 9.000000357627869,
+     "rangeM": 12000,
+     "traverseDegPerS": 8.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 34000.0,
@@ -7217,6 +7471,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_colorado_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_colorado_mid1",
+     "hp": 136,
+     "crew": 38,
+     "xMinM": 29.2,
+     "xMaxM": 37.2,
+     "yMinM": 7.4,
+     "yMaxM": 10.9,
+     "zMinM": -12.0,
+     "zMaxM": 12.0,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -7312,6 +7582,17 @@
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_north_carolina_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 20,
+     "roundsPerMinute": 21.600000858306885,
+     "rangeM": 12000,
+     "traverseDegPerS": 25.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 45000.0,
@@ -7609,6 +7890,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_north_carolina_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_north_carolina_mid1",
+     "hp": 180,
+     "crew": 42,
+     "xMinM": 34.8,
+     "xMaxM": 42.8,
+     "yMinM": 8.4,
+     "yMaxM": 11.9,
+     "zMinM": -13.5,
+     "zMaxM": 13.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -7704,6 +8001,17 @@
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_south_dakota_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 16,
+     "roundsPerMinute": 21.600000858306885,
+     "rangeM": 12000,
+     "traverseDegPerS": 25.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 45000.0,
@@ -8001,6 +8309,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_south_dakota_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_south_dakota_mid1",
+     "hp": 180,
+     "crew": 45,
+     "xMinM": 32.8,
+     "xMaxM": 40.8,
+     "yMinM": 8.4,
+     "yMaxM": 11.9,
+     "zMinM": -13.5,
+     "zMaxM": 13.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -8096,6 +8420,17 @@
      "traverseDegPerS": 4.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "uss_iowa_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 20,
+     "roundsPerMinute": 21.600000858306885,
+     "rangeM": 12000,
+     "traverseDegPerS": 25.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 58000.0,
@@ -8393,6 +8728,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_iowa_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "uss_iowa_mid1",
+     "hp": 232,
+     "crew": 54,
+     "xMinM": 41.8,
+     "xMaxM": 49.8,
+     "yMinM": 9.2,
+     "yMaxM": 12.7,
+     "zMinM": -13.5,
+     "zMaxM": 13.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -8868,6 +9219,28 @@
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_kongo_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_152mm_ap",
+     "barrels": 8,
+     "roundsPerMinute": 9.95999962091446,
+     "rangeM": 12000,
+     "traverseDegPerS": 5.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
+    },
+    {
+     "id": "ijn_kongo_gun_sec2",
+     "turretGroup": "S2",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 12,
+     "roundsPerMinute": 13.998000025749205,
+     "rangeM": 12000,
+     "traverseDegPerS": 6.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 32000.0,
@@ -9165,6 +9538,38 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "ijn_kongo_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "ijn_kongo_mid1",
+     "hp": 128,
+     "crew": 28,
+     "xMinM": 34.8,
+     "xMaxM": 42.8,
+     "yMinM": 7.7,
+     "yMaxM": 11.2,
+     "zMinM": -11.5,
+     "zMaxM": 11.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
+    },
+    {
+     "id": "ijn_kongo_turret_sec2",
+     "kind": "Turret",
+     "sectionId": "ijn_kongo_mid2",
+     "hp": 128,
+     "crew": 28,
+     "xMinM": 1.5,
+     "xMaxM": 9.5,
+     "yMinM": 7.7,
+     "yMaxM": 11.2,
+     "zMinM": -11.5,
+     "zMaxM": 11.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S2"
     }
    ],
    "armorPlates": [
@@ -9260,6 +9665,28 @@
      "traverseDegPerS": 3.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "ijn_nagato_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_140mm_ap",
+     "barrels": 18,
+     "roundsPerMinute": 9.996000230312347,
+     "rangeM": 12000,
+     "traverseDegPerS": 8.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
+    },
+    {
+     "id": "ijn_nagato_gun_sec2",
+     "turretGroup": "S2",
+     "shellId": "usn_127mm_mk46_special_common",
+     "barrels": 8,
+     "roundsPerMinute": 13.998000025749205,
+     "rangeM": 12000,
+     "traverseDegPerS": 6.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 39900.0,
@@ -9557,6 +9984,38 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "ijn_nagato_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "ijn_nagato_mid1",
+     "hp": 160,
+     "crew": 34,
+     "xMinM": 33.6,
+     "xMaxM": 41.6,
+     "yMinM": 7.5,
+     "yMaxM": 11.0,
+     "zMinM": -11.5,
+     "zMaxM": 11.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
+    },
+    {
+     "id": "ijn_nagato_turret_sec2",
+     "kind": "Turret",
+     "sectionId": "ijn_nagato_mid2",
+     "hp": 160,
+     "crew": 34,
+     "xMinM": 1.4,
+     "xMaxM": 9.4,
+     "yMinM": 7.5,
+     "yMaxM": 11.0,
+     "zMinM": -11.5,
+     "zMaxM": 11.5,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S2"
     }
    ],
    "armorPlates": [
@@ -9652,6 +10111,17 @@
      "traverseDegPerS": 2.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "rn_renown_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_114mm_ap",
+     "barrels": 20,
+     "roundsPerMinute": 19.80000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 20.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 34000.0,
@@ -9949,6 +10419,22 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "rn_renown_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "rn_renown_mid1",
+     "hp": 136,
+     "crew": 24,
+     "xMinM": 38.3,
+     "xMaxM": 46.3,
+     "yMinM": 7.7,
+     "yMaxM": 11.2,
+     "zMinM": -10.7,
+     "zMaxM": 10.7,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
     }
    ],
    "armorPlates": [
@@ -10044,6 +10530,28 @@
      "traverseDegPerS": 6.0,
      "horizontalMrad": 2.5,
      "verticalMrad": 1.5
+    },
+    {
+     "id": "rms_bismarck_gun_sec1",
+     "turretGroup": "S1",
+     "shellId": "wt_150mm_ap",
+     "barrels": 12,
+     "roundsPerMinute": 7.980000078678131,
+     "rangeM": 12000,
+     "traverseDegPerS": 8.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
+    },
+    {
+     "id": "rms_bismarck_gun_sec2",
+     "turretGroup": "S2",
+     "shellId": "wt_105mm_ap",
+     "barrels": 16,
+     "roundsPerMinute": 16.50000035762787,
+     "rangeM": 12000,
+     "traverseDegPerS": 10.0,
+     "horizontalMrad": 3.0,
+     "verticalMrad": 2.0
     }
    ],
    "displacementT": 48000.0,
@@ -10341,6 +10849,38 @@
      "buoyancySharePct": 41.67,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "rms_bismarck_turret_sec1",
+     "kind": "Turret",
+     "sectionId": "rms_bismarck_mid1",
+     "hp": 192,
+     "crew": 44,
+     "xMinM": 39.9,
+     "xMaxM": 47.9,
+     "yMinM": 7.9,
+     "yMaxM": 11.4,
+     "zMinM": -15.0,
+     "zMaxM": 15.0,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S1"
+    },
+    {
+     "id": "rms_bismarck_turret_sec2",
+     "kind": "Turret",
+     "sectionId": "rms_bismarck_mid2",
+     "hp": 192,
+     "crew": 44,
+     "xMinM": 2.3,
+     "xMaxM": 10.3,
+     "yMinM": 7.9,
+     "yMaxM": 11.4,
+     "zMinM": -15.0,
+     "zMaxM": 15.0,
+     "buoyancySharePct": 0.0,
+     "open": true,
+     "turretGroup": "S2"
     }
    ],
    "armorPlates": [

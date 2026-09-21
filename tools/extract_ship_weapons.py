@@ -129,6 +129,20 @@ def extract_ship(unit_blk_path: Path, weapons_dir: Path, nm):
         return None, None
     main_mm = max(groups)
     main = groups[main_mm]
+    # secondaries: surface-action calibers 100-155mm other than the main battery
+    secondaries = []
+    for cal in sorted(groups, reverse=True):
+        if cal == main_mm or cal < 100 or cal > 155:
+            continue
+        grp = groups[cal]
+        secondaries.append({
+            "caliberMm": cal,
+            "barrels": grp["mounts"],
+            "traverseDegPerS": grp["traverse"],
+            "gunRef": gun_refs[str(cal)],
+            **{k: grp["gun"][k] for k in ("shellMassKg", "muzzleVelMs", "explosiveMassKg", "reloadS")},
+        })
+
     info = {
         "main": {
             "caliberMm": main_mm,
@@ -137,6 +151,7 @@ def extract_ship(unit_blk_path: Path, weapons_dir: Path, nm):
             "gunRef": gun_refs[str(main_mm)],
             **{k: main["gun"][k] for k in ("shellMassKg", "muzzleVelMs", "explosiveMassKg", "reloadS")},
         },
+        "secondaries": secondaries,
         "allCalibers": {str(k): groups[k]["mounts"] for k in sorted(groups, reverse=True)},
     }
     return info, gun_refs

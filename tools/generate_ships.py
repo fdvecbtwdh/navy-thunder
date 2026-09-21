@@ -153,7 +153,8 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog):
     wt_disp = wt.get("displacementT")
     wt_speed = wt.get("maxSpeedKnots")
     battery = wt_main_battery(wt.get("weaponsSummary", ""))
-    wpn = (wt_weapons.get(wt_id) or {}).get("main")
+    ship_weapons = wt_weapons.get(wt_id) or {}
+    wpn = ship_weapons.get("main")
     wt_fields = []
     if wt_disp:
         disp = float(wt_disp)
@@ -290,6 +291,29 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog):
     default_traverse = 6 if capital_like(cls) else 12
     guns = build_guns(name, cls, deck_y, half_b, turret_groups, barrels,
                       shell, rpm, range_m, traverse or default_traverse)
+
+    # R3 secondaries: measured 100-155mm batteries fire as independent groups
+    # (own range/rpm/shell). Each gets small open turret parts so the
+    # turret-destruction rule and the data validator both apply.
+    for i, sec in enumerate(ship_weapons.get("secondaries", [])):
+        group = f"S{i + 1}"
+        guns.append({
+            "id": f"{name}_gun_sec{i + 1}", "turretGroup": group,
+            "shellId": pick_shell(shell_catalog, sec["caliberMm"]),
+            "barrels": sec["barrels"],
+            "roundsPerMinute": max(1.0, 60.0 / sec["reloadS"]) if sec.get("reloadS") else 6.0,
+            "rangeM": 12000,
+            "traverseDegPerS": sec.get("traverseDegPerS") or 12,
+            "horizontalMrad": 3.0, "verticalMrad": 2.0,
+        })
+        x_center = half_l * (0.35 - 0.3 * i)
+        sec_count = len(ship_weapons.get("secondaries", []))
+        total = sum(part["buoyancySharePct"] for part in parts)
+        share = max(0.0, (100.0 - total) / sec_count)
+        add(f"{name}_turret_sec{i + 1}", "Turret", mid_ids[i % len(mid_ids)],
+            disp * 0.004, round(crew * 0.02), x_center - 4, x_center + 4,
+            deck_y - 2, deck_y + 1.5, -half_b + 3, half_b - 3,
+            share, open_=True, group=group)
 
     return {
         "id": name,
