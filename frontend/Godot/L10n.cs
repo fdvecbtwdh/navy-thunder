@@ -32,6 +32,9 @@ public static class L10n
         ["hud.guns.reloading"] = ("火炮装填中 {0:0.0}s", "GUNS reloading {0:0.0}s"),
         ["hud.aim"] = ("准星悬停敌舰以开火", "hover an enemy to engage"),
         ["hud.helm"] = ("W/S 油门  A/D 舵  X 回中  R 弹种", "W/S throttle  A/D rudder  X center  R shell"),
+        ["tutorial.move"] = ("W/S 油门 · A/D 转舵 · X 回正舵", "W/S throttle · A/D rudder · X center"),
+        ["tutorial.aim"] = ("准星悬停敌舰自动开火 · R 切换 AP/HE", "Hover an enemy to engage · R toggles AP/HE"),
+        ["tutorial.dc"] = ("关注左上损伤面板：[FIRE]/[FLOOD] 需损管处置", "Watch the damage panel: [FIRE]/[FLOOD] need damage control"),
     };
 
     public static string Tr(string key, params object[] args)

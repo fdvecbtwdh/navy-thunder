@@ -599,6 +599,24 @@ public partial class BattleView : Node2D
                 ship.TargetId, HorizontalAlignment.Left, -1, 12, Colors.LightGray);
         }
 
+        // R3.4 tutorial card: fades out after the opening seconds.
+        if (_runner.World.Time < 18f && _playerShip is { Alive: true })
+        {
+            float fade = System.Math.Clamp((18f - (float)_runner.World.Time) / 4f, 0f, 1f);
+            var size2 = GetViewportRect().Size;
+            var box = new Rect2(size2.X * 0.5f - 230f, size2.Y - 150f, 460f, 108f);
+            DrawRect(box, new Color(0f, 0f, 0f, 0.45f * fade));
+            DrawString(ThemeDB.FallbackFont, new Vector2(box.Position.X + 14, box.Position.Y + 26),
+                L10n.Tr("tutorial.move"), HorizontalAlignment.Left, -1, 14,
+                new Color(1f, 1f, 1f, fade));
+            DrawString(ThemeDB.FallbackFont, new Vector2(box.Position.X + 14, box.Position.Y + 48),
+                L10n.Tr("tutorial.aim"), HorizontalAlignment.Left, -1, 14,
+                new Color(1f, 1f, 1f, fade));
+            DrawString(ThemeDB.FallbackFont, new Vector2(box.Position.X + 14, box.Position.Y + 70),
+                L10n.Tr("tutorial.dc"), HorizontalAlignment.Left, -1, 14,
+                new Color(0.8f, 0.85f, 0.9f, fade));
+        }
+
         // R2.5/R3.2 effect layer: splash / hit flash / muzzle flash / magazine blast.
         var simT = _runner.World.Time;
         _effects.RemoveAll(e => simT - e.Time > (e.Kind == 3 ? 4.0 : 2.0));
