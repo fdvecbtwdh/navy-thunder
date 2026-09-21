@@ -1,0 +1,114 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\ger_battleship_bismarck.grp",
+ "size": 10632026,
+ "entries": [
+  {
+   "name": "battleship_bismarck_sections",
+   "format": "unknown",
+   "offset": 944,
+   "packedSize": 7504,
+   "size": 7504,
+   "compression": "none",
+   "file": "battleship_bismarck_sections.bin"
+  },
+  {
+   "name": "battleship_bismarck_sections_remote",
+   "format": "unknown",
+   "offset": 8448,
+   "packedSize": 1520,
+   "size": 1520,
+   "compression": "none",
+   "file": "battleship_bismarck_sections_remote.bin"
+  },
+  {
+   "name": "battleship_bismarck_char",
+   "format": "char_def",
+   "offset": 9968,
+   "packedSize": 32,
+   "size": 32,
+   "compression": "none",
+   "file": "battleship_bismarck_char.char"
+  },
+  {
+   "name": "battleship_bismarck_skeleton",
+   "format": "unknown",
+   "offset": 10000,
+   "packedSize": 134848,
+   "size": 134848,
+   "compression": "none",
+   "file": "battleship_bismarck_skeleton.bin"
+  },
+  {
+   "name": "battleship_bismarck",
+   "format": "dynmodel_bim2",
+   "offset": 144848,
+   "packedSize": 4758512,
+   "size": 4758512,
+   "compression": "none",
+   "file": "battleship_bismarck.bim2"
+  },
+  {
+   "name": "battleship_bismarck_dm_skeleton",
+   "format": "unknown",
+   "offset": 4903360,
+   "packedSize": 174768,
+   "size": 174768,
+   "compression": "none",
+   "file": "battleship_bismarck_dm_skeleton.bin"
+  },
+  {
+   "name": "battleship_bismarck_collision",
+   "format": "zstd_compressed",
+   "offset": 5078128,
+   "packedSize": 209360,
+   "size": 420955,
+   "compression": "zstd",
+   "file": "battleship_bismarck_collision.zstd.bin"
+  },
+  {
+   "name": "battleship_bismarck_dmg_skeleton",
+   "format": "unknown",
+   "offset": 5287488,
+   "packedSize": 127296,
+   "size": 127296,
+   "compression": "none",
+   "file": "battleship_bismarck_dmg_skeleton.bin"
+  },
+  {
+   "name": "battleship_bismarck_dmg",
+   "format": "unknown",
+   "offset": 5414784,
+   "packedSize": 4495200,
+   "size": 4495200,
+   "compression": "none",
+   "file": "battleship_bismarck_dmg.bin"
+  },
+  {
+   "name": "battleship_bismarck_fastphys",
+   "format": "fastphys",
+   "offset": 9909984,
+   "packedSize": 2800,
+   "size": 2800,
+   "compression": "none",
+   "file": "battleship_bismarck_fastphys.fph3"
+  },
+  {
+   "name": "battleship_bismarck_xray_skeleton",
+   "format": "unknown",
+   "offset": 9912784,
+   "packedSize": 121712,
+   "size": 121712,
+   "compression": "none",
+   "file": "battleship_bismarck_xray_skeleton.bin"
+  },
+  {
+   "name": "battleship_bismarck_xray",
+   "format": "unknown",
+   "offset": 10034496,
+   "packedSize": 597530,
+   "size": 597530,
+   "compression": "none",
+   "file": "battleship_bismarck_xray.bin"
+  }
+ ]
+}
