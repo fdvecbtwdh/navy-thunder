@@ -180,9 +180,18 @@ public sealed class BallisticsSystem : ISimulationSystem
         return projectile.Id;
     }
 
+    private readonly List<(ArmorPlate Plate, RayHit Hit)> _traceBuffer = [];
+
     public void Update(SimulationWorld world, double deltaTime)
     {
         double h = deltaTime / IntegrationSubsteps;
+
+        // R4.1 broadphase: bounding spheres once per tick (plates move with the hull).
+        foreach (var target in Targets)
+        {
+            target.RefreshBroadphase();
+        }
+
         for (int i = _projectiles.Count - 1; i >= 0; i--)
         {
             var p = _projectiles[i];
@@ -273,13 +282,16 @@ public sealed class BallisticsSystem : ISimulationSystem
         RayHit bestHit = default;
         foreach (var target in Targets)
         {
-            foreach (var (plate, hit) in target.Trace(segmentStart, dir))
+            // R4.1 broadphase: skip ships whose bounding sphere the segment misses.
+            if (target.BroadphaseReject(segmentStart, dir, segmentLength))
             {
-                if (hit.Distance > segmentLength)
-                {
-                    break; // sorted by distance — rest are further away
-                }
+                continue;
+            }
 
+            int count = target.TraceNonAlloc(segmentStart, dir, segmentLength, _traceBuffer);
+            for (int i2 = 0; i2 < count; i2++)
+            {
+                var (plate, hit) = _traceBuffer[i2];
                 if (bestPlate is null || hit.Distance < bestHit.Distance)
                 {
                     bestPlate = plate;
