@@ -26,7 +26,7 @@ public partial class BattleView : Node2D
     private static readonly Color SeaBandColor = new(0.10f, 0.28f, 0.40f);
     private static readonly Color SkyColor = new(0.55f, 0.70f, 0.82f);
     private static readonly Color IslandColor = new(0.30f, 0.36f, 0.22f);
-    private static float PixelsPerMeter = 0.14f;
+    private static float PixelsPerMeter = 0.2f;
     private const float ZoomMin = 0.04f;
     private const float ZoomMax = 0.6f;
 
@@ -64,11 +64,17 @@ public partial class BattleView : Node2D
         }
 
         var repo = DataRepository.LoadFromDirectory(Path.Combine(repoRoot, "data"));
+        _assetsRoot = Path.Combine(repoRoot, "assets", "models");
         var scenario = BattleScenario.Load(Path.Combine(repoRoot, "scenarios", "bb_duel.json"));
         _runner = new BattleRunner(repo, scenario);
         _shotPath = OS.GetEnvironment("NT_FRONTEND_SHOT");
 
         // R2.2: the first USN ship answers to the helm; the chase camera follows it.
+        foreach (var ship in _runner.Ships)
+        {
+            LoadHullOutline(ship.Definition.Id);
+        }
+
         _runner.HandControlToPlayer(_runner.Ships[0].TargetId);
         _playerShip = _runner.PlayerShip;
         var cam = new Camera2D { Enabled = true };
@@ -93,6 +99,41 @@ public partial class BattleView : Node2D
     private Ship? _playerShip;
     private Camera2D? _camera;
     private Label? _hud;
+    private string _assetsRoot = "";
+
+    /// <summary>Deck-outline polygons (local metres: x=starboard, z=forward) per ship id,
+    /// from the procedural hull meshes (R3.1: data -> visuals pipeline).</summary>
+    private readonly Dictionary<string, Vector2[]> _hullOutlines = [];
+
+    private void LoadHullOutline(string shipId)
+    {
+        var path = Path.Combine(_assetsRoot, shipId, "hull.obj");
+        if (!File.Exists(path) || _hullOutlines.ContainsKey(shipId))
+        {
+            return;
+        }
+
+        var verts = new List<Vector2>();
+        Vector2[]? outline = null;
+        foreach (var line in File.ReadLines(path))
+        {
+            if (line.StartsWith("v ", StringComparison.Ordinal))
+            {
+                var t = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                verts.Add(new(float.Parse(t[3]), float.Parse(t[1]))); // (z forward, x starboard)
+            }
+            else if (line.StartsWith("l ", StringComparison.Ordinal))
+            {
+                outline = line.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1..]
+                    .Select(i => verts[int.Parse(i) - 1]).ToArray();
+            }
+        }
+
+        if (outline is not null)
+        {
+            _hullOutlines[shipId] = outline;
+        }
+    }
 
     private Ship? _aimTarget;
 
@@ -402,21 +443,30 @@ public partial class BattleView : Node2D
 
             Color teamColor = ship.Team?.Id == "usn" ? Colors.DodgerBlue : Colors.IndianRed;
 
-            // Hull: pointed bow, tapered stern, parallel midbody (ship-shaped, not a box).
-            var hull = new Vector2[10]
+            if (_hullOutlines.TryGetValue(ship.Definition.Id, out var outline))
             {
-                Local(0, ship.Definition.LengthM / 2f),                       // bow tip
-                Local(ship.Definition.BeamM * 0.38, ship.Definition.LengthM * 0.30),
-                Local(ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
-                Local(ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
-                Local(ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
-                Local(ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
-                Local(-ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
-                Local(-ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
-                Local(-ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
-                Local(-ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
-            };
-            DrawColoredPolygon(hull, teamColor);
+                // R3.1: real deck silhouette from the procedural hull mesh.
+                var hull = outline.Select(p => Local(p.Y, p.X)).ToArray();
+                DrawColoredPolygon(hull, teamColor);
+            }
+            else
+            {
+                // Placeholder: pointed bow, tapered stern, parallel midbody.
+                var hull = new Vector2[10]
+                {
+                    Local(0, ship.Definition.LengthM / 2f),
+                    Local(ship.Definition.BeamM * 0.38, ship.Definition.LengthM * 0.30),
+                    Local(ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
+                    Local(ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
+                    Local(ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
+                    Local(ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
+                    Local(-ship.Definition.BeamM * 0.18, -ship.Definition.LengthM / 2f),
+                    Local(-ship.Definition.BeamM * 0.40, -ship.Definition.LengthM * 0.44),
+                    Local(-ship.Definition.BeamM / 2f, -ship.Definition.LengthM * 0.28),
+                    Local(-ship.Definition.BeamM / 2f, ship.Definition.LengthM * 0.12),
+                };
+                DrawColoredPolygon(hull, teamColor);
+            }
 
             // Deck line + superstructure + funnels from turret/structural parts.
             foreach (var part in ship.Parts.Values)

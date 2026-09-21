@@ -46,6 +46,13 @@ data: [16+920 .. EOF)，条目按绝对偏移取用
 - 社区路径：klensy/wt-tools（vromfs/blk）、dag4blend（面向源 .dag 资产，非编译 dynmodel）。
 - 碰撞 BVH（0xace50003）同样需要专用解析；启发式捞浮点只得到量化网格与哨兵。
 
+## 参数驱动船体网格（已交付）
+
+`tools/generate_hull_obj.py` 从舰队数据（长/宽/吃水）程序化生成 3D 船体网格
+（41 站线 x 9 列 x 双舷 + 甲板封盖 + 甲板轮廓 `l` 环）→ `assets/models/<ship_id>/hull.obj`。
+全部 30 艘舰队 + 2 测试舰已生成（738 顶点/1360 面每舰），preview.png 为软件光栅化验证图。
+BattleView 前端已接入：对有 hull.obj 的舰加载甲板轮廓环，以真实剪影替换占位多边形。
+
 ## 当前管线
 
 `python tools/extract_ship_model.py <file.grp> --out assets/raw/models` → 按条目提取+格式识别+解压。
