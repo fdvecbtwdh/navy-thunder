@@ -52,6 +52,34 @@ public sealed record WtShipUnitsDocument
     public required WtShipUnitRecord[] Ships { get; init; }
 }
 
+/// <summary>Main-battery weapon facts measured from the WT client unit + weapon blks.</summary>
+public sealed record WtShipWeaponMain
+{
+    public double CaliberMm { get; init; }
+    public int Turrets { get; init; }
+    public double? ReloadS { get; init; }
+    public double? ShellMassKg { get; init; }
+    public double? MuzzleVelMs { get; init; }
+    public double? ExplosiveMassKg { get; init; }
+    public double? TraverseDegPerS { get; init; }
+}
+
+public sealed record WtShipWeaponsRecord
+{
+    public required string Id { get; init; }
+    public WtShipWeaponMain? Main { get; init; }
+}
+
+public sealed record WtShipWeaponsDocument
+{
+    public int SchemaVersion { get; init; }
+
+    [JsonIgnore]
+    public string Kind => "wtShipWeapons";
+
+    public required WtShipWeaponsRecord[] Ships { get; init; }
+}
+
 /// <summary>
 /// A tunable engine parameter whose formula/number is NOT publicly confirmed
 /// (approximation:true) plus any adjustable constant. All approximated WT behavior must

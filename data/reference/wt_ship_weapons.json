@@ -1,0 +1,429 @@
+{
+ "schemaVersion": 1,
+ "kind": "wtShipWeapons",
+ "extractedOn": "2026-09-21",
+ "source": "War Thunder client (licensed)",
+ "ships": [
+  {
+   "id": "germ_battleship_bismarck",
+   "main": {
+    "caliberMm": 380,
+    "turrets": 8,
+    "traverseDegPerS": 6.0,
+    "shellMassKg": 800.7999877929688,
+    "muzzleVelMs": 820.0,
+    "explosiveMassKg": 62.88999938964844,
+    "reloadS": 22.72727285042282
+   },
+   "allCalibers": {
+    "380": 8,
+    "150": 12,
+    "105": 16,
+    "37": 16,
+    "20": 20
+   }
+  },
+  {
+   "id": "jp_battlecruiser_kongo",
+   "main": {
+    "caliberMm": 356,
+    "turrets": 8,
+    "traverseDegPerS": 3.0,
+    "shellMassKg": 635.5800170898438,
+    "muzzleVelMs": 780.0,
+    "explosiveMassKg": 62.400001525878906,
+    "reloadS": 30.03002897112296
+   },
+   "allCalibers": {
+    "356": 8,
+    "152": 8,
+    "127": 12,
+    "25": 100
+   }
+  },
+  {
+   "id": "us_battleship_iowa_class_iowa",
+   "main": {
+    "caliberMm": 406,
+    "turrets": 9,
+    "traverseDegPerS": 4.0,
+    "shellMassKg": 862.0,
+    "muzzleVelMs": 803.0,
+    "explosiveMassKg": 69.66999816894531,
+    "reloadS": 29.940120529874598
+   },
+   "allCalibers": {
+    "406": 9,
+    "127": 20,
+    "40": 76,
+    "20": 52
+   }
+  },
+  {
+   "id": "us_destroyer_fletcher",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 5,
+    "traverseDegPerS": 28.75,
+    "shellMassKg": 25.0,
+    "muzzleVelMs": 792.0,
+    "explosiveMassKg": 3.2880001068115234,
+    "reloadS": 2.7777776673988104
+   },
+   "allCalibers": {
+    "127": 5,
+    "40": 2,
+    "20": 6
+   }
+  },
+  {
+   "id": "uss_dd_sims_guns",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 4,
+    "traverseDegPerS": 10.0,
+    "shellMassKg": 25.0,
+    "muzzleVelMs": 762.0,
+    "explosiveMassKg": null,
+    "reloadS": 4.999999925494195
+   },
+   "allCalibers": {
+    "127": 4
+   }
+  },
+  {
+   "id": "us_destroyer_gearing",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 6,
+    "traverseDegPerS": 25.0,
+    "shellMassKg": 25.0,
+    "muzzleVelMs": 792.0,
+    "explosiveMassKg": 3.2880001068115234,
+    "reloadS": 2.7777776673988104
+   },
+   "allCalibers": {
+    "127": 6,
+    "40": 16,
+    "20": 11
+   }
+  },
+  {
+   "id": "us_destroyer_sumner",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 6,
+    "traverseDegPerS": 25.0,
+    "shellMassKg": 25.0,
+    "muzzleVelMs": 792.0,
+    "explosiveMassKg": 3.2880001068115234,
+    "reloadS": 2.7777776673988104
+   },
+   "allCalibers": {
+    "127": 6,
+    "40": 12,
+    "20": 10
+   }
+  },
+  {
+   "id": "jp_destroyer_kagero",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 6,
+    "traverseDegPerS": 6.0,
+    "shellMassKg": 23.0,
+    "muzzleVelMs": 910.0,
+    "explosiveMassKg": 2.200000047683716,
+    "reloadS": 6.002400822086132
+   },
+   "allCalibers": {
+    "127": 6,
+    "25": 8
+   }
+  },
+  {
+   "id": "jp_destroyer_fubuki",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 6,
+    "traverseDegPerS": 6.0,
+    "shellMassKg": 23.0,
+    "muzzleVelMs": 910.0,
+    "explosiveMassKg": 2.200000047683716,
+    "reloadS": 6.002400822086132
+   },
+   "allCalibers": {
+    "127": 6,
+    "13": 4
+   }
+  },
+  {
+   "id": "uk_destroyer_tribal",
+   "main": {
+    "caliberMm": 120,
+    "turrets": 6,
+    "traverseDegPerS": 10.0,
+    "shellMassKg": 22.68000030517578,
+    "muzzleVelMs": 808.0,
+    "explosiveMassKg": 3.0,
+    "reloadS": 4.999999925494195
+   },
+   "allCalibers": {
+    "120": 6,
+    "102": 2,
+    "40": 4,
+    "20": 2,
+    "13": 8
+   }
+  },
+  {
+   "id": "us_cruiser_atlanta_class_atlanta",
+   "main": {
+    "caliberMm": 127,
+    "turrets": 16,
+    "traverseDegPerS": 25.0,
+    "shellMassKg": 25.0,
+    "muzzleVelMs": 792.0,
+    "explosiveMassKg": 3.2880001068115234,
+    "reloadS": 2.7777776673988104
+   },
+   "allCalibers": {
+    "127": 16,
+    "28": 12
+   }
+  },
+  {
+   "id": "us_cruiser_brooklyn_class_brooklyn",
+   "main": {
+    "caliberMm": 152,
+    "turrets": 15,
+    "traverseDegPerS": 5.0,
+    "shellMassKg": 47.599998474121094,
+    "muzzleVelMs": 812.0,
+    "explosiveMassKg": 6.0,
+    "reloadS": 5.98802410597492
+   },
+   "allCalibers": {
+    "152": 15,
+    "127": 8,
+    "13": 8
+   }
+  },
+  {
+   "id": "us_cruiser_baltimore_class",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 9,
+    "traverseDegPerS": 5.300000190734863,
+    "shellMassKg": 117.9000015258789,
+    "muzzleVelMs": 823.0,
+    "explosiveMassKg": 4.940000057220459,
+    "reloadS": 15.151515233615214
+   },
+   "allCalibers": {
+    "203": 9,
+    "127": 12,
+    "40": 48,
+    "20": 24
+   }
+  },
+  {
+   "id": "us_cruiser_new_orleans_class",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 9,
+    "traverseDegPerS": 3.5999999046325684,
+    "shellMassKg": 117.9000015258789,
+    "muzzleVelMs": 823.0,
+    "explosiveMassKg": 4.940000057220459,
+    "reloadS": 17.14383695324515
+   },
+   "allCalibers": {
+    "203": 9,
+    "127": 8,
+    "40": 24,
+    "20": 28
+   }
+  },
+  {
+   "id": "jp_cruiser_myoko",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 10,
+    "traverseDegPerS": 4.0,
+    "shellMassKg": 125.4000015258789,
+    "muzzleVelMs": 835.0,
+    "explosiveMassKg": 8.15999984741211,
+    "reloadS": 12.048193229648177
+   },
+   "allCalibers": {
+    "203": 10,
+    "127": 8,
+    "25": 52
+   }
+  },
+  {
+   "id": "jp_cruiser_mogami",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 10,
+    "traverseDegPerS": 4.0,
+    "shellMassKg": 125.4000015258789,
+    "muzzleVelMs": 835.0,
+    "explosiveMassKg": 8.15999984741211,
+    "reloadS": 12.048193229648177
+   },
+   "allCalibers": {
+    "203": 10,
+    "127": 8,
+    "25": 8,
+    "13": 4
+   }
+  },
+  {
+   "id": "germ_cruiser_prinz_eugen",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 8,
+    "traverseDegPerS": 8.0,
+    "shellMassKg": 122.0,
+    "muzzleVelMs": 925.0,
+    "explosiveMassKg": 8.883999824523926,
+    "reloadS": 12.004801644172264
+   },
+   "allCalibers": {
+    "203": 8,
+    "105": 12,
+    "40": 18,
+    "20": 28
+   }
+  },
+  {
+   "id": "us_cruiser_northampton_class",
+   "main": {
+    "caliberMm": 203,
+    "turrets": 9,
+    "traverseDegPerS": 3.5999999046325684,
+    "shellMassKg": 117.9000015258789,
+    "muzzleVelMs": 853.0,
+    "explosiveMassKg": 4.940000057220459,
+    "reloadS": 17.14383695324515
+   },
+   "allCalibers": {
+    "203": 9,
+    "127": 8,
+    "28": 16,
+    "13": 8
+   }
+  },
+  {
+   "id": "us_battleship_nevada",
+   "main": {
+    "caliberMm": 356,
+    "turrets": 10,
+    "traverseDegPerS": 2.0,
+    "shellMassKg": 635.0,
+    "muzzleVelMs": 823.0,
+    "explosiveMassKg": 47.619998931884766,
+    "reloadS": 39.99999940395356
+   },
+   "allCalibers": {
+    "356": 10,
+    "127": 16,
+    "40": 32,
+    "20": 40
+   }
+  },
+  {
+   "id": "us_battleship_colorado_class_colorado",
+   "main": {
+    "caliberMm": 406,
+    "turrets": 8,
+    "traverseDegPerS": 2.0,
+    "shellMassKg": 862.0,
+    "muzzleVelMs": 803.0,
+    "explosiveMassKg": 69.66999816894531,
+    "reloadS": 39.99999940395356
+   },
+   "allCalibers": {
+    "406": 8,
+    "127": 18,
+    "28": 16,
+    "20": 14
+   }
+  },
+  {
+   "id": "us_battleship_north_carolina_class",
+   "main": {
+    "caliberMm": 406,
+    "turrets": 9,
+    "traverseDegPerS": 4.0,
+    "shellMassKg": 862.0,
+    "muzzleVelMs": 803.0,
+    "explosiveMassKg": 69.66999816894531,
+    "reloadS": 29.940120529874598
+   },
+   "allCalibers": {
+    "406": 9,
+    "127": 20,
+    "28": 16,
+    "20": 40,
+    "13": 28
+   }
+  },
+  {
+   "id": "us_battleship_south_dakota",
+   "main": {
+    "caliberMm": 406,
+    "turrets": 9,
+    "traverseDegPerS": 4.0,
+    "shellMassKg": 862.0,
+    "muzzleVelMs": 803.0,
+    "explosiveMassKg": 69.66999816894531,
+    "reloadS": 29.940120529874598
+   },
+   "allCalibers": {
+    "406": 9,
+    "127": 16,
+    "40": 68,
+    "20": 75
+   }
+  },
+  {
+   "id": "jp_battleship_nagato",
+   "main": {
+    "caliberMm": 410,
+    "turrets": 8,
+    "traverseDegPerS": 3.0,
+    "shellMassKg": 936.0,
+    "muzzleVelMs": 805.0,
+    "explosiveMassKg": 44.29999923706055,
+    "reloadS": 21.50537583411451
+   },
+   "allCalibers": {
+    "410": 8,
+    "140": 18,
+    "127": 8,
+    "25": 98
+   }
+  },
+  {
+   "id": "uk_battlecruiser_renown",
+   "main": {
+    "caliberMm": 381,
+    "turrets": 6,
+    "traverseDegPerS": 2.0,
+    "shellMassKg": 881.0,
+    "muzzleVelMs": 752.0,
+    "explosiveMassKg": 61.66999816894531,
+    "reloadS": 30.211478980697596
+   },
+   "allCalibers": {
+    "381": 6,
+    "114": 20,
+    "40": 28,
+    "20": 64
+   }
+  }
+ ]
+}

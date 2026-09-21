@@ -127,8 +127,7 @@ def load_wt_units(path="data/reference/wt_ship_units.json"):
     return {s["id"]: s for s in doc.get("ships", [])}
 
 
-def build_guns(name, cls, deck_y, half_b, turret_group_count, shell, rpm, range_m, traverse):
-    speed, turn, _, barrels, _, _ = CLASS_MOBILITY[cls]
+def build_guns(name, cls, deck_y, half_b, turret_group_count, barrels, shell, rpm, range_m, traverse):
     guns = []
     for g in range(turret_group_count):
         guns.append({
@@ -138,21 +137,23 @@ def build_guns(name, cls, deck_y, half_b, turret_group_count, shell, rpm, range_
             "traverseDegPerS": traverse,
             "horizontalMrad": 2.5, "verticalMrad": 1.5,
         })
-    return speed, turn, guns
+    return guns
 
 
 def capital_like(cls):
     return cls in ("Battleship", "Battlecruiser", "Cruiser")
 
 
-def build_ship(row, wt_units):
+def build_ship(row, wt_units, wt_weapons):
     (name, cls, disp, length, beam, draft, crew, repair, survive,
      belt_mm, deck_mm, turret_groups, generation) = row
 
-    wt = wt_units.get(WT_ID.get(name) or "", {})
+    wt_id = WT_ID.get(name)
+    wt = wt_units.get(wt_id or "", {})
     wt_disp = wt.get("displacementT")
     wt_speed = wt.get("maxSpeedKnots")
     battery = wt_main_battery(wt.get("weaponsSummary", ""))
+    wpn = (wt_weapons.get(wt_id) or {}).get("main")
     wt_fields = []
     if wt_disp:
         disp = float(wt_disp)
@@ -162,14 +163,31 @@ def build_ship(row, wt_units):
         wt_fields.append("maxSpeedKnots")
     else:
         speed_kn = CLASS_MOBILITY[cls][0]
-    if battery:
+
+    if wpn and wpn.get("reloadS"):
+        # R3: real main battery from the client extract. WT Weapon entries are
+        # per-barrel mounts, so total barrels come from weaponsSummary and are
+        # distributed over the fleet table's turret groups; reload (60/rpm),
+        # traverse and shell mass are measured values.
+        total_barrels = battery[0] if battery else wpn["turrets"]
+        barrels = max(1, round(total_barrels / turret_groups))
+        shell = CAPITAL_SHELL if wpn["caliberMm"] >= 280 else LIGHT_SHELL
+        rpm = max(1.0, 60.0 / wpn["reloadS"])
+        range_m = 30000 if wpn["caliberMm"] >= 280 else (18000 if wpn["caliberMm"] > 130 else 15000)
+        traverse = wpn.get("traverseDegPerS") or (6 if wpn["caliberMm"] >= 280 else 12)
+        wt_fields.append("mainBatteryReal")
+    elif battery:
         shell, rpm, range_m, traverse = wt_gun_params(cls, battery[2], turret_groups)
         if battery[0] >= 2:
             turret_groups = min(4, max(1, battery[0] // 2))
+        barrels = CLASS_MOBILITY[cls][3]
         wt_fields.append("mainBattery")
     else:
-        shell, rpm, range_m, traverse = CLASS_MOBILITY[cls][5], CLASS_MOBILITY[cls][4], \
-            (30000 if cls in ("Battleship", "Battlecruiser") else 15000), None
+        shell = CLASS_MOBILITY[cls][5]
+        rpm = CLASS_MOBILITY[cls][4]
+        range_m = 30000 if cls in ("Battleship", "Battlecruiser") else 15000
+        traverse = None
+        barrels = CLASS_MOBILITY[cls][3]
 
     half_l = length / 2
     half_b = beam / 2
@@ -268,8 +286,8 @@ def build_ship(row, wt_units):
 
     turn_rate = CLASS_MOBILITY[cls][1]
     default_traverse = 6 if capital_like(cls) else 12
-    guns = build_guns(name, cls, deck_y, half_b, turret_groups,
-                      shell, rpm, range_m, traverse or default_traverse)[2]
+    guns = build_guns(name, cls, deck_y, half_b, turret_groups, barrels,
+                      shell, rpm, range_m, traverse or default_traverse)
 
     return {
         "id": name,
@@ -295,6 +313,11 @@ def build_ship(row, wt_units):
         "armorPlates": plates,
         "source": {
             "origin": "wt_client_extract+hand_template" if wt_fields else "hand_authored",
+            "mainBatteryReal": (wpn or None) and {
+                "caliberMm": wpn["caliberMm"], "turrets": wpn["turrets"],
+                "reloadS": wpn["reloadS"], "shellMassKg": wpn["shellMassKg"],
+                "muzzleVelMs": wpn["muzzleVelMs"], "explosiveMassKg": wpn["explosiveMassKg"],
+                "traverseDegPerS": traverse},
             "wtUnitId": WT_ID.get(name),
             "wtDerivedFields": wt_fields,
             "notes": "Templated layout expanded from historical parameters; "
@@ -306,9 +329,17 @@ def build_ship(row, wt_units):
     }
 
 
+def load_wt_weapons(path="data/reference/wt_ship_weapons.json"):
+    p = Path(path)
+    if not p.exists():
+        return {}
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
 def main():
     wt_units = load_wt_units()
-    ships = [build_ship(row, wt_units) for row in FLEET]
+    wt_weapons = load_wt_weapons()
+    ships = [build_ship(row, wt_units, wt_weapons) for row in FLEET]
     doc = {
         "schemaVersion": 1,
         "kind": "shipSet",

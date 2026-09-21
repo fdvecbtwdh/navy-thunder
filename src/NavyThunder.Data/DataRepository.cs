@@ -148,6 +148,19 @@ public sealed class DataRepository
                         _lastShipUnits = shipUnits.Ships;
                         break;
 
+                    case "wtShipWeapons":
+                        var shipWeapons = Deserialize<WtShipWeaponsDocument>(path, json);
+                        CheckSchemaVersion(path, shipWeapons.SchemaVersion, errors);
+                        foreach (var unit in shipWeapons.Ships)
+                        {
+                            if (string.IsNullOrWhiteSpace(unit.Id))
+                            {
+                                errors.Add($"{path}: wtShipWeapons entry with empty Id");
+                            }
+                        }
+
+                        break;
+
                     case "wtReference":
                         var wtDoc = Deserialize<WtReferenceDocument>(path, json);
                         CheckSchemaVersion(path, wtDoc.SchemaVersion, errors);
