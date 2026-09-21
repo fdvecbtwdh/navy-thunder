@@ -84,6 +84,7 @@ public partial class BattleView : Node2D
         _audio = new AudioManager();
         AddChild(_audio);
         var settings = UserSettings.Load();
+        L10n.Language = settings.Language;
         AudioManager.ApplyVolumes(settings.MasterVolume, settings.EffectsVolume, 0.6f);
         _audio.StartAmbient();
 
@@ -360,8 +361,8 @@ public partial class BattleView : Node2D
         var title = new Label
         {
             Text = _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.TeamWin
-                ? $"VICTORY - {winner.ToUpperInvariant()}"
-                : "BATTLE OVER - DRAW",
+                ? $"{L10n.Tr("report.victory")}{winner.ToUpperInvariant()}"
+                : L10n.Tr("report.draw"),
         };
         title.AddThemeFontSizeOverride("font_size", 36);
         box.AddChild(title);
@@ -377,7 +378,7 @@ public partial class BattleView : Node2D
         detail.AddThemeColorOverride("font_color", Colors.LightGray);
         box.AddChild(detail);
 
-        var again = new Button { Text = "BACK TO MENU" };
+        var again = new Button { Text = L10n.Tr("report.back") };
         again.Pressed += () => GetTree().ChangeSceneToFile("res://Menu.tscn");
         box.AddChild(again);
 
@@ -628,8 +629,10 @@ public partial class BattleView : Node2D
         double reload = _runner!.Guns.ReloadRemainingOf(ship.TargetId);
         string shellType = _playerHe ? "HE" : "AP";
         string guns = ship.Alive
-            ? (reload > 0 ? $"GUNS reloading {reload:0.0}s" : "GUNS ready") +
-              $"  SHELL {shellType}  |  hover an enemy to engage"
+            ? (reload > 0
+                ? string.Format(L10n.Tr("hud.guns.reloading"), reload)
+                : L10n.Tr("hud.guns.ready")) +
+              $"  SHELL {shellType}  |  {L10n.Tr("hud.aim")}"
             : "";
 
         // Hull sections: hp bar + fire/flood markers (R2.4 damage HUD).
@@ -648,7 +651,7 @@ public partial class BattleView : Node2D
                       (section.Destroyed ? "  DESTROYED" : ""));
         }
 
-        lines.Add($"CREW {ship.CrewAlive}/{ship.Definition.CrewTotal}  |  W/S throttle  A/D rudder  X center  R shell  " +
+        lines.Add($"CREW {ship.CrewAlive}/{ship.Definition.CrewTotal}  |  {L10n.Tr("hud.helm")}  " +
                   $"|  t={_runner!.World.Time:0}s");
         return string.Join("\n", lines);
     }

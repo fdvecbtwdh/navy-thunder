@@ -31,12 +31,14 @@ public partial class MenuView : CanvasLayer
         root.AddThemeConstantOverride("separation", 14);
         AddChild(root);
 
-        var title = new Label { Text = "NAVY THUNDER" };
+        L10n.Language = _settings.Language;
+
+        var title = new Label { Text = $"{L10n.Tr("menu.title")}  v{GameVersion.Full}" };
         title.AddThemeFontSizeOverride("font_size", 42);
         title.HorizontalAlignment = HorizontalAlignment.Center;
         root.AddChild(title);
 
-        var subtitle = new Label { Text = "pick your ship" };
+        var subtitle = new Label { Text = L10n.Tr("menu.subtitle") };
         subtitle.AddThemeColorOverride("font_color", Colors.LightGray);
         subtitle.HorizontalAlignment = HorizontalAlignment.Center;
         root.AddChild(subtitle);
@@ -56,34 +58,38 @@ public partial class MenuView : CanvasLayer
         root.AddChild(spacer);
 
         // R3.4 settings: volumes + language, persisted to settings.json.
-        var settingsBtn = new Button { Text = "SETTINGS" };
+        var settingsBtn = new Button { Text = L10n.Tr("menu.settings") };
         root.AddChild(settingsBtn);
 
         var panel = new VBoxContainer { Visible = false };
         panel.AddThemeConstantOverride("separation", 8);
         root.AddChild(panel);
 
-        var masterLabel = new Label { Text = $"Master {_settings.MasterVolume:0.00}" };
+        var masterLabel = new Label();
+        var masterLabelUpdate = () => masterLabel.Text = $"{L10n.Tr("settings.master")} {_settings.MasterVolume:0.00}";
         var master = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05, Value = _settings.MasterVolume };
         master.ValueChanged += v =>
         {
             _settings.MasterVolume = (float)v;
-            masterLabel.Text = $"Master {v:0.00}";
+            masterLabelUpdate();
             AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
             _settings.Save();
         };
+        masterLabelUpdate();
         panel.AddChild(masterLabel);
         panel.AddChild(master);
 
-        var fxLabel = new Label { Text = $"Effects {_settings.EffectsVolume:0.00}" };
+        var fxLabel = new Label();
+        var fxLabelUpdate = () => fxLabel.Text = $"{L10n.Tr("settings.effects")} {_settings.EffectsVolume:0.00}";
         var fx = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05, Value = _settings.EffectsVolume };
         fx.ValueChanged += v =>
         {
             _settings.EffectsVolume = (float)v;
-            fxLabel.Text = $"Effects {v:0.00}";
+            fxLabelUpdate();
             AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
             _settings.Save();
         };
+        fxLabelUpdate();
         panel.AddChild(fxLabel);
         panel.AddChild(fx);
 
@@ -94,10 +100,12 @@ public partial class MenuView : CanvasLayer
         lang.ItemSelected += idx =>
         {
             _settings.Language = (long)idx == 1 ? "en" : "zh-CN";
+            L10n.Language = _settings.Language;
             AppEnv.Info("language: " + _settings.Language);
             _settings.Save();
+            GetTree().ReloadCurrentScene();
         };
-        panel.AddChild(new Label { Text = "Language (UI text arrives with R3.5):" });
+        panel.AddChild(new Label { Text = L10n.Tr("settings.language") });
         panel.AddChild(lang);
 
         settingsBtn.Pressed += () => panel.Visible = !panel.Visible;
@@ -105,7 +113,7 @@ public partial class MenuView : CanvasLayer
         var spacer2 = new Control { CustomMinimumSize = new Vector2(0, 16) };
         root.AddChild(spacer2);
 
-        var start = new Button { Text = "START BATTLE" };
+        var start = new Button { Text = L10n.Tr("menu.start") };
         start.Pressed += () =>
         {
             int i = Math.Max(0, _shipPicker.Selected);
@@ -120,11 +128,23 @@ public partial class MenuView : CanvasLayer
         };
         root.AddChild(start);
 
-        var quit = new Button { Text = "QUIT" };
+        var quit = new Button { Text = L10n.Tr("menu.quit") };
         quit.Pressed += () => GetTree().Quit();
         root.AddChild(quit);
 
         root.Ready += () => root.Position = -root.Size / 2f;
+
+        var shot = OS.GetEnvironment("NT_FRONTEND_SHOT");
+        if (shot.Length > 0)
+        {
+            var tree = GetTree();
+            tree.CreateTimer(1.0).Timeout += () =>
+            {
+                var img = ((Viewport)tree.Root).GetTexture().GetImage();
+                img.SavePng(shot);
+                GD.Print("menu shot saved: " + shot);
+            };
+        }
     }
 
     private List<(string Id, string Name)> LoadFleetShips()

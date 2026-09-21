@@ -145,14 +145,15 @@
 
 | 任务 | 内容 | 优先 | 量 |
 |---|---|---|---|
-| R5.1 | 版本号/配置管理/用户数据目录 | 🔴 | S |
+| R5.1 | 版本号/配置管理/用户数据目录 | 🟡 | S | 
+| R5.1 状态 | ✅ 部分完成（2026-09-22）：`GameVersion`（0.9.0-rc，菜单/战报显示）；用户数据目录=Godot user://（AppEnv：logs/crash/saves/settings.json）；打包脚本 `tools/package_release.sh`（dotnet publish + Godot export-release + data/scenarios 随包）已就位，需安装 Godot export templates 后出包验证 |
 | R5.2 | 打包安装（zip 起步）+ 干净环境验证 | 🔴 | S |
 | R5.3 | 第三方与资源授权审计（含 WT 提取物授权假设书面化） | 🔴 | S |
 | R5.4 | **RC 全量测试 → Release Gate 逐项确认 → 1.0 发布** | 🔴 | M |
 
 ### 并行工作流（跨阶段持续）
 
-- **W3 数据扩录**：✅ **通用 blk 解码器完成**（`tools/blk_decode.py`，Dagor BBF3 格式完整语义解码，2,322/2,322 舰 0 失败）；`data/reference/wt_ship_units.json` 已入库（653 艘有真实排水量/航速，640 艘有武器摘要——Bismarck 48,000t/30.6kn 等，与史实交叉验证一致）。舰船模板生成器已改读真实参数（2026-09-21：30 舰中 23 舰排水量/航速/主炮来自 WT 提取，7 舱无匹配保持史实手工值，来源标注 wtDerivedFields）。剩余待办：机炮 K 实值化；武器 blk（射速/弹重）批量提取复用同一解码器。
+- **W3 数据扩录**：✅ **通用 blk 解码器完成**（`tools/blk_decode.py`，Dagor BBF3 格式完整语义解码，2,322/2,322 舰 0 失败）；`data/reference/wt_ship_units.json` 已入库（653 艘有真实排水量/航速，640 艘有武器摘要——Bismarck 48,000t/30.6kn 等，与史实交叉验证一致）。舰船模板生成器已改读真实参数（2026-09-21：30 舰中 23 舰排水量/航速/主炮来自 WT 提取，7 舱无匹配保持史实手工值，来源标注 wtDerivedFields）。武器数据扩录已完成（2026-09-22 `tools/extract_ship_weapons.py`：24/30 舰实测射速=1/shotFreq、弹重、口径、旋回、副炮组；`tools/extract_shell_set.py` 生成 13 AP + 14 HE 实测弹种含 datamine de Marre K）。剩余待办：机炮 K 实值化。
 - **W2 校准深化**（原 W2 保留）：转正乘数表拟合、阻力曲线、行为数值锚点。依赖 R0.8 场景输出。
 - **W4.1 CI**：立即做（原 W4.1），R0 结束前必须存在。
 - **⟲WT 解包管线**：后台代理进行中，产出 R3.1 的直接输入。
