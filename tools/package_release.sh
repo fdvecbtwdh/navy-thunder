@@ -28,5 +28,9 @@ mkdir -p "$OUT"
 # 3) game data next to the executable (ships/shells/scenarios are read at runtime)
 cp -r "$ROOT/data" "$OUT/data"
 cp -r "$ROOT/scenarios" "$OUT/scenarios"
+mkdir -p "$OUT/assets/models"
+for d in "$ROOT/assets/models"/*/; do
+    [ -f "$d/hull.obj" ] && mkdir -p "$OUT/assets/models/$(basename "$d")" && cp "$d/hull.obj" "$OUT/assets/models/$(basename "$d")/"
+done
 
 echo "package ready: $OUT"
