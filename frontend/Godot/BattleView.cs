@@ -191,6 +191,7 @@ public partial class BattleView : Node2D
 
         ApplyHelm(delta);
         ApplyFireControl();
+        CollectEffects();
 
         if (_playerShip is not null && _camera is not null)
         {
@@ -303,6 +304,33 @@ public partial class BattleView : Node2D
         GetViewportRect().Size / 2f
         + new Vector2((float)world.X * PixelsPerMeter, (float)world.Z * PixelsPerMeter);
 
+    private readonly List<(Vec3 Pos, double Time, bool Hit)> _effects = [];
+    private long _fxCursor;
+
+    /// <summary>Collects recent impacts/detonations for the effect layer.</summary>
+    private void CollectEffects()
+    {
+        if (_runner is null)
+        {
+            return;
+        }
+
+        foreach (var e in _runner.World.Events.After(_fxCursor))
+        {
+            switch (e)
+            {
+                case NavyThunder.Core.Ballistics.ShellDetonation d:
+                    _effects.Add((d.Position, d.Time, d.TargetId.Length > 0));
+                    break;
+                case NavyThunder.Core.Ballistics.ProjectileArmorImpact impact:
+                    _effects.Add((impact.Position, impact.Time, true));
+                    break;
+            }
+        }
+
+        _fxCursor = _runner.World.Events.TotalRecorded;
+    }
+
     public override void _Draw()
     {
         var size = GetViewportRect().Size;
@@ -368,6 +396,22 @@ public partial class BattleView : Node2D
 
             DrawString(ThemeDB.FallbackFont, pos + new Vector2(12, -12),
                 ship.TargetId, HorizontalAlignment.Left, -1, 12, Colors.LightGray);
+        }
+
+        // R2.5 hit feedback: fading splash (water) / flash (hit) rings.
+        var simT = _runner.World.Time;
+        _effects.RemoveAll(e => simT - e.Time > 2.0);
+        foreach (var e in _effects)
+        {
+            float age = (float)(simT - e.Time);
+            float alpha = 1f - age / 2f;
+            var p = ToScreen(e.Pos);
+            float rr = 4f + age * 14f;
+            var col = e.Hit
+                ? new Color(1f, 0.55f, 0.15f, alpha)
+                : new Color(0.85f, 0.95f, 1f, alpha * 0.8f);
+            DrawArc(p, rr, 0, Mathf.Tau, 24, col, 2f);
+            DrawCircle(p, 3f, new Color(col.R, col.G, col.B, alpha * 0.6f));
         }
 
         // R2.3 aim indicator: ring on the hovered enemy + reload status.
