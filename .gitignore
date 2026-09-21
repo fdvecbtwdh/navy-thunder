@@ -10,3 +10,4 @@ TestResults/
 wt_extracted.json
 _wt_audit/
 .godot/
+dist/

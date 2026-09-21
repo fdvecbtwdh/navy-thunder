@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../../src/NavyThunder.Core/NavyThunder.Core.csproj" />
+  <Project Path="../../src/NavyThunder.Data/NavyThunder.Data.csproj" />
+  <Project Path="NavyThunder.Frontend.csproj" />
+</Solution>
