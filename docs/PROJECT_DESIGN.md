@@ -340,7 +340,7 @@ Battle3D (Node3D)
 ### 9.2 双轨策略
 
 `DESIGN DECISION`：
-- **目标轨（Phase 03）**：Python BIM2→glTF 转换器。技术依据与工作量评估见 `docs/research/DAGOR_ASSET_RESEARCH.md`（DagorEngine 开源仓的 btag/dag2Tree 可参照性、Dagor-Asset-Explorer 借鉴、社区先例）。
+- **目标轨（Phase 03）**：Python BIM2→glTF 转换器。**可行性已定**（`docs/research/DAGOR_ASSET_RESEARCH.md`）：BIM2=`DynamicRenderableSceneLodsResource` 结构 dump（开源引擎读写两端源码互证，格式破解约 95%）；顶点块 100% OODLE 压缩（本机实测解压成功，Bismarck 4.65MB→23.7MB 样本留档）；骨架=GeomNodeTree（Bismarck 771 节点）可直接服务模块化损伤挂点。工作量 M（2-4 天）。风险=Oodle DLL 依赖（三级降级兜底）。
 - **保底轨（Phase 02 即用）**：程序化 3D 船体升级——现 hull.obj（41 站线光壳）升级为含上层建筑/炮塔座的分层船体（数据源=ShipDefinition 部件盒），直接映射 §5.2 局部坐标。**Phase 02/04 全部验收不依赖 BIM2 成败**。
 - 视觉与命中三分离保证：资产轨失败不伤玩法；资产轨成功不碰 Core。
 - 合规：研究用途提取（LICENSE_AUDIT 假设①-④）；**分发包不含 WT 原始文件**；转换器输入=用户自有客户端。

@@ -1,6 +1,7 @@
 # WT 资产提取管线笔记（R3.1）
 
 状态：GRP2 容器完整解析；渲染网格（BIM2）反序列化待实现。
+**状态更新（2026-10-02）**：BIM2 格式已通过开源 DagorEngine 源码互证+本地二进制实测基本破解（约 95%），转换路线与工作量评估见 `docs/research/DAGOR_ASSET_RESEARCH.md`，实施计划见 `docs/phases/PHASE_03_SHIP_ASSETS.md`（新增 `tools/convert_bim2_gltf.py`）。本文档其余部分仍有效（GRP2 布局表/条目格式表/替代品记录）。
 
 ## 模型在哪里
 

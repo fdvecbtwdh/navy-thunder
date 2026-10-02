@@ -33,7 +33,7 @@
 | B9 | Mastering The Art Of Torpedo Bombing | https://wiki.warthunder.com/4620-mastering-the-art-of-torpedo-bombing | — | 鱼雷深度设置 | MDR-0012 冲突记录 |
 | B10 | Torpedoes 分类页 | https://wiki.warthunder.com/torpedo | — | 鱼雷数据页索引 | Phase 04 |
 | B11 | Steam 商店页 NavalArt | https://store.steampowered.com/app/842780/NavalArt | 2018-06 EA | 基本信息 | MDR-0016 |
-| B12 | DagorEngine 开源仓 | https://github.com/GaijinEntertainment/DagorEngine | 2023-10 开源 | btag/dag2Tree 参照 | DAGOR_ASSET_RESEARCH、Phase 03 |
+| B12 | DagorEngine 开源仓（含 22 个关键源文件实取清单，见 DAGOR_ASSET_RESEARCH §2） | https://github.com/GaijinEntertainment/DagorEngine | 2023-10 开源 | BIM2 读写路径/碰撞/GeomNodeTree | DAGOR_ASSET_RESEARCH、PHASE_03 |
 | B13 | WT CDK 模型工作流 | https://wiki.warthunder.com/cdk/creation_model | — | .dag 源格式入口 | DAGOR_ASSET_RESEARCH |
 | B14 | NavalArt 官方公告页/SteamDB | （见 MDR-0016 引用） | 至 1.6 公测 | 版本史 | MDR-0016 |
 | B15 | MDR-0001~0016 已核官方来源 | 见 docs/mechanisms/ 各文件 | 2026-09-18 起 | 16 机制决议证据链 | 全部 MDR |
@@ -57,7 +57,8 @@
 
 | # | 名称 | URL | 主题 | 用于 |
 |---|---|---|---|---|
-| D1 | quentin-dh/Dagor-Asset-Explorer | https://github.com/quentin-dh/Dagor-Asset-Explorer | DynModel/GeomNodeTree 解析 | DAGOR_ASSET_RESEARCH |
+| D1 | quentin-dh/Dagor-Asset-Explorer（含 issue #1/#12/#16/#20/#23/#24 风险清单） | https://github.com/quentin-dh/Dagor-Asset-Explorer | DynModel 解析参照/Oodle DLL 风险 | DAGOR_ASSET_RESEARCH |
+| D1b | Gredwitch/Dagor-Asset-Explorer-Tools（Blender 导入器） | https://github.com/Gredwitch/Dagor-Asset-Explorer-Tools | 验证基准 | DAGOR_ASSET_RESEARCH |
 | D2 | ZenHAX dynmodel 讨论 | https://zenhax.com/viewtopic.php@t=15887.html | .grp/.dynmodel 格式 | DAGOR_ASSET_RESEARCH |
 | D3 | gszabi99/War-Thunder-Datamine | https://github.com/gszabi99/War-Thunder-Datamine | 逐弹参数（demarreK/Cx/引信） | MDR-0001~0003 |
 | D4 | WT 社区 wiki/guide 生态（Steam guides） | https://steamcommunity.com/sharedfiles/filedetails/?id=2798697627 等 | 海战入门/损管实操 | NAVAL_COMBAT（Level D 佐证） |
