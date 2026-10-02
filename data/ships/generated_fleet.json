@@ -262,6 +262,28 @@
           "zMaxM": 57.0,
           "face": "YMax",
           "thicknessMm": 13
+        },
+        {
+          "id": "uss_fletcher_bulkhead_fwd",
+          "xMinM": -5.5,
+          "xMaxM": -5.5,
+          "yMinM": -3.9,
+          "yMaxM": 4.51,
+          "zMinM": 57.0,
+          "zMaxM": 57.0,
+          "face": "ZMax",
+          "thicknessMm": 13
+        },
+        {
+          "id": "uss_fletcher_bulkhead_aft",
+          "xMinM": -5.5,
+          "xMaxM": -5.5,
+          "yMinM": -3.9,
+          "yMaxM": 4.51,
+          "zMinM": -57.0,
+          "zMaxM": -57.0,
+          "face": "ZMin",
+          "thicknessMm": 13
         }
       ],
       "source": {
@@ -281,7 +303,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },
@@ -3369,6 +3391,28 @@
           "zMaxM": 102.5,
           "face": "YMax",
           "thicknessMm": 65
+        },
+        {
+          "id": "uss_baltimore_bulkhead_fwd",
+          "xMinM": -10.8,
+          "xMaxM": -10.8,
+          "yMinM": -7.2,
+          "yMaxM": 7.48,
+          "zMinM": 102.5,
+          "zMaxM": 102.5,
+          "face": "ZMax",
+          "thicknessMm": 75
+        },
+        {
+          "id": "uss_baltimore_bulkhead_aft",
+          "xMinM": -10.8,
+          "xMaxM": -10.8,
+          "yMinM": -7.2,
+          "yMaxM": 7.48,
+          "zMinM": -102.5,
+          "zMaxM": -102.5,
+          "face": "ZMin",
+          "thicknessMm": 75
         }
       ],
       "source": {
@@ -3388,7 +3432,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },
@@ -7973,6 +8017,28 @@
           "zMaxM": 111.0,
           "face": "YMax",
           "thicknessMm": 104
+        },
+        {
+          "id": "uss_north_carolina_bulkhead_fwd",
+          "xMinM": -16.5,
+          "xMaxM": -16.5,
+          "yMinM": -10.4,
+          "yMaxM": 10.360000000000001,
+          "zMinM": 111.0,
+          "zMaxM": 111.0,
+          "face": "ZMax",
+          "thicknessMm": 100
+        },
+        {
+          "id": "uss_north_carolina_bulkhead_aft",
+          "xMinM": -16.5,
+          "xMaxM": -16.5,
+          "yMinM": -10.4,
+          "yMaxM": 10.360000000000001,
+          "zMinM": -111.0,
+          "zMaxM": -111.0,
+          "face": "ZMin",
+          "thicknessMm": 100
         }
       ],
       "source": {
@@ -7992,7 +8058,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },
@@ -8817,6 +8883,28 @@
           "zMaxM": 131.0,
           "face": "YMax",
           "thicknessMm": 157
+        },
+        {
+          "id": "uss_iowa_bulkhead_fwd",
+          "xMinM": -16.5,
+          "xMaxM": -16.5,
+          "yMinM": -11.3,
+          "yMaxM": 11.170000000000002,
+          "zMinM": 131.0,
+          "zMaxM": 131.0,
+          "face": "ZMax",
+          "thicknessMm": 150
+        },
+        {
+          "id": "uss_iowa_bulkhead_aft",
+          "xMinM": -16.5,
+          "xMaxM": -16.5,
+          "yMinM": -11.3,
+          "yMaxM": 11.170000000000002,
+          "zMinM": -131.0,
+          "zMaxM": -131.0,
+          "face": "ZMin",
+          "thicknessMm": 150
         }
       ],
       "source": {
@@ -8836,7 +8924,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },
@@ -9646,6 +9734,28 @@
           "zMaxM": 111.0,
           "face": "YMax",
           "thicknessMm": 80
+        },
+        {
+          "id": "ijn_kongo_bulkhead_fwd",
+          "xMinM": -14.5,
+          "xMaxM": -14.5,
+          "yMinM": -9.7,
+          "yMaxM": 9.73,
+          "zMinM": 111.0,
+          "zMaxM": 111.0,
+          "face": "ZMax",
+          "thicknessMm": 100
+        },
+        {
+          "id": "ijn_kongo_bulkhead_aft",
+          "xMinM": -14.5,
+          "xMaxM": -14.5,
+          "yMinM": -9.7,
+          "yMaxM": 9.73,
+          "zMinM": -111.0,
+          "zMaxM": -111.0,
+          "face": "ZMin",
+          "thicknessMm": 100
         }
       ],
       "source": {
@@ -9665,7 +9775,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },
@@ -10095,6 +10205,28 @@
           "zMaxM": 107.5,
           "face": "YMax",
           "thicknessMm": 76
+        },
+        {
+          "id": "ijn_nagato_bulkhead_fwd",
+          "xMinM": -14.5,
+          "xMaxM": -14.5,
+          "yMinM": -9.4,
+          "yMaxM": 9.46,
+          "zMinM": 107.5,
+          "zMaxM": 107.5,
+          "face": "ZMax",
+          "thicknessMm": 100
+        },
+        {
+          "id": "ijn_nagato_bulkhead_aft",
+          "xMinM": -14.5,
+          "xMaxM": -14.5,
+          "yMinM": -9.4,
+          "yMaxM": 9.46,
+          "zMinM": -107.5,
+          "zMaxM": -107.5,
+          "face": "ZMin",
+          "thicknessMm": 100
         }
       ],
       "source": {
@@ -10114,7 +10246,7 @@
           "maxSpeedKnots",
           "mainBatteryReal"
         ],
-        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.",
+        "notes": "Templated layout expanded from historical parameters; displacement/speed/main battery taken from the WT client extract when matched. Compartment layout is a class template, not a ship-specific survey - Tier-2 data.; Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation).",
         "versionStamp": "generated 2026-09-21"
       }
     },

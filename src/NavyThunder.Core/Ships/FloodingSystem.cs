@@ -108,9 +108,9 @@ public sealed class FloodingSystem : ISimulationSystem
                 }
             }
 
-            // Lateral imbalance -> list.
+            // Lateral imbalance -> list. Phase 01 frame: lateral is ship-local X.
             double imbalance = ship.Parts.Values.Sum(p =>
-                (p.Breached ? p.WaterLevel : 0) * Math.Sign(p.Center.Z));
+                (p.Breached ? p.WaterLevel : 0) * Math.Sign(p.Center.X));
             ship.ListDeg = imbalance * ListDegPerImbalance;
 
             if (_fire is not null)

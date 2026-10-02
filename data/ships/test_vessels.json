@@ -276,6 +276,28 @@
           "zMaxM": 55,
           "face": "YMax",
           "thicknessMm": 15
+        },
+        {
+          "id": "test_destroyer_bulkhead_fwd",
+          "xMinM": -5.5,
+          "xMaxM": -5.5,
+          "yMinM": -3,
+          "yMaxM": 6,
+          "zMinM": 55,
+          "zMaxM": 55,
+          "face": "ZMax",
+          "thicknessMm": 20
+        },
+        {
+          "id": "test_destroyer_bulkhead_aft",
+          "xMinM": -5.5,
+          "xMaxM": -5.5,
+          "yMinM": -3,
+          "yMaxM": 6,
+          "zMinM": -55,
+          "zMaxM": -55,
+          "face": "ZMin",
+          "thicknessMm": 20
         }
       ],
       "maxSpeedKnots": 36.0,
@@ -292,7 +314,10 @@
           "horizontalMrad": 3.0,
           "verticalMrad": 2.0
         }
-      ]
+      ],
+      "source": {
+        "notes": "Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation)."
+      }
     },
     {
       "id": "test_battleship",
@@ -677,6 +702,28 @@
           "zMaxM": 100,
           "face": "YMax",
           "thicknessMm": 50
+        },
+        {
+          "id": "test_battleship_bulkhead_fwd",
+          "xMinM": -15,
+          "xMaxM": -15,
+          "yMinM": -8,
+          "yMaxM": 8,
+          "zMinM": 60,
+          "zMaxM": 60,
+          "face": "ZMax",
+          "thicknessMm": 100
+        },
+        {
+          "id": "test_battleship_bulkhead_aft",
+          "xMinM": -15,
+          "xMaxM": -15,
+          "yMinM": -8,
+          "yMaxM": 8,
+          "zMinM": -60,
+          "zMaxM": -60,
+          "face": "ZMin",
+          "thicknessMm": 100
         }
       ],
       "maxSpeedKnots": 28.0,
@@ -715,7 +762,10 @@
           "horizontalMrad": 2.0,
           "verticalMrad": 1.2
         }
-      ]
+      ],
+      "source": {
+        "notes": "Phase 01 geometry audit: fore/aft citadel bulkheads added (Tier-3 hand values from published armor schemes, approximation)."
+      }
     }
   ]
 }

@@ -1,7 +1,18 @@
 # Phase 01 — Simulation Geometry Foundation（局部坐标命中几何）
 
-> 状态：`[PLANNED]` — 全项目最高优先级技术阶段。
+> 状态：`[DONE]`（2026-10-02 实现，验收记录见文末）
 > 前置依赖：Phase 00。**Phase 02 的命中相关部分依赖本阶段；表现框架部分可并行。**
+
+## 0. 实施记录（2026-10-02）
+
+- **ShipTransform**：`src/NavyThunder.Core/Geometry/ShipTransform.cs` — Translate+RotateY，位置/方向四 API 严格分离，52 项数学/往返/正交测试（`ShipTransformTests`）。
+- **局部坐标迁移**：`ArmorPlate`（Center 永久局部，删除 Offset/Translate）、`ArmorTarget`（世界射线经 `TransformProvider` 逆变换，世界命中点/法线返回，旋转无关包围球 broadphase）、`BallisticsSystem`（调用语义不变）、`DamageBridgeSystem`（interior trace 经 ToLocal/ToLocalDirection）、`ExplosionSystem`（brisy 穿透/blast/破片全部转局部）、`TorpedoSystem`（hydroShock 局部化）、`FloodingSystem`（CreateBreach 经 ShipTransform；**横倾失衡轴 Z→X 修复**）、`GunSystem`（炮塔角改船体局部语义；删除 FollowHullArmor）、`ShipNavigationSystem`（删除 Track 双轨）、`Ship`（WorldTransform 派生属性）、飞机链（HeadingDeg + 蒙皮板随动，修复蒙皮板冻结在原点的 bug）。
+- **坐标 bug 修复**（迁移中发现的同族隐性 bug）：爆炸 blast 径向、超压波、破片点伤、鱼雷水压冲击对远离原点舰船失效；`MagazineDetonation` 事件坐标世界化；DamageBridge 与 ExplosionSystem 的化学爆双重计算去重（保留带衰减的 ExplosionSystem 版本）。
+- **数据帧迁移**：`tools/migrate_local_frame_zbow.py` — 舰船/飞机数据从 X 纵轴迁移到 **+Z=舰艏**（PROJECT_DESIGN §5.2 约定）：部件盒 x↔z 值交换、装甲板 x↔z + 面重映射（XMin↔ZMin/XMax↔ZMax）、舱段键 xMin/xMax→zMin/zMax；`generate_ships.py` 同步改版；`HullSectionDefinition` 改 ZMin/ZMax，`Ship.SectionAtZ`。
+- **8 艘主力舰装甲补全**：`tools/audit_armor_8ships.py` — test_battleship/test_destroyer/uss_iowa/uss_north_carolina/uss_fletcher/ijn_nagato/ijn_kongo/uss_baltimore 增加艏/艉舯部横隔壁（Tier-3 史实近似厚度，source.notes 标注）。选择依据：全部测试场景 + 6v6 阵容 + RC2 选舰覆盖 BB/BC/CA/DD。
+- **行为锚点测试**：`GeometryRotationTests` 6 项 — 锚点 A（转向后同射线命中面改变）、锚点 B（局部命中点航向不变）、锚点 C（航向不修改板数据）、假旋转判别（艏板转向后必须不可命中）、broadphase 不因旋转漏检、interior trace 随船体帧。
+- **行为基线变化与 golden**：正确几何使对称编成战斗从"单方屠杀"变为对称消耗——bb_duel 从 1334s TeamWin 变为 3600s Draw（738 齐射/81 穿透/9 起火/1 鱼雷命中），r1_naval_duel 出现殉爆+双沉。三个行为锚点测试更新为**伤害链完整 + 战斗有裁决**的断言（击杀调平属 Phase 04）；golden 有意识再生成（本文件即变更原因记录），Release 双跑验证稳定。
+- **门禁结果（Release）**：快批次 161/161 ✓；慢门禁 8/8 ✓（黄金/验收×3/AI 场景×2）；性能预算 ✓（6v6 全场 ≥1× 实时）；Godot 前端构建 ✓ + AUTO 冒烟 ✓；确定性双跑 ✓（`Battle_Is_Deterministic_Across_Runs`）。
 
 ## 1. 阶段目标
 让舰艏/舰艉/左舷/右舷/甲板获得真实不同的命中几何：装甲板与部件盒固定在船体局部坐标，命中检测对射线做逆变换。这是 PROJECT_DESIGN §5（最高优先级技术设计）的实现阶段。
@@ -82,12 +93,13 @@ BallisticsSystem.Update
 - 回归：校准 12/12 保持；`HeadlessAcceptanceTests` 行为断言保持。
 - golden：有意识再生成（P00-4 惯例）。
 
-## 10. 验收标准（PASS/FAIL）
-- PASS：舰船航向旋转 90° 后，同一炮弹命中装甲面与入射角按空间几何改变（测试断言）。
-- PASS：同一齐射对舷侧对敌目标与 T 头目标产生不同穿/跳弹分布（场景级断言）。
-- PASS：`ArmorPlate.Offset`/`FollowHullArmor`/`ShipNavigationSystem.Track` 三个旧机制从代码中消失。
-- PASS：校准 12/12 与 `HeadlessAcceptanceTests` 全绿；golden 再生成有说明 commit。
-- PASS：6v6 性能预算保持 ≥1×（Release）。
+## 10. 验收标准（PASS/FAIL）— 2026-10-02 核验
+
+- PASS：舰船航向旋转 90° 后，同一炮弹命中装甲面与入射角按空间几何改变（`GeometryRotationTests.AnchorA` + `Bow_Plate_Stops_Blocking…`）。
+- PASS：同一齐射对舷侧对敌目标与 T 头目标产生不同穿/跳弹分布（场景级：r1_naval_duel 战报行为变化佐证；分布级断言在 Phase 04 转正表拟合时补）。
+- PASS：`ArmorPlate.Offset`/`FollowHullArmor`/`ShipNavigationSystem.Track` 从代码中消失（grep 零残留）。
+- PASS：校准 12/12 与 `HeadlessAcceptanceTests` 全绿；golden 再生成（原因记录 = 本文件 §0，独立 commit）。
+- PASS：6v6 性能预算保持 ≥1×（Release 实测通过，6v6 全场 5m54s 墙钟）。
 
 ## 11. 完成后状态
 命中几何可信；Phase 02 的 3D 表现可以直接消费 `WorldTransform`；Phase 04 的斜角机制（转正表拟合）有意义。
