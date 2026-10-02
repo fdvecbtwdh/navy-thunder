@@ -30,7 +30,10 @@ headless 可跑完整 AI 对战并输出战报。
 
 ## 当前状态
 
-**Phase 0–7 全部完成;R0「战斗闭环」进行中(8 项已完成 6 项);100 测试全绿;校准报告 12/12。**
+**Phase 0–7 与 R0–R5 已全部走完 1.0.0 发布流程（2026-09-22）；113 测试全绿；校准报告 12/12。**
+2026-10-02 复核修正（只降不升）：**TDS 鱼雷防护从未实现**（源码零匹配，此前"R0 进行中 6/8"与 RC 清单的 TDS 记载失实）；**战斗音效未接线**（合成音效已备但 `PlayGun/PlayExplosion` 无调用点，战斗中仅海浪环境音）；测试数 100→113。
+
+后续开发方向已转为 `docs/PROJECT_DESIGN.md`（总体设计基准）+ `docs/phases/`（分阶段设计）；本文档中的路线图段落仅反映 1.0.0 时的状态。
 
 已完成:
 
@@ -47,10 +50,10 @@ headless 可跑完整 AI 对战并输出战报。
 
 进行中:
 
-- [ ] R0.4 TDS 鱼雷防护(隔舱吸收水爆,不拦水下 AP)
-- [ ] R0.5 航空武器投送(炸弹/火箭/空投鱼雷从飞机实体投出)
+- [x] R0.5 航空武器投送（炸弹/空投鱼雷从飞行中的飞机投出，AirDeliveryTests 覆盖）
+- [ ] R0.4 TDS 鱼雷防护（隔舱吸收水爆,不拦水下 AP）——**截至 1.0.0 未实现，源码无 TDS 代码**
 
-数据集:32 艘舰(美/日/英/德模板舰队)、8 弹种、Type 93 鱼雷、飞机与导弹数据扩录中(W3 并行工作流)。
+数据集:32 艘舰(美/日/英/德;24 艘 WT 提取+模板混成、6 艘史实手工)、36 弹种、Type 93 鱼雷、1 机型;导弹制导代码在库但未接入战斗(`MissileSystem` 无调用方)。
 
 ## 快速开始
 
@@ -72,7 +75,7 @@ dotnet run --project src/NavyThunder.ProtectionAnalysis -- summary
 dotnet run --project src/NavyThunder.ProtectionAnalysis -- report
 ```
 
-每次 push/PR 由 GitHub Actions 执行完整门禁:构建 → 100 测试 → 全数据集 schema 加载 → 校准报告回归。
+每次 push/PR 由 GitHub Actions 执行完整门禁:构建 → 113 测试 → 全数据集 schema 加载 → 校准报告回归。
 
 ## 目录结构
 
@@ -90,7 +93,7 @@ src/NavyThunder.Core                # 战斗引擎(零引擎依赖、确定性�
 src/NavyThunder.Data                # JSON schema、加载器、校验器、路径定位
 src/NavyThunder.ProtectionAnalysis  # CLI:数据集摘要、穿深校准报告
 src/NavyThunder.SimRunner           # nt-sim:场景驱动批量模拟(战报 JSON/CSV)
-tests/NavyThunder.Core.Tests        # 确定性 xUnit 测试(100 个)
+tests/NavyThunder.Core.Tests        # 确定性 xUnit 测试(113 个)
 data/                               # 数据驱动内容(带溯源)
   ships/  shells/  torpedoes/  aircraft/
   reference/                        #   WT 基准值(事实,带 URL + 版本戳)
