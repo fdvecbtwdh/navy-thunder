@@ -86,6 +86,11 @@ public sealed class Ship : Entity, IDamageSink
     /// <summary>World placement of the ship origin, integrated by the navigation system.</summary>
     public Vec3 WorldPosition { get; set; } = Vec3.Zero;
 
+    /// <summary>Rigid placement of the hull frame (position + heading). Derived live from
+    /// the navigation state so it can never go stale; armor/part geometry stays local and
+    /// world rays are converted through this (Phase 01).</summary>
+    public Geometry.ShipTransform WorldTransform => new(WorldPosition, HeadingDeg);
+
     // ---------------- navigation state (R0.2) ----------------
 
     /// <summary>Ordered rudder, -1 (port) .. +1 (starboard).</summary>
@@ -182,10 +187,10 @@ public sealed class Ship : Entity, IDamageSink
     public ShipPartState? PartAt(Vec3 localPoint) =>
         Parts.Values.FirstOrDefault(p => !p.Destroyed && p.Contains(localPoint));
 
-    public HullSectionState? SectionAtX(double xM) =>
+    public HullSectionState? SectionAtZ(double zM) =>
         Sections.FirstOrDefault(s =>
-            xM >= s.Definition.XMinM && xM <= s.Definition.XMaxM)
-        ?? Sections.OrderBy(s => Math.Min(Math.Abs(xM - s.Definition.XMinM), Math.Abs(xM - s.Definition.XMaxM))).First();
+            zM >= s.Definition.ZMinM && zM <= s.Definition.ZMaxM)
+        ?? Sections.OrderBy(s => Math.Min(Math.Abs(zM - s.Definition.ZMinM), Math.Abs(zM - s.Definition.ZMaxM))).First();
 
     // ------------------------------------------------------------------ damage sink
 
@@ -231,7 +236,7 @@ public sealed class Ship : Entity, IDamageSink
         if (hit is null)
         {
             // Structure-only impact (outer hull, superstructure): feeds its hull section.
-            DamageSection(SectionAtX(localPoint.X), amount);
+            DamageSection(SectionAtZ(localPoint.Z), amount);
             return;
         }
 
@@ -289,7 +294,7 @@ public sealed class Ship : Entity, IDamageSink
             part.CrewDeadFraction = Math.Min(1.0, part.CrewDeadFraction + amount / CrewHpPer / Math.Max(1, part.Definition.Crew));
         }
 
-        DamageSection(SectionAtX(part.Center.X), amount * 0.25); // structure spillover
+        DamageSection(SectionAtZ(part.Center.Z), amount * 0.25); // structure spillover
 
         if (part.Hp <= 0)
         {

@@ -15,17 +15,14 @@ public sealed record Team
 /// Ship navigation (R0.2): throttle/rudder commands integrate into speed and heading;
 /// engine damage caps attainable speed (SpeedFactor from the damage model writes back
 /// into propulsion exactly like the flight-model feedback loop does for aircraft).
+/// Phase 01: the hull frame lives on the ship (<see cref="Ship.WorldTransform"/>) —
+/// armor plates are ship-local and follow through the transform, not by translation.
 /// </summary>
 public sealed class ShipNavigationSystem : ISimulationSystem
 {
-    private readonly List<(Ship Ship, ArmorTarget Armor)> _tracked = [];
-
     public List<Ship> Ships { get; } = [];
 
     public string Name => "navigation";
-
-    /// <summary>Registers the armor target that must follow the ship as she moves.</summary>
-    public void Track(Ship ship, ArmorTarget armor) => _tracked.Add((ship, armor));
 
     public void Initialize(SimulationWorld world)
     {
@@ -61,15 +58,6 @@ public sealed class ShipNavigationSystem : ISimulationSystem
                 Math.Sin(rad) * metersPerSecond * deltaTime,
                 0,
                 Math.Cos(rad) * metersPerSecond * deltaTime);
-        }
-
-        // Armor targets follow their hulls: hit detection always uses live positions.
-        foreach (var (ship, armor) in _tracked)
-        {
-            foreach (var plate in armor.Plates)
-            {
-                plate.Translate(ship.WorldPosition);
-            }
         }
     }
 }

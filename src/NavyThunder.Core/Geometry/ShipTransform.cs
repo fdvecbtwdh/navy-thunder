@@ -31,7 +31,7 @@ public readonly struct ShipTransform
         _sin = Math.Sin(rad);
     }
 
-    public static ShipTransform Identity => default;
+    public static ShipTransform Identity => new(Vec3.Zero, 0.0);
 
     /// <summary>Local point → world point (translation + rotation).</summary>
     public Vec3 ToWorld(Vec3 local) => new(

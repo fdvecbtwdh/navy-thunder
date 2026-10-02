@@ -27,6 +27,10 @@ public sealed record GunOrder
 
     /// <summary>Target hull length (m) — salvo aim points scatter along the silhouette.</summary>
     public Func<double> TargetLengthM { get; init; } = () => 0.0;
+
+    /// <summary>Target hull long axis in WORLD space (Phase 01: the target supplies it from
+    /// her ShipTransform so salvo scatter follows the hull even while she turns).</summary>
+    public Func<Vec3>? TargetHullAxisWorld { get; init; }
 }
 
 /// <summary>
@@ -52,10 +56,7 @@ public sealed class GunSystem : ISimulationSystem
     private readonly BallisticsSystem _ballistics;
     private readonly List<GunState> _guns = [];
     private readonly Dictionary<(string ShipId, string GunId), GunOrder> _orders = [];
-    private readonly Dictionary<(string ShellId, int RangeBucket), Gunnery.GunnerySolution> _solutions = [];
-    private readonly List<Ship> _trackedHulls = [];
-    private readonly Dictionary<string, ArmorTarget> _armorByHull = new();
-    private readonly Dictionary<string, Vec3> _spawnByHull = new();
+    private readonly Dictionary<(string ShellId, int HeightCm, int RangeBucket), Gunnery.GunnerySolution> _solutionsByMount = new();
 
     public string Name => "guns";
 
@@ -72,8 +73,6 @@ public sealed class GunSystem : ISimulationSystem
     /// <summary>Registers all guns of a ship from its data definition.</summary>
     public void RegisterShip(Ship ship)
     {
-        _trackedHulls.Add(ship);
-        _spawnByHull[ship.TargetId] = ship.WorldPosition;
         foreach (var gun in ship.Definition.Guns)
         {
             // Mount position = centroid of the group's turret parts (falls back to ship center).
@@ -147,8 +146,6 @@ public sealed class GunSystem : ISimulationSystem
 
     public void Update(SimulationWorld world, double deltaTime)
     {
-        FollowHullArmor();
-
         foreach (var gun in _guns)
         {
             var order = GetOrder(gun.Ship.TargetId, gun.Definition.Id);
@@ -172,7 +169,9 @@ public sealed class GunSystem : ISimulationSystem
                 continue;
             }
 
-            Vec3 worldMount = gun.Ship.WorldPosition + gun.MountPosition;
+            // World mount = hull frame × ship-local mount (Phase 01: rotation-aware, so
+            // mounts swing with the bow instead of sliding on a translation-only offset).
+            Vec3 worldMount = gun.Ship.WorldTransform.ToWorld(gun.MountPosition);
             Vec3 targetPos = order.TargetPosition();
             double range = Vec3.Distance(worldMount, targetPos);
             if (range > gun.Definition.RangeM)
@@ -182,9 +181,11 @@ public sealed class GunSystem : ISimulationSystem
             }
 
             // Turret traverse limit: fire only when the mount has trained onto the lead
-            // point. The lead is iterated against the BALLISTIC time of flight (the arc
-            // takes far longer than range/muzzle-speed), so the guns lay for the target's
-            // predicted position at impact.
+            // point. TurretHeadingDeg is SHIP-LOCAL (relative to the bow); the desired
+            // local bearing is the world lead bearing minus the hull heading. The lead is
+            // iterated against the BALLISTIC time of flight (the arc takes far longer
+            // than range/muzzle-speed), so the guns lay for the target's predicted
+            // position at impact.
             Vec3 predicted = targetPos;
             Gunnery.GunnerySolution firing = GunneryAt(shell, worldMount, HorizontalDistance(worldMount, predicted));
             double bearingRad = 0.0;
@@ -196,10 +197,11 @@ public sealed class GunSystem : ISimulationSystem
                 firing = GunneryAt(shell, worldMount, horizontalRange);
                 bearingRad = Math.Atan2(predicted.X - worldMount.X, predicted.Z - worldMount.Z);
             }
-            double desiredBearingDeg = bearingRad * 180.0 / Math.PI;
+
+            double desiredLocalDeg = NormalizeDeg(bearingRad * 180.0 / Math.PI - gun.Ship.HeadingDeg);
             double maxSlew = gun.Definition.TraverseDegPerS * deltaTime;
-            gun.TurretHeadingDeg = RotateToward(gun.TurretHeadingDeg, desiredBearingDeg, maxSlew);
-            double bearingError = Math.Abs(AngleDelta(gun.TurretHeadingDeg, desiredBearingDeg));
+            gun.TurretHeadingDeg = RotateToward(gun.TurretHeadingDeg, desiredLocalDeg, maxSlew);
+            double bearingError = Math.Abs(AngleDelta(gun.TurretHeadingDeg, desiredLocalDeg));
 
             gun.ReloadRemainingS = Math.Max(0, gun.ReloadRemainingS - deltaTime);
             // The trained-on-target tolerance must shrink with range: a fixed angular gate
@@ -231,20 +233,19 @@ public sealed class GunSystem : ISimulationSystem
 
             // R0.6: distribute salvo aim points along the target's hull silhouette so
             // shells land fore/aft of the locking point instead of stacking on the center.
-            // The silhouette's long axis comes from the target's armor envelope: hull
-            // geometry in this sim is axis-aligned (plates and turret offsets translate,
-            // never rotate), and spreading along the velocity vector would spray the salvo
-            // across the narrow beam instead of along the length.
+            // Phase 01: the silhouette's long axis is the target's ship-local bow axis
+            // transformed into the world by her ShipTransform (supplied per order), so a
+            // turning target scatters along her hull, not a frozen world axis.
             Vec3 samplePoint = targetPos;
             double hullLength = order.TargetLengthM();
             if (hullLength > 1.0)
             {
                 Vec3 targetVel = order.TargetVelocity();
-                Vec3 hullAxis = HullLengthAxis(order.TargetId)
+                Vec3 hullAxis = order.TargetHullAxisWorld?.Invoke()
                                 ?? (targetVel.LengthSquared > 1.0
                                     ? targetVel.Normalized()
-                                    : new Vec3(Math.Sin(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2), 0,
-                                               Math.Cos(desiredBearingDeg * Math.PI / 180.0 + Math.PI / 2)));
+                                    : new Vec3(Math.Sin(bearingRad * (Math.PI / 180.0) + Math.PI / 2), 0,
+                                               Math.Cos(bearingRad * (Math.PI / 180.0) + Math.PI / 2)));
                 double along = (rng.NextDouble() - 0.5) * hullLength;
                 samplePoint += hullAxis * along;
             }
@@ -284,67 +285,6 @@ public sealed class GunSystem : ISimulationSystem
     }
 
 
-    /// <summary>
-    /// Long axis of the target's armor envelope: the extent axis of her largest plate.
-    /// Null when no armor target is registered for the id (caller falls back to the
-    /// velocity direction).
-    /// </summary>
-    private Vec3? HullLengthAxis(string targetId)
-    {
-        if (!_armorByHull.TryGetValue(targetId, out var armor))
-        {
-            return null;
-        }
-
-        ArmorPlate? largest = null;
-        foreach (var plate in armor.Plates)
-        {
-            if (largest is null
-                || Math.Max(plate.HalfU, plate.HalfV) > Math.Max(largest.HalfU, largest.HalfV))
-            {
-                largest = plate;
-            }
-        }
-
-        if (largest is null)
-        {
-            return null;
-        }
-
-        return largest.HalfU >= largest.HalfV ? largest.AxisU : largest.AxisV;
-    }
-
-    /// <summary>
-    /// Integration bridge: hull armor plates must follow their ship as she moves, or hit
-    /// detection keeps testing plates frozen at the spawn position while the hull sails
-    /// kilometres away (the navigation system's Track hook is not wired for every host).
-    /// Resolved lazily because armor targets are built after ship registration. Plate
-    /// templates bake the spawn position into BaseCenter, so the live offset is the
-    /// displacement from the registered (spawn) position.
-    /// </summary>
-    private void FollowHullArmor()
-    {
-        foreach (var ship in _trackedHulls)
-        {
-            if (!_armorByHull.TryGetValue(ship.TargetId, out var armor))
-            {
-                armor = _ballistics.Targets.FirstOrDefault(t => t.Id == ship.TargetId);
-                if (armor is null)
-                {
-                    continue; // not built yet; retry on the next tick
-                }
-
-                _armorByHull[ship.TargetId] = armor;
-            }
-
-            Vec3 displacement = ship.WorldPosition - _spawnByHull.GetValueOrDefault(ship.TargetId);
-            foreach (var plate in armor.Plates)
-            {
-                plate.Translate(displacement);
-            }
-        }
-    }
-
     /// <summary>Aim-point height above the waterline: mid freeboard, so the descent
     /// straddles the belt band up to the weather deck instead of dropping through the
     /// unarmored waterline plane ahead of/under the hull silhouette.</summary>
@@ -376,7 +316,11 @@ public sealed class GunSystem : ISimulationSystem
         return solution;
     }
 
-    private readonly Dictionary<(string ShellId, int HeightCm, int RangeBucket), Gunnery.GunnerySolution> _solutionsByMount = new();
+    private static double NormalizeDeg(double deg)
+    {
+        deg %= 360.0;
+        return deg < 0 ? deg + 360.0 : deg;
+    }
 
     private static double HorizontalDistance(Vec3 a, Vec3 b)
     {

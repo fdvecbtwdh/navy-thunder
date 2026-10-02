@@ -81,7 +81,9 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
                 {
                     ShipId = ship.TargetId,
                     MagazinePartId = magazine.Definition.Id,
-                    Position = magazine.Center,
+                    // World space (Phase 01): this event feeds world consumers (FX, battle
+                    // log); the internal damage below works in the hull-local frame.
+                    Position = ship.WorldTransform.ToWorld(magazine.Center),
                     RoundsRemaining = rounds,
                     TntEquivalentKg = tnt,
                 });

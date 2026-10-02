@@ -168,6 +168,7 @@ public sealed class BattleRunner
                 Guns.RegisterShip(ship);
 
                 var armor = ShipFactory.BuildArmorTarget(ship);
+                armor.TransformProvider = () => ship.WorldTransform; // Phase 01: hull frame
                 Ballistics.Targets.Add(armor);
                 explosions.Targets.Add(armor);
                 _armorByTargetId[ship.TargetId] = armor;
@@ -213,6 +214,10 @@ public sealed class BattleRunner
                 AircraftAdjudicator.ByTargetId[aircraft.TargetId] = aircraft;
 
                 var armor = AircraftFactory.BuildArmorTarget(aircraft);
+                // Phase 01: airframe frame follows position AND heading (skin plates are
+                // airframe-local; without the provider they would stay frozen at the origin).
+                var airframe = aircraft;
+                armor.TransformProvider = () => new NavyThunder.Core.Geometry.ShipTransform(airframe.WorldPosition, airframe.HeadingDeg);
                 Ballistics.Targets.Add(armor);
                 explosions.Targets.Add(armor);
                 Ballistics.ProximityTargets.Add(aircraft);

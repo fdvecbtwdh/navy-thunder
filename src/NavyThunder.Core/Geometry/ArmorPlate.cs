@@ -6,26 +6,21 @@ public readonly record struct RayHit(double Distance, Vec3 Point, Vec3 Normal);
 
 /// <summary>
 /// A finite oriented rectangle extruded along its normal — the fundamental armor unit.
-/// Hit detection is exact ray/plane intersection with in-plane bounds; plates are cheap
-/// enough to test every projectile substep against every target plate list.
+/// ALL coordinates are SHIP-LOCAL (Phase 01): plates never move or rotate at runtime;
+/// the owning <see cref="ArmorTarget"/> transforms world rays into the hull frame before
+/// intersecting. Hit detection is exact ray/plane intersection with in-plane bounds.
 /// </summary>
 public sealed class ArmorPlate
 {
     public required string Id { get; init; }
 
-    /// <summary>Untranslated local center (template position).</summary>
-    public Vec3 BaseCenter { get; init; } = Vec3.Zero;
+    /// <summary>Ship-local centre of the plate face (never modified after construction).</summary>
+    public Vec3 Center { get; init; } = Vec3.Zero;
 
-    /// <summary>Translation applied by owners (moving ships).</summary>
-    public Vec3 Offset { get; internal set; } = Vec3.Zero;
-
-    /// <summary>World center = BaseCenter + Offset.</summary>
-    public Vec3 Center => BaseCenter + Offset;
-
-    /// <summary>Unit normal of the front (outward) face.</summary>
+    /// <summary>Unit normal of the front (outward) face, ship-local.</summary>
     public required Vec3 Normal { get; init; }
 
-    /// <summary>Unit in-plane axes (must be orthonormal with Normal).</summary>
+    /// <summary>Unit in-plane axes (must be orthonormal with Normal), ship-local.</summary>
     public required Vec3 AxisU { get; init; }
     public required Vec3 AxisV { get; init; }
 
@@ -39,12 +34,10 @@ public sealed class ArmorPlate
 
     public double ThicknessM => ThicknessMm / 1000.0;
 
-    /// <summary>Moves the plate to BaseCenter + offset (used for moving ships).</summary>
-    public void Translate(Vec3 offset) => Offset = offset;
-
     /// <summary>
-    /// Intersects a ray with the front face. Returns the distance along the ray, the hit
-    /// point, and a normal facing the incoming ray.
+    /// Intersects a ray with the front face. The ray must be expressed in the SAME frame
+    /// as the plate (ship-local); <see cref="ArmorTarget"/> converts world rays first.
+    /// Returns the distance along the ray, the hit point, and a normal facing the ray.
     /// </summary>
     public bool IntersectRay(Vec3 origin, Vec3 direction, out RayHit hit)
     {
@@ -78,7 +71,8 @@ public sealed class ArmorPlate
 
     /// <summary>
     /// Path length of a ray through the plate slab (entry face to back face), using the
-    /// obliquity of the ray against the plate normal.
+    /// obliquity of the ray against the plate normal. Angle-only — frame invariant as
+    /// long as the ray direction and the plate share a frame.
     /// </summary>
     public double SlabPathLength(Vec3 direction)
     {

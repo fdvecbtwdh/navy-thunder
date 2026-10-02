@@ -109,6 +109,7 @@ public sealed class FlightModelSystem : ISimulationSystem
         };
         _states[aircraft] = state;
         aircraft.WorldPosition = position;
+        aircraft.HeadingDeg = headingDeg;
         aircraft.Velocity = state.Velocity;
         return state;
     }
@@ -174,6 +175,7 @@ public sealed class FlightModelSystem : ISimulationSystem
             state.Position += state.Velocity * deltaTime;
             state.Position = state.Position with { Y = state.AltitudeM };
             aircraft.WorldPosition = state.Position;
+            aircraft.HeadingDeg = state.HeadingDeg;
             aircraft.Velocity = state.Velocity;
 
             // Surface strike.

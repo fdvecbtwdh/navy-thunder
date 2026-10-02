@@ -260,6 +260,7 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
                     TargetPosition = () => target.WorldPosition,
                     TargetVelocity = () => ShipVelocity(target),
                     TargetLengthM = () => target.Definition.LengthM,
+                    TargetHullAxisWorld = () => target.WorldTransform.ToWorldDirection(new Mathematics.Vec3(0, 0, 1)),
                 });
             }
             else

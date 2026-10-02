@@ -59,6 +59,9 @@ public sealed class Aircraft : Entity, IDamageSink, IProximityTarget
     public string? LossReason { get; internal set; }
     public double? DestroyedTime { get; internal set; }
 
+    /// <summary>World yaw, kept in sync by the flight model (Phase 01: hit geometry rotates with it).</summary>
+    public double HeadingDeg { get; set; }
+
     public IReadOnlyDictionary<string, AircraftPartState> Parts => _partsById;
     public bool Alive => State != AircraftState.Destroyed;
 

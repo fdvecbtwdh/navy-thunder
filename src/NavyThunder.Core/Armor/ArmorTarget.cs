@@ -4,14 +4,26 @@ using NavyThunder.Core.Mathematics;
 namespace NavyThunder.Core.Armor;
 
 /// <summary>
-/// A collection of armor plates forming one target's protection scheme (Phase 3 replaces
-/// this with full ship compartment/module layout; the plate trace stays the same).
+/// A collection of armor plates forming one target's protection scheme. Plate geometry
+/// is SHIP-LOCAL forever (Phase 01); the owner supplies a <see cref="TransformProvider"/>
+/// (static targets may leave it null = identity). World rays are converted to the hull
+/// frame here, so every caller keeps world-space semantics while the plates themselves
+/// never move or rotate.
 /// </summary>
 public sealed class ArmorTarget
 {
     private readonly List<ArmorPlate> _plates = [];
 
     public string Id { get; init; } = "target";
+
+    /// <summary>
+    /// Supplies the owner's current <see cref="Geometry.ShipTransform"/> (position +
+    /// heading). Null = identity (tests and static targets). Wired by the battle runner;
+    /// read once per trace/broadphase refresh.
+    /// </summary>
+    public Func<Geometry.ShipTransform>? TransformProvider { get; set; }
+
+    public Geometry.ShipTransform Transform => TransformProvider?.Invoke() ?? Geometry.ShipTransform.Identity;
 
     public IReadOnlyList<ArmorPlate> Plates => _plates;
 
@@ -21,9 +33,17 @@ public sealed class ArmorTarget
         return this;
     }
 
+    // Local bounds never change (plates are immutable); cache them and only re-apply
+    // the (moving, rotating) world centre on each refresh.
+
+    private bool _localBoundsCached;
+    private Vec3 _localCenter;
+    private double _localRadius;
+
     /// <summary>
-    /// Bounding sphere for broadphase rejection (R4.1); recomputed by the caller each
-    /// tick via <see cref="RefreshBroadphase"/> since plates move with the hull.
+    /// Bounding SPHERE for broadphase rejection (R4.1): centre = transformed local
+    /// bounds centre, radius = local extent + plate half-diagonal. Sphere is
+    /// rotation-invariant, so a turning hull can never be missed by the broadphase.
     /// </summary>
     public Vec3 BroadphaseCenter { get; private set; }
     public double BroadphaseRadius { get; private set; }
@@ -37,33 +57,36 @@ public sealed class ArmorTarget
             return;
         }
 
-        Vec3 min = new(double.MaxValue, double.MaxValue, double.MaxValue);
-        Vec3 max = new(double.MinValue, double.MinValue, double.MinValue);
-        foreach (var plate in _plates)
+        if (!_localBoundsCached)
         {
-            var c = plate.Center;
-            min = new Vec3(Math.Min(min.X, c.X), Math.Min(min.Y, c.Y), Math.Min(min.Z, c.Z));
-            max = new Vec3(Math.Max(max.X, c.X), Math.Max(max.Y, c.Y), Math.Max(max.Z, c.Z));
+            Vec3 min = new(double.MaxValue, double.MaxValue, double.MaxValue);
+            Vec3 max = new(double.MinValue, double.MinValue, double.MinValue);
+            double maxHalfDiag = 0;
+            foreach (var plate in _plates)
+            {
+                var c = plate.Center;
+                min = new Vec3(Math.Min(min.X, c.X), Math.Min(min.Y, c.Y), Math.Min(min.Z, c.Z));
+                max = new Vec3(Math.Max(max.X, c.X), Math.Max(max.Y, c.Y), Math.Max(max.Z, c.Z));
+                maxHalfDiag = Math.Max(maxHalfDiag,
+                    Math.Sqrt(plate.HalfU * plate.HalfU + plate.HalfV * plate.HalfV));
+            }
+
+            _localCenter = (min + max) / 2;
+            // plates have extent: inflate by the largest plate half-diagonal so the
+            // sphere fully contains every plate box (otherwise edge hits get culled)
+            double centerToFarthest = 0;
+            foreach (var plate in _plates)
+            {
+                centerToFarthest = Math.Max(centerToFarthest,
+                    (plate.Center - _localCenter).Length + maxHalfDiag);
+            }
+
+            _localRadius = centerToFarthest + 1.0;
+            _localBoundsCached = true;
         }
 
-        BroadphaseCenter = (min + max) / 2;
-        // plates have extent: inflate by the largest plate half-diagonal so the
-        // sphere fully contains every plate box (otherwise edge hits get culled)
-        double maxHalfDiag = 0;
-        foreach (var plate in _plates)
-        {
-            maxHalfDiag = Math.Max(maxHalfDiag,
-                Math.Sqrt(plate.HalfU * plate.HalfU + plate.HalfV * plate.HalfV));
-        }
-
-        var centerToFarthest = 0.0;
-        foreach (var plate in _plates)
-        {
-            centerToFarthest = Math.Max(centerToFarthest,
-                (plate.Center - BroadphaseCenter).Length + maxHalfDiag);
-        }
-
-        BroadphaseRadius = centerToFarthest + 1.0;
+        BroadphaseCenter = Transform.ToWorld(_localCenter);
+        BroadphaseRadius = _localRadius;
     }
 
     /// <summary>
@@ -82,19 +105,24 @@ public sealed class ArmorTarget
     }
 
     /// <summary>
-    /// Allocation-free variant of <see cref="Trace"/> for hot loops (R4.1): fills the
-    /// caller-owned buffer with hits ordered by distance, capped at maxDistance.
+    /// Allocation-free variant of <see cref="Trace"/> for hot loops (R4.1): takes a WORLD
+    /// ray, intersects the ship-local plates, fills the caller-owned buffer with hits
+    /// ordered by distance (WORLD point/normal, local geometry), capped at maxDistance.
     /// Returns the number of valid entries.
     /// </summary>
     public int TraceNonAlloc(Vec3 origin, Vec3 direction, double maxDistance,
         List<(ArmorPlate Plate, RayHit Hit)> buffer)
     {
+        var t = Transform;
+        Vec3 localOrigin = t.ToLocal(origin);
+        Vec3 localDir = t.ToLocalDirection(direction);
+
         buffer.Clear();
         foreach (var plate in _plates)
         {
-            if (plate.IntersectRay(origin, direction, out var hit) && hit.Distance <= maxDistance)
+            if (plate.IntersectRay(localOrigin, localDir, out var hit) && hit.Distance <= maxDistance)
             {
-                buffer.Add((plate, hit));
+                buffer.Add((plate, ToWorld(t, hit)));
             }
         }
 
@@ -116,21 +144,31 @@ public sealed class ArmorTarget
     }
 
     /// <summary>
-    /// Traces a ray against all plates and returns the nearest hit per plate, ordered by
-    /// distance — i.e. the layer sequence a shell would meet.
+    /// Traces a WORLD ray against all plates and returns the nearest hit per plate,
+    /// ordered by distance — i.e. the layer sequence a shell would meet. Hit points and
+    /// normals come back in WORLD space (distance is frame-invariant).
     /// </summary>
     public IReadOnlyList<(ArmorPlate Plate, RayHit Hit)> Trace(Vec3 origin, Vec3 direction)
     {
+        var t = Transform;
+        Vec3 localOrigin = t.ToLocal(origin);
+        Vec3 localDir = t.ToLocalDirection(direction);
+
         List<(ArmorPlate, RayHit)> hits = [];
         foreach (var plate in _plates)
         {
-            if (plate.IntersectRay(origin, direction, out var hit))
+            if (plate.IntersectRay(localOrigin, localDir, out var hit))
             {
-                hits.Add((plate, hit));
+                hits.Add((plate, ToWorld(t, hit)));
             }
         }
 
         hits.Sort(static (a, b) => a.Item2.Distance.CompareTo(b.Item2.Distance));
         return hits;
     }
+
+    private static RayHit ToWorld(Geometry.ShipTransform t, RayHit localHit) => new(
+        localHit.Distance,
+        t.ToWorld(localHit.Point),
+        t.ToWorldDirection(localHit.Normal));
 }

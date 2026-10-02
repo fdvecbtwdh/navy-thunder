@@ -54,7 +54,7 @@ public static class ProtectionScenario
         return new ArmorPlate
         {
             Id = id,
-            BaseCenter = new Vec3(0, 0, 0),
+            Center = new Vec3(0, 0, 0),
             Normal = new Vec3(-1, 0, 0),
             AxisU = new Vec3(0, 1, 0),
             AxisV = new Vec3(0, 0, 1),

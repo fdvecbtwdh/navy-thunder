@@ -11,29 +11,29 @@ public static class ShipFactory
     public static Ship Create(ShipDefinition definition, string? instanceKey = null)
         => new(definition, instanceKey);
 
-    /// <summary>Constructs the ship's ArmorTarget (armor plates exposed to ballistics).</summary>
+    /// <summary>Constructs the ship's ArmorTarget (armor plates exposed to ballistics).
+    /// Plates are SHIP-LOCAL (Phase 01); the battle runner wires the live ShipTransform.</summary>
     public static ArmorTarget BuildArmorTarget(Ship ship)
     {
         var target = new ArmorTarget { Id = ship.TargetId };
         foreach (var plate in ship.Definition.ArmorPlates)
         {
-            var built = MakePlate(plate, ship.WorldPosition);
-            target.Add(built);
+            target.Add(MakePlate(plate));
         }
 
         return target;
     }
 
-    private static ArmorPlate MakePlate(ArmorPlateDefinition def, Vec3 offset)
+    private static ArmorPlate MakePlate(ArmorPlateDefinition def)
     {
-        double cx = (def.XMinM + def.XMaxM) / 2 + offset.X;
-        double cy = (def.YMinM + def.YMaxM) / 2 + offset.Y;
-        double cz = (def.ZMinM + def.ZMaxM) / 2 + offset.Z;
+        double cx = (def.XMinM + def.XMaxM) / 2;
+        double cy = (def.YMinM + def.YMaxM) / 2;
+        double cz = (def.ZMinM + def.ZMaxM) / 2;
         double hy = (def.YMaxM - def.YMinM) / 2;
         double hx = (def.XMaxM - def.XMinM) / 2;
         double hz = (def.ZMaxM - def.ZMinM) / 2;
 
-        Vec3 baseCenter = def.Face switch
+        Vec3 center = def.Face switch
         {
             BoxFace.XMin => new Vec3(def.XMinM, cy, cz),
             BoxFace.XMax => new Vec3(def.XMaxM, cy, cz),
@@ -46,8 +46,7 @@ public static class ShipFactory
         return new ArmorPlate
         {
             Id = def.Id,
-            BaseCenter = baseCenter,
-            Offset = offset,
+            Center = center,
             Normal = def.Face switch
             {
                 BoxFace.XMin => new Vec3(-1, 0, 0),

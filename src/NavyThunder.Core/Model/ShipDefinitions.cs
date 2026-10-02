@@ -30,9 +30,10 @@ public sealed record HullSectionDefinition
     public HullSectionRole Role { get; init; } = HullSectionRole.Mid;
     public required double Hp { get; init; }
 
-    /// <summary>Longitudinal extent (m); damage events are routed to sections by X.</summary>
-    public double XMinM { get; init; }
-    public double XMaxM { get; init; }
+    /// <summary>Longitudinal extent along the keel (ship-local Z, bow +Z — Phase 01
+    /// convention); damage events are routed to sections by Z.</summary>
+    public double ZMinM { get; init; }
+    public double ZMaxM { get; init; }
 }
 
 public enum PartKind

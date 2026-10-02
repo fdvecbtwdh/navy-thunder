@@ -7,6 +7,7 @@ using NavyThunder.Core.Mathematics;
 using NavyThunder.Core.World;
 using NavyThunder.Data;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace NavyThunder.Core.Tests;
 
@@ -15,7 +16,7 @@ namespace NavyThunder.Core.Tests;
 /// behind the plate, HE bursts fragment inside, the Critical-G spar rule and the kill /
 /// severe-damage tiers run (MDR-0013).
 /// </summary>
-public class AirCombatTests
+public class AirCombatTests(ITestOutputHelper output)
 {
     private static (DataRepository Repo, SimulationWorld World, AirRig Rig) Build()
     {
@@ -53,7 +54,7 @@ public class AirCombatTests
         IReadOnlyDictionary<string, NavyThunder.Core.Model.ShellDefinition> shells)
     {
         public Aircraft Aircraft { get; } = aircraft;
-        private BallisticsSystem Ballistics { get; } = ballistics;
+        public BallisticsSystem Ballistics { get; } = ballistics;
         private IReadOnlyDictionary<string, NavyThunder.Core.Model.ShellDefinition> Shells { get; } = shells;
 
         public void Shoot(string shellId, Vec3 aimPoint)
@@ -74,7 +75,7 @@ public class AirCombatTests
     public void Pilot_Hit_Is_An_Instant_Kill()
     {
         var (_, world, rig) = Build();
-        rig.Shoot("usn_127mm_m2_ap", new Vec3(2.0, 0.05, 0.2));
+        rig.Shoot("usn_127mm_m2_ap", new Vec3(0.2, 0.05, 2.0)); // pilot box (Phase 01 +Z nose frame)
         world.Run(5);
 
         Assert.Equal(AircraftState.Destroyed, rig.Aircraft.State);
@@ -115,7 +116,7 @@ public class AirCombatTests
     {
         var (_, world, rig) = Build();
         var aircraft = rig.Aircraft;
-        rig.Shoot("usn_20mm_an_m2_hefi", new Vec3(3.0, 0.0, -0.65)); // left wing skin
+        rig.Shoot("usn_20mm_an_m2_hefi", new Vec3(-3.0, 0.0, 2.5)); // left wing skin
         world.Run(5);
 
         Assert.NotEmpty(world.Events.Of<ShellDetonation>());
@@ -131,9 +132,11 @@ public class AirCombatTests
         var tank = aircraft.Parts["fuel_fwd"];
 
         // Multiple .50 AP passes through the self-sealing tank: leaks but does not explode.
+        // Phase 01 frame: aim x=0.45 — inside the tank box (x -0.5..0.5) but outside the
+        // pilot box (x -0.35..0.35), so the centreline shot cannot kill the pilot first.
         for (int i = 0; i < 4; i++)
         {
-            rig.Shoot("usn_127mm_m2_ap", new Vec3(3.2, -0.2, 0.0));
+            rig.Shoot("usn_127mm_m2_ap", new Vec3(0.45, -0.2, 3.2));
         }
 
         world.Run(5);

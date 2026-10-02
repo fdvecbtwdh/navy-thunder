@@ -144,17 +144,23 @@ public class ShipNavigationTests
         ship.ThrottleCommand = 1.0;
         nav.Ships.Add(ship);
         var armor = ShipFactory.BuildArmorTarget(ship);
-        nav.Track(ship, armor);
+        armor.TransformProvider = () => ship.WorldTransform; // Phase 01: hull frame
         var start = ship.WorldPosition;
+        var belt = armor.Plates.First(p => p.Id == "dd_belt_starboard");
+        var localCenterBefore = belt.Center;
 
         ship.RudderCommand = 1.0;
         world.Run(60); // one minute of hard rudder at speed
 
         Assert.True(ship.HeadingDeg > 60, $"turned {ship.HeadingDeg:0.#} deg in 60 s");
         Assert.True(Vec3.Distance(ship.WorldPosition, start) > 300, "ship must travel");
-        // Armor plates must sit at the translated hull, not the original position.
-        var belt = armor.Plates.First(p => p.Id == "dd_belt_starboard");
-        Assert.True(Vec3.Distance(belt.Center, ship.WorldPosition + belt.BaseCenter) < 1e-6);
+        // Phase 01 semantics: plates are SHIP-LOCAL — moving/turning must not modify the
+        // plate itself, and the broadphase sphere must track the transformed hull.
+        Assert.Equal(localCenterBefore, belt.Center);
+        armor.RefreshBroadphase();
+        double sphereDist = Vec3.Distance(armor.BroadphaseCenter, ship.WorldPosition);
+        Assert.True(sphereDist < ship.Definition.LengthM,
+            $"broadphase sphere must sit on the hull (dist {sphereDist:0} m)");
     }
 
     [Fact]

@@ -111,9 +111,12 @@ public sealed class AircraftAdjudicatorSystem : ISimulationSystem
                     }
 
                     // Fragments strike the OUTERMOST structure nearest the burst (point to
-                    // part-box surface distance in the airframe's local frame); buried
-                    // parts (pilot, oil) are only reached once the skin around them dies.
-                    Vec3 local = burst.Position - victim.WorldPosition;
+                    // part-box surface distance in the airframe's local frame — Phase 01:
+                    // through the airframe's ShipTransform, so a banked/turning aircraft's
+                    // part boxes are tested in her own orientation); buried parts (pilot,
+                    // oil) are only reached once the skin around them dies.
+                    Vec3 local = new NavyThunder.Core.Geometry.ShipTransform(
+                        victim.WorldPosition, victim.HeadingDeg).ToLocal(burst.Position);
                     AircraftPartState? nearest = null;
                     double bestSurface = double.MaxValue;
                     foreach (var pt in victim.Parts.Values)
@@ -264,37 +267,37 @@ public static class AircraftFactory
             BoxFace.XMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(part.XMinM, cy, cz), Normal = new Vec3(-1, 0, 0),
+                Center = new Vec3(part.XMinM, cy, cz), Normal = new Vec3(-1, 0, 0),
                 AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1), HalfU = hy, HalfV = hz,
             },
             BoxFace.XMax => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(part.XMaxM, cy, cz), Normal = new Vec3(1, 0, 0),
+                Center = new Vec3(part.XMaxM, cy, cz), Normal = new Vec3(1, 0, 0),
                 AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1), HalfU = hy, HalfV = hz,
             },
             BoxFace.YMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(cx, part.YMinM, cz), Normal = new Vec3(0, -1, 0),
+                Center = new Vec3(cx, part.YMinM, cz), Normal = new Vec3(0, -1, 0),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1), HalfU = hx, HalfV = hz,
             },
             BoxFace.YMax => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(cx, part.YMaxM, cz), Normal = new Vec3(0, 1, 0),
+                Center = new Vec3(cx, part.YMaxM, cz), Normal = new Vec3(0, 1, 0),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 0, 1), HalfU = hx, HalfV = hz,
             },
             BoxFace.ZMin => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(cx, cy, part.ZMinM), Normal = new Vec3(0, 0, -1),
+                Center = new Vec3(cx, cy, part.ZMinM), Normal = new Vec3(0, 0, -1),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0), HalfU = hx, HalfV = hy,
             },
             _ => new ArmorPlate
             {
                 Id = id, Material = material, ThicknessMm = skin,
-                BaseCenter = new Vec3(cx, cy, part.ZMaxM), Normal = new Vec3(0, 0, 1),
+                Center = new Vec3(cx, cy, part.ZMaxM), Normal = new Vec3(0, 0, 1),
                 AxisU = new Vec3(1, 0, 0), AxisV = new Vec3(0, 1, 0), HalfU = hx, HalfV = hy,
             },
         };

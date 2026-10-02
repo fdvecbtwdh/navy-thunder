@@ -76,13 +76,14 @@ public sealed class CombatHarness
         World.AddSystem(Torpedoes);
     }
 
-    /// <summary>Fires a shell from 500 m off the ship's port side (travelling +Z) at a ship-local aim point.</summary>
+    /// <summary>Fires a shell from 500 m off the ship's PORT side (travelling +X, Phase 01
+    /// frame: port = -X local) at a ship-local aim point (x lateral, y, z along keel).</summary>
     public void FireShellAt(Ship ship, string shellId, Vec3 aimPoint, double impactSpeed)
     {
         Ballistics.Spawn(new BallisticProjectile
         {
-            Position = aimPoint + ship.WorldPosition + new Vec3(0, 0, -500),
-            Velocity = new Vec3(0, 0, impactSpeed),
+            Position = aimPoint + ship.WorldPosition + new Vec3(-500, 0, 0),
+            Velocity = new Vec3(impactSpeed, 0, 0),
             MassKg = 100,
             Shell = Shells[shellId],
         });
@@ -113,8 +114,9 @@ public class ShipDataDrivenTests(ITestOutputHelper output)
         var harness = new CombatHarness(repo, ["test_battleship"]);
         var ship = harness.Ships[0];
 
-        // Mk8 APCBC at point-blank into the port belt behind which magazine A sits.
-        harness.FireShellAt(ship, "usn_406mm_mk8_mod6_apcbc", new Vec3(40, -4, -15), 762);
+        // Mk8 APCBC at point-blank into the port belt behind which magazine B sits
+        // (Phase 01 frame: aim = (x lateral, y, z along keel); port belt = -X face).
+        harness.FireShellAt(ship, "usn_406mm_mk8_mod6_apcbc", new Vec3(-15, -4, 30), 762);
         harness.World.Run(30);
 
         var detonation = Assert.Single(harness.World.Events.Of<MagazineDetonation>());
@@ -132,12 +134,13 @@ public class ShipDataDrivenTests(ITestOutputHelper output)
         var ship = harness.Ships[0];
 
         // Damage control is active: a single breach gets patched, so put three fish into her.
+        // Phase 01 frame: the fish run beam-on from port (travelling +X) at keel positions.
         var type93 = repo.Torpedoes["ijn_610mm_type93_mod1_mod2"];
         var armor = harness.ArmorByTargetId[ship.TargetId];
-        foreach (var x in new[] { -14.0, 0.0, 14.0 })
+        foreach (var z in new[] { -14.0, 0.0, 14.0 })
         {
             harness.Torpedoes.Spawn(type93, ship.TargetId, armor,
-                new Vec3(x, -2, -2000), new Vec3(0, 0, 1));
+                new Vec3(-2000, -2, z), new Vec3(1, 0, 0));
         }
 
         harness.World.Run(120);

@@ -128,11 +128,16 @@ public sealed class ExplosionSystem : ISimulationSystem
         });
 
         // Brisant punch: breach determination against every plate near the burst point.
+        // Phase 01: plates are ship-local, so the burst is converted into each target's
+        // hull frame once and compared there (a world compare only matched targets that
+        // never left the origin).
         foreach (var target in Targets)
         {
+            var hull = target.Transform;
+            Vec3 localBurst = hull.ToLocal(d.Position);
             foreach (var plate in target.Plates)
             {
-                double distance = Vec3.Distance(plate.Center, d.Position);
+                double distance = Vec3.Distance(plate.Center, localBurst);
                 if (distance <= blastRadius && punchMm >= plate.ThicknessMm)
                 {
                     world.Record(new ArmorBreach
@@ -146,11 +151,13 @@ public sealed class ExplosionSystem : ISimulationSystem
             }
         }
 
-        // Blast damage: one chemical damage event per target in radius (the Phase 3 ship
-        // model translates this into compartments/modules; Phase 4 into structure).
+        // Blast damage: one chemical damage event per target in radius (the compartment
+        // model consumes the LOCAL burst position — damage events targeting a hull are
+        // hull-local by convention, see DamageEvent.Position).
         foreach (var target in Targets)
         {
-            double nearest = NearestPlateDistance(target, d.Position);
+            Vec3 localBurst = target.Transform.ToLocal(d.Position);
+            double nearest = NearestPlateDistance(target, localBurst);
             if (nearest <= blastRadius)
             {
                 Emit(world, new DamageEvent
@@ -158,7 +165,7 @@ public sealed class ExplosionSystem : ISimulationSystem
                     Channel = DamageChannel.Chemical,
                     SourceId = d.ShellId,
                     TargetId = target.Id,
-                    Position = d.Position,
+                    Position = localBurst,
                     Amount = _model.BlastDamageAt(tnt, nearest),
                 });
             }
@@ -260,7 +267,9 @@ public sealed class ExplosionSystem : ISimulationSystem
                 Channel = DamageChannel.Fragment,
                 SourceId = shellId,
                 TargetId = targetHit.Id,
-                Position = bestHit.Point,
+                // Damage events consumed by a hull are hull-local (Phase 01 convention);
+                // the diagnostic FragmentImpact event above stays world-space.
+                Position = targetHit.Transform.ToLocal(bestHit.Point),
                 Amount = 2.0, // per-fragment interior effect; compartment model consumes (Phase 3)
                 Tick = world.TickIndex,
                 Time = world.Time,

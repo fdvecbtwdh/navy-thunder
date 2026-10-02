@@ -69,10 +69,6 @@ public sealed class DamageBridgeSystem : ISimulationSystem
                     ApplyInteriorTrace(world, impact);
                     break;
 
-                case ShellDetonation detonation when detonation.TargetId.Length > 0:
-                    ApplyBurst(world, detonation);
-                    break;
-
                 case OverpressureWave wave:
                     ApplyOverpressure(world, wave);
                     break;
@@ -95,18 +91,20 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         double depth = Math.Min(InteriorTraceDepthM * residual, ship.Definition.LengthM);
 
         // Start just behind the struck plate's slab so the trace hits interior parts.
-        // Combat events arrive in world space; part boxes and section lookups are
-        // hull-local, so the trace origin must be mapped into the hull frame first
-        // (otherwise every ship away from the origin is immune to penetration).
-        Vec3 origin = impact.Position + dir * 0.5 - ship.WorldPosition;
+        // Phase 01: the hull may be rotated, so the world impact must go through the
+        // inverse ShipTransform — a plain position subtraction is only correct at
+        // heading 0. The trace then runs entirely in the hull-local frame.
+        var hull = ship.WorldTransform;
+        Vec3 origin = hull.ToLocal(impact.Position + dir * 0.5);
+        Vec3 dirLocal = hull.ToLocalDirection(dir);
         double totalDamage = KineticDamagePerCbrtKg * Math.Cbrt(shell.MassKg);
-        var traversed = TraceInterior(ship, origin, dir, depth);
+        var traversed = TraceInterior(ship, origin, dirLocal, depth);
 
         // Ignition rolls on the flammable parts of every SECTION the shell line passes
         // through, wrecked or not (battles end with burning wrecks). Part boxes tile only
         // a fraction of the hull, so a box-level trace would almost never roll; sections
         // tile the whole hull, which matches WT's section-level fire model.
-        RollSectionIgnition(world, ship, origin, dir, impact.ShellId);
+        RollSectionIgnition(world, ship, origin, dirLocal, impact.ShellId);
 
         if (traversed.Count == 0)
         {
@@ -151,7 +149,7 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         double lineLen = ship.Definition.LengthM * 1.2;
         foreach (var section in ship.Definition.HullSections)
         {
-            if (!SegmentCrossesXSlab(origin, dir, lineLen, section.XMinM, section.XMaxM))
+            if (!SegmentCrossesZSlab(origin, dir, lineLen, section.ZMinM, section.ZMaxM))
             {
                 continue;
             }
@@ -166,16 +164,17 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         }
     }
 
-    /// <summary>True if the segment origin+t*dir (t in [0, maxDepth]) overlaps [xMin, xMax].</summary>
-    private static bool SegmentCrossesXSlab(Vec3 origin, Vec3 dir, double maxDepth, double xMin, double xMax)
+    /// <summary>True if the segment origin+t*dir (t in [0, maxDepth]) overlaps [zMin, zMax]
+    /// along the keel axis (ship-local Z, bow +Z — Phase 01).</summary>
+    private static bool SegmentCrossesZSlab(Vec3 origin, Vec3 dir, double maxDepth, double zMin, double zMax)
     {
-        if (Math.Abs(dir.X) < 1e-9)
+        if (Math.Abs(dir.Z) < 1e-9)
         {
-            return origin.X >= xMin && origin.X <= xMax;
+            return origin.Z >= zMin && origin.Z <= zMax;
         }
 
-        double t1 = (xMin - origin.X) / dir.X;
-        double t2 = (xMax - origin.X) / dir.X;
+        double t1 = (zMin - origin.Z) / dir.Z;
+        double t2 = (zMax - origin.Z) / dir.Z;
         if (t1 > t2)
         {
             (t1, t2) = (t2, t1);
@@ -271,42 +270,28 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         return tExit > 0 && tEnter < maxDepth;
     }
 
-    private void ApplyBurst(SimulationWorld world, ShellDetonation detonation)
-    {
-        if (!ShipsByTargetId.TryGetValue(detonation.TargetId, out var ship)
-            || !_shells.TryGetValue(detonation.ShellId, out var shell))
-        {
-            return;
-        }
-
-        // Chemical damage at the burst position; ExplosionSystem additionally handles
-        // the fragment cone and the blast against the ship's armor plates. The burst
-        // position is converted into the hull frame so the radial pass finds the parts
-        // around it (part centers are hull-local).
-        _registry.Apply(new DamageEvent
-        {
-            Channel = DamageChannel.Chemical,
-            SourceId = detonation.ShellId,
-            TargetId = ship.TargetId,
-            Position = detonation.Position - ship.WorldPosition,
-            Amount = 300.0 * Math.Cbrt(Math.Max(shell.ExplosiveMassKg, 0.1)),
-            Tick = world.TickIndex,
-            Time = world.Time,
-        });
-    }
+    // ShellDetonation chemical bursts are handled solely by ExplosionSystem (blast with
+    // distance falloff + fragments + overpressure). DamageBridge used to emit a second,
+    // flat chemical event here; with the blast event now coordinate-correct that
+    // duplicate would double-count, so it is gone (Phase 01 dedup).
 
     private void ApplyOverpressure(SimulationWorld world, OverpressureWave wave)
     {
         foreach (var ship in ShipsByTargetId.Values)
         {
-            if (ship.Parts.Values.Any(p => Vec3.Distance(p.Center + ship.WorldPosition, wave.Position) <= wave.RadiusM))
+            // Phase 01: convert the world burst into the hull frame — part centers and
+            // Ship.ApplyOverpressure both work ship-local (a plain world compare only
+            // matched ships near the origin).
+            var hull = ship.WorldTransform;
+            Vec3 localBurst = hull.ToLocal(wave.Position);
+            if (ship.Parts.Values.Any(p => Vec3.Distance(p.Center, localBurst) <= wave.RadiusM))
             {
                 _registry.Apply(new DamageEvent
                 {
                     Channel = DamageChannel.Overpressure,
                     SourceId = wave.ShellId,
                     TargetId = ship.TargetId,
-                    Position = wave.Position,
+                    Position = localBurst,
                     Radius = wave.RadiusM,
                     Amount = 200.0 * Math.Cbrt(Math.Max(wave.TntEquivalentKg, 0.1)),
                     Tick = world.TickIndex,

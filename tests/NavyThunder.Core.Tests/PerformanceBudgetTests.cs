@@ -73,7 +73,7 @@ public class PerformanceBudgetTests(ITestOutputHelper output)
         var explosions = new ExplosionSystem(repo.ToExplosionModel(), repo.Shells, registry);
         var plate = new ArmorTarget { Id = "p" }.Add(new NavyThunder.Core.Geometry.ArmorPlate
         {
-            Id = "p1", BaseCenter = new Vec3(10, 0, 0), Normal = new Vec3(-1, 0, 0),
+            Id = "p1", Center = new Vec3(10, 0, 0), Normal = new Vec3(-1, 0, 0),
             AxisU = new Vec3(0, 1, 0), AxisV = new Vec3(0, 0, 1),
             HalfU = 30, HalfV = 30, ThicknessMm = 10,
         });

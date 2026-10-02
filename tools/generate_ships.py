@@ -201,19 +201,22 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
     capital = cls in ("Battleship", "Battlecruiser", "Cruiser", "Frigate")
     mid_sections = 3 if capital else 1
     section_width = (0.7 * length) / max(1, mid_sections)
+    # Phase 01: the keel runs along ship-local Z (bow +Z). Sections are emitted as
+    # zMinM/zMaxM slabs; the add() helper below takes keel-longitudinal x-args and
+    # swaps them into the Z columns at emit time.
     sections = [{
-        "id": f"{name}_bow", "role": "Bow", "hp": round(disp * 0.9), "xMinM": 0.6 * half_l, "xMaxM": half_l,
+        "id": f"{name}_bow", "role": "Bow", "hp": round(disp * 0.9), "zMinM": 0.6 * half_l, "zMaxM": half_l,
     }]
     for i in range(mid_sections):
         x_max = 0.6 * half_l - i * section_width
         x_min = x_max - section_width
         sections.append({
             "id": f"{name}_mid{i + 1}", "role": "Mid", "hp": round(disp * 1.2),
-            "xMinM": round(x_min, 1), "xMaxM": round(x_max, 1),
+            "zMinM": round(x_min, 1), "zMaxM": round(x_max, 1),
         })
     sections.append({
         "id": f"{name}_stern", "role": "Stern", "hp": round(disp * 0.9),
-        "xMinM": -half_l, "xMaxM": round(-0.6 * half_l, 1),
+        "zMinM": -half_l, "zMaxM": round(-0.6 * half_l, 1),
     })
 
     mag_count = max(2, turret_groups)
@@ -222,11 +225,13 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
 
     def add(pid, kind, section, hp, crew_n, x0, x1, y0, y1, z0, z1, share, open_=False, group=None):
         nonlocal buoyancy
+        # x0/x1 are keel-longitudinal (bow +Z), z0/z1 lateral — swapped into the
+        # ship-local Z / X columns here (Phase 01 frame).
         parts.append({
             "id": pid, "kind": kind, "sectionId": section, "hp": round(hp), "crew": crew_n,
-            "xMinM": round(x0, 1), "xMaxM": round(x1, 1),
+            "xMinM": round(z0, 1), "xMaxM": round(z1, 1),
             "yMinM": round(y0, 1), "yMaxM": round(y1, 1),
-            "zMinM": round(z0, 1), "zMaxM": round(z1, 1),
+            "zMinM": round(x0, 1), "zMaxM": round(x1, 1),
             "buoyancySharePct": share, **({"open": True} if open_ else {}),
             **({"turretGroup": group} if group else {}),
         })
@@ -235,11 +240,11 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
     mid_ids = [f"{name}_mid{i + 1}" for i in range(mid_sections)]
     crew_share = 10.0 / len(mid_ids)
     for i, mid in enumerate(mid_ids):
-        x_max = sections[1 + i]["xMaxM"]
-        x_min = sections[1 + i]["xMinM"]
-        span = (x_max - x_min) / max(1, mag_count // 2 if mag_count > 2 else 1)
+        z_max = sections[1 + i]["zMaxM"]
+        z_min = sections[1 + i]["zMinM"]
+        span = (z_max - z_min) / max(1, mag_count // 2 if mag_count > 2 else 1)
         add(f"{name}_crew_{i + 1}", "Compartment", mid, disp * 0.02,
-            round(crew * 0.12 / len(mid_ids)), x_min + 1, x_max - 1,
+            round(crew * 0.12 / len(mid_ids)), z_min + 1, z_max - 1,
             keel + 1, deck_y - 2, -half_b + 1, half_b - 1, crew_share)
 
     for i in range(mag_count):
@@ -277,14 +282,15 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
         parts[-1]["buoyancySharePct"] = round(parts[-1]["buoyancySharePct"] + (100 - buoyancy), 2)
 
     plates = [
-        {"id": f"{name}_belt_port", "xMinM": -half_l, "xMaxM": half_l,
-         "yMinM": keel, "yMaxM": deck_y, "zMinM": -half_b, "zMaxM": -half_b,
-         "face": "ZMin", "thicknessMm": belt_mm},
-        {"id": f"{name}_belt_starboard", "xMinM": -half_l, "xMaxM": half_l,
-         "yMinM": keel, "yMaxM": deck_y, "zMinM": half_b, "zMaxM": half_b,
-         "face": "ZMax", "thicknessMm": belt_mm},
-        {"id": f"{name}_deck", "xMinM": -half_l, "xMaxM": half_l,
-         "yMinM": deck_y, "yMaxM": deck_y, "zMinM": -half_b, "zMaxM": half_b,
+        # Phase 01 frame: keel along local Z; port/starboard belts are the +/-X faces.
+        {"id": f"{name}_belt_port", "zMinM": -half_l, "zMaxM": half_l,
+         "yMinM": keel, "yMaxM": deck_y, "xMinM": -half_b, "xMaxM": -half_b,
+         "face": "XMin", "thicknessMm": belt_mm},
+        {"id": f"{name}_belt_starboard", "zMinM": -half_l, "zMaxM": half_l,
+         "yMinM": keel, "yMaxM": deck_y, "xMinM": half_b, "xMaxM": half_b,
+         "face": "XMax", "thicknessMm": belt_mm},
+        {"id": f"{name}_deck", "zMinM": -half_l, "zMaxM": half_l,
+         "yMinM": deck_y, "yMaxM": deck_y, "xMinM": -half_b, "xMaxM": half_b,
          "face": "YMax", "thicknessMm": deck_mm},
     ]
 

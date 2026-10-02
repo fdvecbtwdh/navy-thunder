@@ -215,6 +215,7 @@ public partial class BattleView : Node2D
                     0,
                     System.Math.Cos(victim.HeadingDeg * System.Math.PI / 180.0) * victim.SpeedKnots * 0.514444),
                 TargetLengthM = () => victim.Definition.LengthM,
+                TargetHullAxisWorld = () => victim.WorldTransform.ToWorldDirection(new Vec3(0, 0, 1)),
             });
         }
     }

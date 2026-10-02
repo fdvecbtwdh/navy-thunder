@@ -58,13 +58,14 @@ public sealed class FloodingSystem : ISimulationSystem
     }
 
     /// <summary>Target-id based entry used by torpedoes and the damage bridge.
-    /// Accepts WORLD coordinates and converts to the ship's hull-local frame.</summary>
+    /// Accepts WORLD coordinates and converts through the hull's ShipTransform
+    /// (Phase 01: rotation-aware — a plain position subtraction is heading-0 only).</summary>
     public void CreateBreach(SimulationWorld world, string targetId, Vec3 worldPoint, double radiusM)
     {
         var ship = Ships.FirstOrDefault(s => s.TargetId == targetId);
         if (ship is not null)
         {
-            CreateBreach(ship, worldPoint - ship.WorldPosition, radiusM);
+            CreateBreach(ship, ship.WorldTransform.ToLocal(worldPoint), radiusM);
         }
     }
 

@@ -177,7 +177,9 @@ public sealed class TorpedoSystem : ISimulationSystem
                     Channel = DamageChannel.HydroShock,
                     SourceId = t.Id,
                     TargetId = t.TargetId,
-                    Position = hit.Point,
+                    // Hull-local (Phase 01 convention): the hit point came back in world
+                    // space from the armor trace; the ship damage model works local.
+                    Position = t.Armor.Transform.ToLocal(hit.Point),
                     Radius = patchRadius * 2,
                     Amount = 800.0 * Math.Cbrt(Math.Max(t.Definition.WarheadMassKg, 0.1)) / 10.0,
                     Tick = world.TickIndex,
