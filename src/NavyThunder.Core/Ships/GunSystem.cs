@@ -144,6 +144,27 @@ public sealed class GunSystem : ISimulationSystem
     public GunOrder? GetOrder(string shipId, string gunId) =>
         _orders.TryGetValue((shipId, gunId), out var order) ? order : null;
 
+    /// <summary>
+    /// Read-only per-gun snapshot for presentation layers (Phase 02): turret heading is
+    /// SHIP-LOCAL (relative to the bow, same semantics as the simulation), mount is the
+    /// ship-local turret-part centroid. Pure read — no simulation side effects.
+    /// </summary>
+    public readonly record struct GunVisualState(
+        string ShipId, string GunId, string TurretGroup, Vec3 MountLocal, double TurretHeadingDeg, double ReloadRemainingS);
+
+    public IEnumerable<GunVisualState> VisualStatesOf(string shipId)
+    {
+        foreach (var gun in _guns)
+        {
+            if (gun.Ship.TargetId == shipId)
+            {
+                yield return new GunVisualState(
+                    gun.Ship.TargetId, gun.Definition.Id, gun.Definition.TurretGroup,
+                    gun.MountPosition, gun.TurretHeadingDeg, gun.ReloadRemainingS);
+            }
+        }
+    }
+
     public void Update(SimulationWorld world, double deltaTime)
     {
         foreach (var gun in _guns)
