@@ -1,0 +1,41 @@
+{
+ "ship_id": "dkm_prinz_eugen",
+ "wt_unit_id": "germ_cruiser_prinz_eugen",
+ "source_grp": "ger_cruiser_prinz_eugen.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 440068
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 226645
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 7751
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 828
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -11.82252025604248,
+  -7.814400672912598,
+  -112.58177185058594
+ ],
+ "bbox_nt_max": [
+  11.822519302368164,
+  51.43143081665039,
+  106.16860961914062
+ ],
+ "converted": true
+}

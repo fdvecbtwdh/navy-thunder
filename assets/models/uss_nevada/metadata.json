@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_nevada",
+ "wt_unit_id": "us_battleship_nevada",
+ "source_grp": "usa_battleship_nevada.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 444639
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 164890
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 9047
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 800
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -16.630809783935547,
+  -9.982975006103516,
+  -87.87935638427734
+ ],
+ "bbox_nt_max": [
+  16.630809783935547,
+  41.10126876831055,
+  89.92391204833984
+ ],
+ "converted": true
+}

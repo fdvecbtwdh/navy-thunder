@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_north_carolina",
+ "wt_unit_id": "us_battleship_north_carolina_class",
+ "source_grp": "usa_battleship_north_carolina_class.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 470358
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 176517
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 8323
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 767
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -16.590917587280273,
+  -10.51565170288086,
+  -110.67632293701172
+ ],
+ "bbox_nt_max": [
+  16.590919494628906,
+  42.35445022583008,
+  113.87810516357422
+ ],
+ "converted": true
+}

@@ -1,0 +1,72 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_destroyer_fubuki.grp",
+ "entry": "destroyer_fubuki",
+ "bbox_wt": [
+  [
+   -59.4208984375,
+   -3.9587278366088867,
+   -5.658219337463379
+  ],
+  [
+   59.16059875488281,
+   23.91194725036621,
+   5.378530979156494
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -5.378530979156494,
+   -3.9587278366088867,
+   -59.4208984375
+  ],
+  [
+   5.658219337463379,
+   23.91194725036621,
+   59.16059875488281
+  ]
+ ],
+ "nodes": 123,
+ "skeleton_nodes": 315,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 95,
+   "tris": 267751,
+   "bytes": 12729668
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 94,
+   "tris": 122330,
+   "bytes": 6183808
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 46,
+   "tris": 9203,
+   "bytes": 564284
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 15,
+   "tris": 1830,
+   "bytes": 139716
+  }
+ ],
+ "warnings": [
+  "lod0 rigid ex_decor_l_07 elem dropped: 60/1164 indices out of range",
+  "lod0 rigid gun_barrel_05 elem dropped: 57/108 indices out of range",
+  "lod1 rigid gun_barrel_05 elem dropped: 57/72 indices out of range",
+  "lod1 rigid ex_decor_l_05 elem dropped: 30/120 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

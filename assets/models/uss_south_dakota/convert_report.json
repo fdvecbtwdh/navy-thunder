@@ -1,0 +1,80 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_battleship_south_dakota.grp",
+ "entry": "battleship_south_dakota",
+ "bbox_wt": [
+  [
+   -98.88465118408203,
+   -10.21872329711914,
+   -16.546024322509766
+  ],
+  [
+   110.55342102050781,
+   48.61167907714844,
+   16.546024322509766
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -16.546024322509766,
+   -10.21872329711914,
+   -98.88465118408203
+  ],
+  [
+   16.546024322509766,
+   48.61167907714844,
+   110.55342102050781
+  ]
+ ],
+ "nodes": 629,
+ "skeleton_nodes": 1857,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 598,
+   "tris": 448861,
+   "bytes": 26072056
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 523,
+   "tris": 175748,
+   "bytes": 10988468
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 69,
+   "tris": 7928,
+   "bytes": 624284
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 5,
+   "tris": 676,
+   "bytes": 57240
+  }
+ ],
+ "warnings": [
+  "lod0 rigid aa_gun_32 elem dropped: 12/12 indices out of range",
+  "lod0 rigid aa_gun_34 elem dropped: 6/12 indices out of range",
+  "lod0 rigid ex_decor_13 elem dropped: 12/12 indices out of range",
+  "lod1 rigid rudder_01 elem dropped: 24/24 indices out of range",
+  "lod1 rigid gun_barrel_10 elem dropped: 18/18 indices out of range",
+  "lod1 rigid gun_barrel_11 elem dropped: 12/18 indices out of range",
+  "lod1 rigid gun_barrel_13 elem dropped: 18/18 indices out of range",
+  "lod2 rigid aa_turret_16 elem dropped: 30/36 indices out of range",
+  "lod2 rigid flag_01 elem dropped: 72/144 indices out of range",
+  "lod3 rigid main_caliber_turret_02 elem dropped: 6/6 indices out of range",
+  "lod3 rigid main_caliber_turret_01 elem dropped: 6/6 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 12/60 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 6/6 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

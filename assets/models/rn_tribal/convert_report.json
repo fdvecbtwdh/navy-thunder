@@ -1,0 +1,70 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\uk_destroyer_tribal.grp",
+ "entry": "destroyer_tribal",
+ "bbox_wt": [
+  [
+   -57.646202087402344,
+   -4.319698333740234,
+   -5.7787628173828125
+  ],
+  [
+   61.23182678222656,
+   31.119735717773438,
+   5.7787652015686035
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -5.7787652015686035,
+   -4.319698333740234,
+   -57.646202087402344
+  ],
+  [
+   5.7787628173828125,
+   31.119735717773438,
+   61.23182678222656
+  ]
+ ],
+ "nodes": 150,
+ "skeleton_nodes": 394,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 119,
+   "tris": 253948,
+   "bytes": 13112788
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 114,
+   "tris": 109164,
+   "bytes": 5989220
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 69,
+   "tris": 5335,
+   "bytes": 370428
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 8,
+   "tris": 490,
+   "bytes": 42328
+  }
+ ],
+ "warnings": [
+  "lod1 rigid ex_decor_28 elem dropped: 54/297 indices out of range",
+  "lod1 rigid aa_gun_06 elem dropped: 30/36 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

@@ -1,0 +1,131 @@
+{
+ "converted": [
+  {
+   "id": "dkm_prinz_eugen",
+   "lods": 4,
+   "tris": 675292
+  },
+  {
+   "id": "ijn_fubuki",
+   "lods": 4,
+   "tris": 401114
+  },
+  {
+   "id": "ijn_kagero",
+   "lods": 4,
+   "tris": 433550
+  },
+  {
+   "id": "ijn_kongo",
+   "lods": 4,
+   "tris": 741617
+  },
+  {
+   "id": "ijn_mogami",
+   "lods": 4,
+   "tris": 682178
+  },
+  {
+   "id": "ijn_myoko",
+   "lods": 4,
+   "tris": 595496
+  },
+  {
+   "id": "ijn_nagato",
+   "lods": 4,
+   "tris": 650778
+  },
+  {
+   "id": "rms_bismarck",
+   "lods": 4,
+   "tris": 680773
+  },
+  {
+   "id": "rn_renown",
+   "lods": 4,
+   "tris": 717466
+  },
+  {
+   "id": "rn_tribal",
+   "lods": 4,
+   "tris": 368937
+  },
+  {
+   "id": "uss_atlanta",
+   "lods": 4,
+   "tris": 435546
+  },
+  {
+   "id": "uss_baltimore",
+   "lods": 4,
+   "tris": 612723
+  },
+  {
+   "id": "uss_brooklyn",
+   "lods": 4,
+   "tris": 448245
+  },
+  {
+   "id": "uss_colorado",
+   "lods": 4,
+   "tris": 680226
+  },
+  {
+   "id": "uss_fletcher",
+   "lods": 4,
+   "tris": 384968
+  },
+  {
+   "id": "uss_gearing",
+   "lods": 4,
+   "tris": 439855
+  },
+  {
+   "id": "uss_iowa",
+   "lods": 4,
+   "tris": 644876
+  },
+  {
+   "id": "uss_nevada",
+   "lods": 4,
+   "tris": 619376
+  },
+  {
+   "id": "uss_new_orleans",
+   "lods": 4,
+   "tris": 565991
+  },
+  {
+   "id": "uss_north_carolina",
+   "lods": 4,
+   "tris": 655965
+  },
+  {
+   "id": "uss_northampton",
+   "lods": 4,
+   "tris": 496580
+  },
+  {
+   "id": "uss_south_dakota",
+   "lods": 4,
+   "tris": 633213
+  },
+  {
+   "id": "uss_sumner",
+   "lods": 4,
+   "tris": 447468
+  }
+ ],
+ "no_mapping": [
+  "dkm_z23",
+  "rn_edinburgh",
+  "uss_california",
+  "uss_new_mexico",
+  "uss_penelope",
+  "uss_pennsylvania"
+ ],
+ "no_grp": [
+  "uss_sims (uss_dd_sims_guns)"
+ ],
+ "failed": []
+}

@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_south_dakota",
+ "wt_unit_id": "us_battleship_south_dakota",
+ "source_grp": "usa_battleship_south_dakota.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 448861
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 175748
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 7928
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 676
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -16.546024322509766,
+  -10.21872329711914,
+  -98.88465118408203
+ ],
+ "bbox_nt_max": [
+  16.546024322509766,
+  48.61167907714844,
+  110.55342102050781
+ ],
+ "converted": true
+}

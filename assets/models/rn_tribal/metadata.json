@@ -1,0 +1,41 @@
+{
+ "ship_id": "rn_tribal",
+ "wt_unit_id": "uk_destroyer_tribal",
+ "source_grp": "uk_destroyer_tribal.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 253948
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 109164
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 5335
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 490
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -5.7787652015686035,
+  -4.319698333740234,
+  -57.646202087402344
+ ],
+ "bbox_nt_max": [
+  5.7787628173828125,
+  31.119735717773438,
+  61.23182678222656
+ ],
+ "converted": true
+}

@@ -1,0 +1,73 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_cruiser_atlanta_class_atlanta.grp",
+ "entry": "cruiser_atlanta_class_atlanta",
+ "bbox_wt": [
+  [
+   -83.59361267089844,
+   -7.166750431060791,
+   -8.197781562805176
+  ],
+  [
+   82.60530853271484,
+   38.13188171386719,
+   8.197781562805176
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -8.197781562805176,
+   -7.166750431060791,
+   -83.59361267089844
+  ],
+  [
+   8.197781562805176,
+   38.13188171386719,
+   82.60530853271484
+  ]
+ ],
+ "nodes": 162,
+ "skeleton_nodes": 409,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 134,
+   "tris": 298479,
+   "bytes": 15342100
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 134,
+   "tris": 129103,
+   "bytes": 7255684
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 22,
+   "tris": 7229,
+   "bytes": 486680
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 12,
+   "tris": 735,
+   "bytes": 67636
+  }
+ ],
+ "warnings": [
+  "lod0 rigid gun_barrel_02 elem dropped: 57/84 indices out of range",
+  "lod0 rigid gun_mask_02 elem dropped: 60/348 indices out of range",
+  "lod1 rigid ex_decor_06 elem dropped: 12/12 indices out of range",
+  "lod1 rigid ex_decor_l_02 elem dropped: 6/12 indices out of range",
+  "lod1 rigid ex_decor_r_02 elem dropped: 12/12 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

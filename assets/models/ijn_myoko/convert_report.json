@@ -1,0 +1,70 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_cruiser_myoko.grp",
+ "entry": "cruiser_myoko",
+ "bbox_wt": [
+  [
+   -105.29096984863281,
+   -7.011521339416504,
+   -17.782201766967773
+  ],
+  [
+   102.47299194335938,
+   35.245296478271484,
+   17.777864456176758
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -17.777864456176758,
+   -7.011521339416504,
+   -105.29096984863281
+  ],
+  [
+   17.782201766967773,
+   35.245296478271484,
+   102.47299194335938
+  ]
+ ],
+ "nodes": 276,
+ "skeleton_nodes": 880,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 249,
+   "tris": 387385,
+   "bytes": 20404728
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 213,
+   "tris": 202947,
+   "bytes": 11254644
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 43,
+   "tris": 4581,
+   "bytes": 335576
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 14,
+   "tris": 583,
+   "bytes": 52120
+  }
+ ],
+ "warnings": [
+  "lod0 rigid gun_barrel_38 elem dropped: 81/84 indices out of range",
+  "lod2 rigid aircraft_02 elem dropped: 60/156 indices out of range",
+  "lod3 rigid superstructure_back elem dropped: 36/135 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

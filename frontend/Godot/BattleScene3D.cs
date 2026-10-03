@@ -389,7 +389,7 @@ public partial class BattleScene3D : Node3D
                 .Where(f => f.Active && f.HostId.StartsWith(targetId + "/"))
                 .Select(f => f.Position)
                 .ToList();
-            visual.UpdateFromCore(_runner.World.Time, gunStates, burning);
+            visual.UpdateFromCore(_runner.World.Time, gunStates, burning, delta);
         }
 
         foreach (var visual in _aircraftVisuals.Values)

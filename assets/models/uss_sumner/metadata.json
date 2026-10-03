@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_sumner",
+ "wt_unit_id": "us_destroyer_sumner",
+ "source_grp": "usa_destroyer_sumner.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 294382
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 149449
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 3475
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 162
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -6.276123046875,
+  -5.298419952392578,
+  -57.53555679321289
+ ],
+ "bbox_nt_max": [
+  6.3183393478393555,
+  28.101154327392578,
+  57.39189147949219
+ ],
+ "converted": true
+}

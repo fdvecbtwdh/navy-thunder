@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_northampton",
+ "wt_unit_id": "us_cruiser_northampton_class",
+ "source_grp": "usa_cruiser_northampton_class.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 337897
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 150806
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 7088
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 789
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -13.152889251708984,
+  -6.732131481170654,
+  -93.0394515991211
+ ],
+ "bbox_nt_max": [
+  13.161666870117188,
+  45.74665451049805,
+  91.1527099609375
+ ],
+ "converted": true
+}

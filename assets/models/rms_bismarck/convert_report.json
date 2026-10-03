@@ -1,0 +1,72 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\ger_battleship_bismarck.grp",
+ "entry": "battleship_bismarck",
+ "bbox_wt": [
+  [
+   -118.33891296386719,
+   -10.282740592956543,
+   -18.061185836791992
+  ],
+  [
+   134.5684051513672,
+   49.636775970458984,
+   18.06118392944336
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -18.06118392944336,
+   -10.282740592956543,
+   -118.33891296386719
+  ],
+  [
+   18.061185836791992,
+   49.636775970458984,
+   134.5684051513672
+  ]
+ ],
+ "nodes": 266,
+ "skeleton_nodes": 771,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 240,
+   "tris": 474182,
+   "bytes": 25068332
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 206,
+   "tris": 196365,
+   "bytes": 11297668
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 58,
+   "tris": 9343,
+   "bytes": 582620
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 6,
+   "tris": 883,
+   "bytes": 68556
+  }
+ ],
+ "warnings": [
+  "lod0 rigid gun_barrel_37 elem dropped: 54/72 indices out of range",
+  "lod1 rigid gun_barrel_37 elem dropped: 54/54 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range",
+  "lod3 rigid superstructure elem dropped: 12/72 indices out of range",
+  "lod3 rigid superstructure elem dropped: 36/36 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

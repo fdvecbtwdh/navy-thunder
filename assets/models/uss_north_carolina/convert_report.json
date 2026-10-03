@@ -1,0 +1,80 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_battleship_north_carolina_class.grp",
+ "entry": "battleship_north_carolina_class",
+ "bbox_wt": [
+  [
+   -110.67632293701172,
+   -10.51565170288086,
+   -16.590919494628906
+  ],
+  [
+   113.87810516357422,
+   42.35445022583008,
+   16.590917587280273
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -16.590917587280273,
+   -10.51565170288086,
+   -110.67632293701172
+  ],
+  [
+   16.590919494628906,
+   42.35445022583008,
+   113.87810516357422
+  ]
+ ],
+ "nodes": 517,
+ "skeleton_nodes": 1336,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 454,
+   "tris": 470358,
+   "bytes": 25761056
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 414,
+   "tris": 176517,
+   "bytes": 10478340
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 137,
+   "tris": 8323,
+   "bytes": 697520
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 15,
+   "tris": 767,
+   "bytes": 72680
+  }
+ ],
+ "warnings": [
+  "lod0 rigid aa_gun_05 elem dropped: 12/12 indices out of range",
+  "lod0 rigid aa_gun_07 elem dropped: 6/12 indices out of range",
+  "lod0 rigid aa_gun_38 elem dropped: 63/804 indices out of range",
+  "lod0 rigid aa_gun_38 elem dropped: 12/12 indices out of range",
+  "lod1 rigid ex_armor_l_04 elem dropped: 42/1140 indices out of range",
+  "lod1 rigid gun_barrel_03 elem dropped: 6/42 indices out of range",
+  "lod1 rigid gun_barrel_09 elem dropped: 42/42 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range",
+  "lod3 rigid main_caliber_turret_01 elem dropped: 6/6 indices out of range",
+  "lod3 rigid main_caliber_turret_02 elem dropped: 6/6 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 12/42 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 6/6 indices out of range",
+  "lod3 rigid superstructure_01 elem dropped: 24/24 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

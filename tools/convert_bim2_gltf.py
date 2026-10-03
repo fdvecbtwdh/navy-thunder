@@ -221,6 +221,10 @@ def parse_bim2(data: bytes) -> dict:
         end = nm.index(b"\0", nofs)
         names.append(nm[nofs:end].decode("utf-8", "replace"))
     skin_nodes = list(struct.unpack_from(f"<{skin_cnt}H", nm, skin_ofs)) if skin_cnt else []
+    # rigid.nodeId indexes the node table THROUGH the skinNodes permutation
+    # (Dagor-Asset-Explorer semantics: value->index lookup); the direct index
+    # yields a scrambled name, which misplaces every transformed rigid.
+    skin_lookup = {v: i for i, v in enumerate(skin_nodes)}
     fo += 4 + nm_sz
 
     for lod in lods:
@@ -250,8 +254,9 @@ def parse_bim2(data: bytes) -> dict:
                     elems.append({"mat": matv & 0xFFFFFFFF, "gvd": vdref & 0xFFFFFFFF,
                                   "vd_order": vdorder, "sv": sv, "numv": numv,
                                   "si": si, "numf": numf, "base_vertex": basev})
-            rigids.append({"node_id": node_id,
-                           "name": names[node_id] if node_id < len(names) else f"node{node_id}",
+            node_idx = skin_lookup.get(node_id, node_id)
+            rigids.append({"node_id": node_idx,
+                           "name": names[node_idx] if node_idx < len(names) else f"node{node_idx}",
                            "sph_c": sph_c, "sph_r": sph_r, "mesh_dump_sz": mesh_sz,
                            "modern_fmt": modern, "elems": elems})
         lod["rigids"] = rigids
@@ -392,6 +397,15 @@ def load_skeleton_from_grp(grp_data: bytes, entries: list[dict]) -> list[dict] |
     return None
 
 
+def _invert_rigid(rot, trans):
+    """Invert a rigid transform (3x3 rotation, translation). Returns 3x4 rows."""
+    inv = [[rot[0][0], rot[1][0], rot[2][0]],
+           [rot[0][1], rot[1][1], rot[2][1]],
+           [rot[0][2], rot[1][2], rot[2][2]]]  # transpose = inverse for rotations
+    t = [-sum(inv[i][k] * trans[k] for k in range(3)) for i in range(3)]
+    return [inv[0] + [t[0]], inv[1] + [t[1]], inv[2] + [t[2]]]
+
+
 def to_nt(p: tuple[float, float, float]) -> tuple[float, float, float]:
     """WT (x=bow axis, y=up, z=width) -> NT (+Z bow, +Y up, +X starboard)."""
     return (-p[2], p[1], p[0])
@@ -450,10 +464,15 @@ except ImportError:  # pragma: no cover
     math_sqrt = lambda x: x ** 0.5  # noqa: E731
 
 
-def build_glb(node_prims: list[tuple[str, list[dict]]], materials: list[dict]) -> bytes:
-    """node_prims: [(node_name, [{pos, uv, indices, mat, wtm?}])]; pos in WT local
-    space; optional wtm (16 f32, Dagor row-major v*M) bakes the rigid's node
-    transform before the NT axis conversion. UV flips V for glTF."""
+def build_glb(node_prims: list[tuple[str, list[dict]]],
+              materials: list[dict],
+              hierarchy: list[dict] | None = None) -> bytes:
+    """node_prims: [(node_name, [{pos, uv, indices, mat, wtm?}])] for baked,
+    scene-root nodes. hierarchy: extra structured nodes
+    [{name, prims, translation(nt), rotation_quat(nt), children: [same]}] whose
+    meshes keep local vertices and whose transforms place them in the scene
+    (turret nodes with gun child nodes). pos arrays are WT local; all output
+    geometry is converted to NT axes."""
     b = GlbBuilder()
     accessors, meshes, nodes = [], [], []
 
@@ -467,10 +486,8 @@ def build_glb(node_prims: list[tuple[str, list[dict]]], materials: list[dict]) -
             x * wtm[2] + y * wtm[6] + z * wtm[10] + wtm[14],
         ))
 
-    for name, prims in node_prims:
-        if not prims:
-            continue
-        gltf_prims = []
+    def add_prims(prims: list[dict]) -> list[int]:
+        out = []
         for prim in prims:
             used = sorted(set(prim["indices"]))
             remap = {old: new for new, old in enumerate(used)}
@@ -478,7 +495,6 @@ def build_glb(node_prims: list[tuple[str, list[dict]]], materials: list[dict]) -
             npos = [bake(prim["pos"][i], wtm) for i in used]
             nuv = [prim["uv"][i] for i in used] if prim.get("uv") else None
             nidx = [remap[i] for i in prim["indices"]]
-
             pv = b.add_view(b"".join(struct.pack("<3f", *p) for p in npos))
             pacc = len(accessors)
             accessors.append({"bufferView": pv, "componentType": 5126, "count": len(npos),
@@ -501,9 +517,34 @@ def build_glb(node_prims: list[tuple[str, list[dict]]], materials: list[dict]) -
                 accessors.append({"bufferView": uvv, "componentType": 5126,
                                   "count": len(nuv), "type": "VEC2"})
                 gp["attributes"]["TEXCOORD_0"] = uacc
-            gltf_prims.append(gp)
+            out.append(gp)
+        return out
+
+    def add_node(name: str, prims: list[dict], translation=None, rotation=None) -> int:
+        gltf_prims = add_prims(prims)
         meshes.append({"primitives": gltf_prims, "name": name})
-        nodes.append({"mesh": len(meshes) - 1, "name": name})
+        ni = len(nodes)
+        node: dict = {"mesh": len(meshes) - 1, "name": name}
+        if translation:
+            node["translation"] = [round(v, 5) for v in translation]
+        if rotation:
+            node["rotation"] = [round(v, 6) for v in rotation]
+        nodes.append(node)
+        return ni
+
+    def add_hierarchy(hn: dict) -> int:
+        ni = add_node(hn["name"], hn["prims"], hn.get("translation"), hn.get("rotation"))
+        for ch in hn.get("children", []):
+            ci = add_hierarchy(ch)
+            nodes[ni].setdefault("children", []).append(ci)
+        return ni
+
+    for name, prims in node_prims:
+        if prims:
+            add_node(name, prims)
+    for hn in hierarchy or []:
+        add_hierarchy(hn)
+
     gltf = {
         "asset": {"version": "2.0", "generator": "NavyThunder convert_bim2_gltf"},
         "scene": 0, "scenes": [{"nodes": list(range(len(nodes)))}],
@@ -524,6 +565,60 @@ def build_glb(node_prims: list[tuple[str, list[dict]]], materials: list[dict]) -
     return bytes(out)
 
 
+import re
+
+_TURRET_RE = re.compile(r"^(main_caliber_turret|turret)_\d+$")
+_MC_TURRET_RE = re.compile(r"^main_caliber_turret_\d+$")
+_MC_GUN_RE = re.compile(r"^main_caliber_gun_\d+$")
+
+
+def _quat_from_mat(m: tuple[tuple, tuple, tuple]) -> tuple[float, float, float, float]:
+    """Rotation matrix (3x3 tuples) -> quaternion (x, y, z, w)."""
+    tr = m[0][0] + m[1][1] + m[2][2]
+    if tr > 0:
+        s = math_sqrt(tr + 1.0) * 2
+        w = 0.25 * s
+        x = (m[2][1] - m[1][2]) / s
+        y = (m[0][2] - m[2][0]) / s
+        z = (m[1][0] - m[0][1]) / s
+    elif m[0][0] > m[1][1] and m[0][0] > m[2][2]:
+        s = math_sqrt(1.0 + m[0][0] - m[1][1] - m[2][2]) * 2
+        w = (m[2][1] - m[1][2]) / s
+        x = 0.25 * s
+        y = (m[0][1] + m[1][0]) / s
+        z = (m[0][2] + m[2][0]) / s
+    elif m[1][1] > m[2][2]:
+        s = math_sqrt(1.0 + m[1][1] - m[0][0] - m[2][2]) * 2
+        w = (m[0][2] - m[2][0]) / s
+        x = (m[0][1] + m[1][0]) / s
+        y = 0.25 * s
+        z = (m[1][2] + m[2][1]) / s
+    else:
+        s = math_sqrt(1.0 + m[2][2] - m[0][0] - m[1][1]) * 2
+        w = (m[1][0] - m[0][1]) / s
+        x = (m[0][2] + m[2][0]) / s
+        y = (m[1][2] + m[2][1]) / s
+        z = 0.25 * s
+    return (x, y, z, w)
+
+
+def _mat_nt(r00, r01, r02, r10, r11, r12, r20, r21, r22):
+    """WT->NT axis permutation applied to a rotation: R_NT = P * R * P^T with
+    P the (x,y,z)->(-z,y,x) permutation (orthogonal, P^T = P)."""
+    # P rows: nt_x = -wt_z, nt_y = wt_y, nt_z = wt_x
+    nt = [[0.0] * 3 for _ in range(3)]
+    R = [[r00, r01, r02], [r10, r11, r12], [r20, r21, r22]]
+    P = [[0, 0, -1], [0, 1, 0], [1, 0, 0]]
+    for i in range(3):
+        for j in range(3):
+            acc = 0.0
+            for k in range(3):
+                for m in range(3):
+                    acc += P[i][k] * R[k][m] * P[j][m]
+            nt[i][j] = acc
+    return nt
+
+
 def gray_material(idx: int) -> dict:
     """Placeholder PBR material; texture pipeline (P03-2) replaces later."""
     shade = 0.35 + 0.5 * ((idx * 2654435761) % 1000) / 1000.0
@@ -536,6 +631,17 @@ def gray_material(idx: int) -> dict:
 # ship conversion
 # --------------------------------------------------------------------------
 
+def _looks_like_bim2(payload: bytes) -> bool:
+    """Header signature of the v7 dynmodel dump (measured on Bismarck AND
+    Fletcher: the 'BIM2' string at offset 60 in Bismarck is coincidental
+    compressed bytes, NOT a magic)."""
+    if len(payload) < 28:
+        return False
+    res_sz, neg1a, neg1b, _vfc, mvhdr = struct.unpack_from("<IiiII", payload, 0)
+    return (neg1a == -1 and neg1b == -1 and (mvhdr >> 30) == 3
+            and 0 < (mvhdr & 0x3FFFFFFF) < 1 << 24 and 0 < res_sz < 1 << 20)
+
+
 def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) -> dict:
     data = grp_path.read_bytes()
     _names, entries = parse_grp(data)
@@ -544,7 +650,7 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
         if e["name"].endswith("_dmg") or e["name"].endswith("_xray"):
             continue
         payload = data[e["offset"]:e["offset"] + e["size"]]
-        if len(payload) > 64 and payload[60:64] == b"BIM2":
+        if _looks_like_bim2(payload):
             main = (e, payload)
             break
     if main is None:
@@ -573,23 +679,64 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
         node_prims: list[tuple[str, list[dict]]] = []
         tris = 0
         max_mat = 0
+        # per-ship turret naming: ships with explicit main_caliber_* nodes use
+        # them; otherwise bare turret_NN (Bismarck/Kongo era models). Iowa-type
+        # hulls bake the turret body into the hull and expose main_caliber_gun_*
+        # as the rotatable nodes instead.
+        lod_names = [r["name"] for r in lod["rigids"]]
+        if any(_MC_TURRET_RE.match(n) for n in lod_names):
+            turret_re, gun_re = _MC_TURRET_RE, _MC_GUN_RE
+        elif any(n.startswith("main_caliber_") for n in lod_names):
+            turret_re, gun_re = None, _MC_GUN_RE  # turret body baked into hull
+        else:
+            turret_re, gun_re = _TURRET_RE, None
+        turret_rigids: dict[str, dict] = {}
+        gun_rigids: list[dict] = []
         for r in lod["rigids"]:
+            if turret_re and turret_re.match(r["name"]):
+                turret_rigids[r["name"]] = r
+            elif gun_re and gun_re.match(r["name"]):
+                gun_rigids.append(r)
+
+        def collect(r: dict, pivot: tuple | None = None) -> list[dict]:
+            """Decode + filter elems for one rigid.
+
+            pivot=None: bake the rigid's skeleton wtm into the vertices (static
+            hull parts). pivot=(R3x3, t): the rigid goes into a transform node
+            (rotatable turret) - its shared-buffer vertices are model-space, so
+            re-express them relative to the pivot (R^T (p - t)) and let the node
+            transform place them back; yawing the node then spins the part
+            around its own barbette instead of the world origin."""
+            # Shared-buffer vertices are MODEL-SPACE for every rigid (verified on
+            # Bismarck AND North Carolina: identity-wtm parts render correctly,
+            # transformed parts would fly if baked). Only pivot-local hierarchy
+            # parts (rotatable turrets) re-anchor their vertices.
             wtm = None
-            if skeleton:
-                # rigid.nodeId indexes the dynmodel name map; the node transform
-                # lives in the GeomNodeTree, bridged by node NAME.
-                sk_node = skeleton_by_name.get(r["name"].lstrip("@"))
-                if sk_node is not None:
-                    wtm = sk_node["wtm"]
             per_gvd: dict[int, dict] = {}
             for el in r["elems"]:
                 gi = el["gvd"]
                 if gi not in vcache:
                     g = parsed["gvd"][gi]
                     try:
-                        vcache[gi] = decode_vertices(g, bbox)
+                        vd = decode_vertices(g, bbox)
+                        # Shared vertex buffers come in two semantics (verified on
+                        # Bismarck + North Carolina): big buffers hold MODEL-SPACE
+                        # vertices (bbox ~ hull), small ones hold per-part LOCAL
+                        # vertices that need their rigid's wtm. Discriminate by span.
+                        if vd["pos"]:
+                            xs = [q[0] for q in vd["pos"]]
+                            ys = [q[1] for q in vd["pos"]]
+                            zs = [q[2] for q in vd["pos"]]
+                            span = max(max(xs) - min(xs), max(zs) - min(zs))
+                            hull_len = abs(bbox[1][0] - bbox[0][0])
+                            vd["model_space"] = span > hull_len * 0.6
+                            print(f"  gvd[{gi}]: {len(vd['pos'])} verts span={span:.1f}m "
+                                  f"hull={hull_len:.1f}m -> {'MODEL' if vd['model_space'] else 'LOCAL'}")
+                        else:
+                            vd["model_space"] = True
+                        vcache[gi] = vd
                     except Exception as exc:  # noqa: BLE001 - per-ship robustness
-                        vcache[gi] = {"pos": [], "uv": None}
+                        vcache[gi] = {"pos": [], "uv": None, "model_space": True}
                         report["warnings"].append(f"lod{li} gvd{gi} vertices: {exc}")
                 if gi not in idx_cache:
                     try:
@@ -607,31 +754,127 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
                     continue
                 vcnt = parsed["gvd"][gi]["vcnt"]
                 tri = full[start:start + cnt]
-                over = sum(1 for i in tri if el["base_vertex"] + i >= vcnt)
-                if over > cnt * 0.02:  # broken elem (tiny fx meshes); drop whole elem
+                base = el["base_vertex"]
+                # Drop whole triangles whose final index escapes the vertex buffer
+                # (strip-tail junk or a bad baseVertex); clamping would weld them to
+                # unrelated hull vertices and stretch triangles across the ship.
+                ok = []
+                bad = 0
+                for j in range(0, len(tri) - 2, 3):
+                    a = base + tri[j]
+                    b = base + tri[j + 1]
+                    c = base + tri[j + 2]
+                    if 0 <= a < vcnt and 0 <= b < vcnt and 0 <= c < vcnt:
+                        ok.extend((a, b, c))
+                    else:
+                        bad += 3
+                if bad > cnt * 0.02:
                     report["warnings"].append(
-                        f"lod{li} rigid {r['name']} elem dropped: {over}/{cnt} indices out of range")
+                        f"lod{li} rigid {r['name']} elem dropped: {bad}/{cnt} indices out of range")
                     continue
                 blk = per_gvd.setdefault(gi, {"items": []})
-                blk["items"].append((el["base_vertex"],
-                                     [min(i, vcnt - 1 - el["base_vertex"]) for i in tri],
-                                     el["mat"]))
-                max_mat = max(max_mat, el["mat"])
+                blk["items"].append((0, ok, el["mat"]))
             prims = []
             for gi, blk in per_gvd.items():
                 vdata = vcache[gi]
                 if not vdata["pos"]:
                     continue
-                for base_v, tri, mat_idx in blk["items"]:
-                    sub = [base_v + i for i in tri]  # D3D baseVertex semantics
-                    prims.append({"pos": vdata["pos"], "uv": vdata["uv"],
-                                  "indices": sub, "mat": mat_idx, "wtm": wtm})
-                    tris += len(tri) // 3
+                if pivot is not None and not vdata.get("model_space", True):
+                    # local-space vertices: the node transform (wtm) places them;
+                    # keep vertices as-is and mark wtm so the glb writer bakes it.
+                    piv = vdata
+                    for _base_v, tri, mat_idx in blk["items"]:
+                        prims.append({"pos": piv["pos"], "uv": piv["uv"],
+                                      "indices": tri, "mat": mat_idx, "wtm": wtm})
+                    continue
+                if pivot is not None:
+                    (r00, r11_, r22_), (tx, ty, tz) = pivot
+                    inv = _invert_rigid((r00, r11_, r22_), (tx, ty, tz))
+                    piv_pos = []
+                    for (px, py, pz) in vdata["pos"]:
+                        lx = px - tx
+                        ly = py - ty
+                        lz = pz - tz
+                        piv_pos.append((inv[0][0] * lx + inv[0][1] * ly + inv[0][2] * lz,
+                                        inv[1][0] * lx + inv[1][1] * ly + inv[1][2] * lz,
+                                        inv[2][0] * lx + inv[2][1] * ly + inv[2][2] * lz))
+                    piv = {"pos": piv_pos, "uv": vdata["uv"]}
+                else:
+                    piv = vdata
+                for _base_v, tri, mat_idx in blk["items"]:
+                    # final indices are already resolved (baseVertex applied + culled)
+                    bake_wtm = None if (pivot or vdata.get("model_space", True)) else wtm
+                    prims.append({"pos": piv["pos"], "uv": piv["uv"],
+                                  "indices": tri, "mat": mat_idx, "wtm": bake_wtm})
+            return prims
+
+        def nt_world(nd: dict) -> tuple[list[float], tuple]:
+            """Node world transform (from skeleton wtm) converted to NT axes:
+            returns (translation, 3x3 rotation)."""
+            w = nd["wtm"]
+            t = to_nt((w[12], w[13], w[14]))
+            rot = _mat_nt(w[0], w[1], w[2], w[4], w[5], w[6], w[8], w[9], w[10])
+            return list(t), rot
+
+        hierarchy: list[dict] = []
+        emitted: set[str] = set()
+        # PHASE_03 decision: rigids are material batches and may span the hull,
+        # so pivot-local vertices would sweep unrelated geometry when a turret
+        # yaws. Emit every rigid with model-space vertices and identity node
+        # transforms (always renders correctly); turret anchor positions live in
+        # nodeMap.json and Phase 04 owns real turret articulation.
+        turret_nodes: dict[str, dict] = {}
+        for tname, r in turret_rigids.items():
+            turret_nodes[tname] = {"name": tname, "prims": collect(r),
+                                   "translation": None, "rotation": None,
+                                   "children": [], "_rot": None, "_trans": None}
+            hierarchy.append(turret_nodes[tname])
+            emitted.add(tname)
+        for r in gun_rigids:
+            sk_node = skeleton_by_name.get(r["name"].lstrip("@"))
+            if sk_node is None:
+                continue  # baked with the rest
+            emitted.add(r["name"])
+            if not turret_nodes:
+                # Iowa-type: gun nodes are grouped under the scene root like the rest
+                hierarchy.append({"name": r["name"], "prims": collect(r),
+                                  "translation": None, "rotation": None,
+                                  "children": []})
+                continue
+            # nearest turret by translation distance (identity nodes in Phase 03;
+            # gun nodes are grouped for Phase 04 articulation)
+            best = min(turret_nodes.values(),
+                       key=lambda t: sum((a - b) ** 2 for a, b in zip(t["_trans"] or (0, 0, 0),
+                                                                       (sk_node["wtm"][12], sk_node["wtm"][13], sk_node["wtm"][14]))))
+            best["children"].append({"name": r["name"], "prims": collect(r),
+                                     "translation": None, "rotation": None,
+                                     "children": []})
+
+        for r in lod["rigids"]:
+            if r["name"] in emitted:
+                continue  # emitted in the turret/gun hierarchy
+            prims = collect(r)
+            max_mat = max([max_mat] + [p["mat"] for p in prims])
+            tris += sum(len(p["indices"]) // 3 for p in prims)
             if prims:
                 node_prims.append((r["name"], prims))
-        if node_prims:
+        h_tris = 0
+
+        def count_h(hn: dict) -> int:
+            n = sum(len(p["indices"]) // 3 for p in hn["prims"])
+            for ch in hn["children"]:
+                n += count_h(ch)
+            return n
+
+        h_tris = sum(count_h(hn) for hn in hierarchy)
+        tris += h_tris
+        for tn in turret_nodes.values():
+            for ch in tn["children"]:
+                max_mat = max([max_mat] + [p["mat"] for p in ch["prims"]] + [p["mat"] for p in tn["prims"]])
+            max_mat = max([max_mat] + [p["mat"] for p in tn["prims"]])
+        if node_prims or hierarchy:
             mats = [gray_material(i) for i in range(max_mat + 1)]
-            glb = build_glb(node_prims, mats)
+            glb = build_glb(node_prims, mats, hierarchy)
             fname = f"model_lod{li}.glb"
             (out_dir / fname).write_bytes(glb)
             report["lods"].append({"lod": li, "range_m": lod["range"], "file": fname,

@@ -1,0 +1,72 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_destroyer_fletcher.grp",
+ "entry": "destroyer_fletcher",
+ "bbox_wt": [
+  [
+   -56.21052932739258,
+   -4.942333221435547,
+   -6.569769382476807
+  ],
+  [
+   56.25954055786133,
+   26.973234176635742,
+   6.569769382476807
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -6.569769382476807,
+   -4.942333221435547,
+   -56.21052932739258
+  ],
+  [
+   6.569769382476807,
+   26.973234176635742,
+   56.25954055786133
+  ]
+ ],
+ "nodes": 172,
+ "skeleton_nodes": 388,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 144,
+   "tris": 263773,
+   "bytes": 13912160
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 144,
+   "tris": 116379,
+   "bytes": 6514036
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 75,
+   "tris": 4380,
+   "bytes": 345216
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 10,
+   "tris": 436,
+   "bytes": 41084
+  }
+ ],
+ "warnings": [
+  "lod0 rigid ex_armor_r_01 elem dropped: 66/360 indices out of range",
+  "lod0 rigid gun_barrel_13 elem dropped: 54/102 indices out of range",
+  "lod2 rigid flag elem dropped: 72/144 indices out of range",
+  "lod2 rigid ex_armor_06 elem dropped: 45/186 indices out of range",
+  "lod3 rigid auxiliary_caliber_turret_01 elem dropped: 30/60 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

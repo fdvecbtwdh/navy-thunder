@@ -47,7 +47,7 @@
 | 1 | 主菜单（标题/版本/开始/退出） | `[DONE]` | `frontend/Godot/MenuView.cs`；选舰+设置已通 |
 | 2 | 选舰（从舰队数据） | `[DONE]` | 30 舰下拉框，`SessionState.SelectedShipId` → `BattleRunner(playerShipOverride)` |
 | 3 | 设置（音量/语言/持久化） | `[PARTIAL]` | Master/Effects 音量+zh/en 已通；**Ambient 音量硬编码 0.6 无 UI**；无图像/键位设置 |
-| 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立**（Phase 02：Node3D 战斗场/ShipVisual/相机/海面/特效/战术地图，见 PHASE_02 §0）；船体为程序化占位，真实模型归 Phase 03 |
+| 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立 + 真实舰船模型已接入**（Phase 02 骨架 + Phase 03 资产管线：23 舰 WT 模型 4 级 LOD、程序化双轨回退、nodeMap 挂点，见 PHASE_03）；贴图/击毁态归 Phase 04 尾 |
 | 5 | 玩家操舰（舵/油门） | `[PARTIAL]` | WASD 已通（R2.2；**P02 修复 AI 抢舵 bug**）；无油门档位 UI、无倒车 |
 | 6 | 瞄准与开火 | `[PARTIAL]` | 悬停自动交战已通；无玩家瞄准流程（测距/试射/修正）、无提前量指示（`FcsSolver` 在库未接） |
 | 7 | 弹种切换 | `[DONE]` | R 键 AP/HE（R3） |
@@ -65,7 +65,7 @@
 | 19 | 本地化 zh-CN/en | `[PARTIAL]` | UI 框架+菜单/HUD 双语已通；长文案待补 |
 | 20 | 战斗中暂停/退出 | `[PLANNED]` | 无（ESC 无绑定） |
 | 21 | 3D 渲染 | `[PLANNED]` | 当前 2D；Phase 02 |
-| 22 | 真实舰船资产 | `[PLANNED]` | 提取管线就绪（GRP2 完整解析），BIM2 反序列化未做；保底轨=程序化 3D（§9） |
+| 22 | 真实舰船资产 | `[DONE-P3]` | BIM2→glTF 转换器交付，23 舰批量转换（4 级 LOD+nodeMap 挂点），前端真实模型/程序化双轨；贴图管线（dxp）与击毁态 dmg 未做（Phase 04 尾/08） |
 | 23 | 飞机（玩家/AI 舰载机） | `[PARTIAL]` | AI 雷击/俯冲任务链 `[DONE]`（headless）；机型数据仅 1；航母系统 `[PLANNED]` |
 | 24 | 导弹 | `[BLOCKED]` | `MissileSystem` 制导代码+测试在库，**未接入 BattleRunner**，无数据集（MDR-0015 架构已定） |
 
@@ -334,7 +334,7 @@ Battle3D (Node3D)
 
 ### 9.1 现状（FACT）
 - 原始资产在位：`D:\WarThunder\content\base\res\ships\` 598 个 .grp（3.9GB）；aces.vromfs 17.9MB；`_wt_audit/` 已解包 2,344 舰 blk + 382 炮 blk + DagorEngine 参考源码。
-- 工具链：GRP2 容器**完整解析**（`tools/extract_ship_model.py`，12 条目提取+格式识别+zstd 解压）；**BIM2 dynmodel 顶点流未反序列化**；碰撞=量化 BVH（0xace50003）未解析。
+- 工具链：GRP2 容器**完整解析**（`tools/extract_ship_model.py`）；**BIM2 v7 dynmodel 全链路已反序列化并交付**（`tools/convert_bim2_gltf.py`，2026-10-03：Oodle 解压/两种实测顶点布局/packed IB/GeomNodeTree+skinNodes 桥接/4 级 LOD/glTF 输出）；碰撞=量化 BVH（0xace50003）未解析（Phase 08 可选）。
 - 保底轨在役：`tools/generate_hull_obj.py` 程序化船体（32 舰 hull.obj，738 顶点/1360 面），前端已消费甲板轮廓。
 
 ### 9.2 双轨策略

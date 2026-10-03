@@ -1,0 +1,25 @@
+{
+  "name": "asset_visual",
+  "maxDurationS": 240,
+  "seed": 424242,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        { "ship": "uss_north_carolina", "x": -700, "z": 0, "headingDeg": 0, "throttle": 0.0 },
+        { "ship": "uss_fletcher", "x": 500, "z": -900, "headingDeg": 45, "throttle": 0.0 }
+      ],
+      "aircraft": []
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        { "ship": "ijn_kongo", "x": 900, "z": 700, "headingDeg": 200, "throttle": 0.0 },
+        { "ship": "rms_bismarck", "x": -500, "z": 1600, "headingDeg": 340, "throttle": 0.0 }
+      ],
+      "aircraft": []
+    }
+  ]
+}

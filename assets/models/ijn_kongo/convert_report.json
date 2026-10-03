@@ -1,0 +1,76 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_battlecruiser_kongo.grp",
+ "entry": "battlecruiser_kongo",
+ "bbox_wt": [
+  [
+   -111.57093811035156,
+   -9.03814697265625,
+   -17.99108123779297
+  ],
+  [
+   110.86566162109375,
+   40.1431884765625,
+   17.99108123779297
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -17.99108123779297,
+   -9.03814697265625,
+   -111.57093811035156
+  ],
+  [
+   17.99108123779297,
+   40.1431884765625,
+   110.86566162109375
+  ]
+ ],
+ "nodes": 464,
+ "skeleton_nodes": 1171,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 430,
+   "tris": 501522,
+   "bytes": 26790176
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 343,
+   "tris": 224778,
+   "bytes": 12659272
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 154,
+   "tris": 12567,
+   "bytes": 1013120
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 26,
+   "tris": 2750,
+   "bytes": 210864
+  }
+ ],
+ "warnings": [
+  "lod0 gvd11 vertices: gvd[11]: unsupported vDecl ['0x60000', '0x3', '0x1', '0xa0000']",
+  "lod1 gvd8 vertices: gvd[8]: unsupported vDecl ['0x60000', '0x3', '0x1', '0xa0000']",
+  "lod1 rigid aircraft_01 elem dropped: 69/762 indices out of range",
+  "lod2 rigid main_caliber_gun_07 elem dropped: 42/96 indices out of range",
+  "lod2 gvd5 vertices: gvd[5]: unsupported vDecl ['0x60000', '0x3', '0x1', '0xa0000']",
+  "lod3 rigid superstructure elem dropped: 6/12 indices out of range",
+  "lod3 gvd2 vertices: gvd[2]: unsupported vDecl ['0x60000', '0x3', '0x1', '0xa0000']",
+  "lod3 rigid aircraft_01 elem dropped: 12/72 indices out of range",
+  "lod3 rigid aircraft_01 elem dropped: 27/27 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_gearing",
+ "wt_unit_id": "us_destroyer_gearing",
+ "source_grp": "usa_destroyer_gearing.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 310912
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 123525
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 5137
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 281
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -7.305851936340332,
+  -6.048088550567627,
+  -61.68138885498047
+ ],
+ "bbox_nt_max": [
+  7.1600518226623535,
+  27.82413673400879,
+  60.16282272338867
+ ],
+ "converted": true
+}

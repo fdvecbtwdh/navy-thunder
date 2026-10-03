@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_colorado",
+ "wt_unit_id": "us_battleship_colorado_class_colorado",
+ "source_grp": "usa_battleship_colorado_class_colorado.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 461568
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 206016
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 11656
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 986
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -16.80559539794922,
+  -9.767772674560547,
+  -97.35643005371094
+ ],
+ "bbox_nt_max": [
+  16.82741928100586,
+  39.53256607055664,
+  95.37739562988281
+ ],
+ "converted": true
+}

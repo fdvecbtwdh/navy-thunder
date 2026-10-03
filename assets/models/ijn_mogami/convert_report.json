@@ -1,0 +1,70 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_cruiser_mogami.grp",
+ "entry": "cruiser_mogami",
+ "bbox_wt": [
+  [
+   -101.91287231445312,
+   -6.103288650512695,
+   -17.17976188659668
+  ],
+  [
+   101.86434173583984,
+   37.70161056518555,
+   17.179779052734375
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -17.179779052734375,
+   -6.103288650512695,
+   -101.91287231445312
+  ],
+  [
+   17.17976188659668,
+   37.70161056518555,
+   101.86434173583984
+  ]
+ ],
+ "nodes": 197,
+ "skeleton_nodes": 442,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 168,
+   "tris": 465087,
+   "bytes": 23304260
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 162,
+   "tris": 209450,
+   "bytes": 11210356
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 32,
+   "tris": 6622,
+   "bytes": 438088
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 19,
+   "tris": 1019,
+   "bytes": 100076
+  }
+ ],
+ "warnings": [
+  "lod1 rigid ex_decor_l_10 elem dropped: 54/72 indices out of range",
+  "lod2 rigid main_caliber_turret_04 elem dropped: 42/108 indices out of range",
+  "lod2 rigid flag elem dropped: 84/180 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

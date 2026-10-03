@@ -1,0 +1,41 @@
+{
+ "ship_id": "ijn_fubuki",
+ "wt_unit_id": "jp_destroyer_fubuki",
+ "source_grp": "jap_destroyer_fubuki.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 267751
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 122330
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 9203
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 1830
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -5.378530979156494,
+  -3.9587278366088867,
+  -59.4208984375
+ ],
+ "bbox_nt_max": [
+  5.658219337463379,
+  23.91194725036621,
+  59.16059875488281
+ ],
+ "converted": true
+}

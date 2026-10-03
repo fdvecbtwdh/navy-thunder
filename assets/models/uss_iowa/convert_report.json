@@ -1,0 +1,74 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_battleship_iowa_class_iowa.grp",
+ "entry": "battleship_iowa_class_iowa",
+ "bbox_wt": [
+  [
+   -133.102294921875,
+   -11.054421424865723,
+   -17.000879287719727
+  ],
+  [
+   138.1748046875,
+   46.437538146972656,
+   17.00047492980957
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -17.00047492980957,
+   -11.054421424865723,
+   -133.102294921875
+  ],
+  [
+   17.000879287719727,
+   46.437538146972656,
+   138.1748046875
+  ]
+ ],
+ "nodes": 598,
+ "skeleton_nodes": 1628,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 515,
+   "tris": 453660,
+   "bytes": 25338452
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 515,
+   "tris": 182738,
+   "bytes": 11374800
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 123,
+   "tris": 7719,
+   "bytes": 643224
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 15,
+   "tris": 759,
+   "bytes": 87008
+  }
+ ],
+ "warnings": [
+  "lod0 rigid ex_decor_l_09 elem dropped: 66/993 indices out of range",
+  "lod1 rigid aa_turret_58 elem dropped: 24/24 indices out of range",
+  "lod1 rigid turret_39 elem dropped: 12/225 indices out of range",
+  "lod2 rigid fire_director_08 elem dropped: 24/48 indices out of range",
+  "lod2 rigid flag elem dropped: 12/12 indices out of range",
+  "lod2 rigid aircraft_01 elem dropped: 48/78 indices out of range",
+  "lod3 rigid superstructure_01 elem dropped: 36/126 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

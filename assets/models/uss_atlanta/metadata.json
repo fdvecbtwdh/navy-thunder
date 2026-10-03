@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_atlanta",
+ "wt_unit_id": "us_cruiser_atlanta_class_atlanta",
+ "source_grp": "usa_cruiser_atlanta_class_atlanta.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 298479
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 129103
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 7229
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 735
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -8.197781562805176,
+  -7.166750431060791,
+  -83.59361267089844
+ ],
+ "bbox_nt_max": [
+  8.197781562805176,
+  38.13188171386719,
+  82.60530853271484
+ ],
+ "converted": true
+}

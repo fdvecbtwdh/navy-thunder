@@ -1,0 +1,41 @@
+{
+ "ship_id": "ijn_kagero",
+ "wt_unit_id": "jp_destroyer_kagero",
+ "source_grp": "jap_destroyer_kagero.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 281831
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 140159
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 10596
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 964
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -5.642188549041748,
+  -4.470309734344482,
+  -58.30453872680664
+ ],
+ "bbox_nt_max": [
+  5.6421895027160645,
+  23.37316131591797,
+  60.4560432434082
+ ],
+ "converted": true
+}

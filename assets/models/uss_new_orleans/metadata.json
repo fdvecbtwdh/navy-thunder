@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_new_orleans",
+ "wt_unit_id": "us_cruiser_new_orleans_class",
+ "source_grp": "usa_cruiser_new_orleans_class.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 395504
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 162164
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 7538
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 785
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -10.72021770477295,
+  -7.232594966888428,
+  -88.83248901367188
+ ],
+ "bbox_nt_max": [
+  12.49183464050293,
+  36.792198181152344,
+  90.70320892333984
+ ],
+ "converted": true
+}

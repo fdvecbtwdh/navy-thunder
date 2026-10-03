@@ -1,0 +1,74 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_cruiser_brooklyn_class_brooklyn.grp",
+ "entry": "cruiser_brooklyn_class_brooklyn",
+ "bbox_wt": [
+  [
+   -96.37322235107422,
+   -6.519294738769531,
+   -9.878419876098633
+  ],
+  [
+   92.74065399169922,
+   41.69308090209961,
+   9.878419876098633
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -9.878419876098633,
+   -6.519294738769531,
+   -96.37322235107422
+  ],
+  [
+   9.878419876098633,
+   41.69308090209961,
+   92.74065399169922
+  ]
+ ],
+ "nodes": 188,
+ "skeleton_nodes": 505,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 143,
+   "tris": 305963,
+   "bytes": 15953448
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 143,
+   "tris": 134322,
+   "bytes": 7440016
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 30,
+   "tris": 7181,
+   "bytes": 501496
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 7,
+   "tris": 779,
+   "bytes": 64948
+  }
+ ],
+ "warnings": [
+  "lod0 rigid catapult_mount_01 elem dropped: 60/2160 indices out of range",
+  "lod0 rigid catapult_mount_01 elem dropped: 60/312 indices out of range",
+  "lod1 rigid catapult_mount_01 elem dropped: 60/312 indices out of range",
+  "lod2 rigid superstructure_bottom elem dropped: 12/24 indices out of range",
+  "lod2 rigid superstructure elem dropped: 18/18 indices out of range",
+  "lod3 rigid superstructure elem dropped: 6/60 indices out of range",
+  "lod3 rigid superstructure elem dropped: 66/66 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

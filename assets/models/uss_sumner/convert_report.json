@@ -1,0 +1,80 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_destroyer_sumner.grp",
+ "entry": "destroyer_sumner",
+ "bbox_wt": [
+  [
+   -57.53555679321289,
+   -5.298419952392578,
+   -6.3183393478393555
+  ],
+  [
+   57.39189147949219,
+   28.101154327392578,
+   6.276123046875
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -6.276123046875,
+   -5.298419952392578,
+   -57.53555679321289
+  ],
+  [
+   6.3183393478393555,
+   28.101154327392578,
+   57.39189147949219
+  ]
+ ],
+ "nodes": 189,
+ "skeleton_nodes": 518,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 160,
+   "tris": 294382,
+   "bytes": 15360460
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 24,
+   "tris": 149449,
+   "bytes": 8203180
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 10,
+   "tris": 3475,
+   "bytes": 248472
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 3,
+   "tris": 162,
+   "bytes": 21144
+  }
+ ],
+ "warnings": [
+  "lod0 rigid aa_gun_09 elem dropped: 6/6 indices out of range",
+  "lod0 rigid aa_gun_08 elem dropped: 6/6 indices out of range",
+  "lod0 rigid aa_gun_10 elem dropped: 6/6 indices out of range",
+  "lod0 rigid turret_08 elem dropped: 60/444 indices out of range",
+  "lod0 rigid auxiliary_caliber_gun_03 elem dropped: 12/12 indices out of range",
+  "lod1 rigid @root elem dropped: 18/84 indices out of range",
+  "lod1 rigid auxiliary_caliber_gun_03 elem dropped: 12/12 indices out of range",
+  "lod2 rigid main_caliber_gun_03 elem dropped: 42/42 indices out of range",
+  "lod2 rigid @root elem dropped: 30/72 indices out of range",
+  "lod2 rigid flag elem dropped: 12/12 indices out of range",
+  "lod3 rigid @root elem dropped: 12/72 indices out of range",
+  "lod3 rigid auxiliary_caliber_turret_02 elem dropped: 6/6 indices out of range",
+  "lod3 rigid auxiliary_caliber_turret_01 elem dropped: 6/6 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

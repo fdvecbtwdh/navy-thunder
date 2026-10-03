@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_baltimore",
+ "wt_unit_id": "us_cruiser_baltimore_class",
+ "source_grp": "usa_cruiser_baltimore_class.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 427789
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 175744
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 8389
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 801
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -13.301552772521973,
+  -7.767027854919434,
+  -104.62734985351562
+ ],
+ "bbox_nt_max": [
+  13.302519798278809,
+  36.56853103637695,
+  103.36273193359375
+ ],
+ "converted": true
+}

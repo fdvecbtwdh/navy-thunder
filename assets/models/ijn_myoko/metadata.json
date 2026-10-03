@@ -1,0 +1,41 @@
+{
+ "ship_id": "ijn_myoko",
+ "wt_unit_id": "jp_cruiser_myoko",
+ "source_grp": "jap_cruiser_myoko.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 387385
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 202947
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 4581
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 583
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -17.777864456176758,
+  -7.011521339416504,
+  -105.29096984863281
+ ],
+ "bbox_nt_max": [
+  17.782201766967773,
+  35.245296478271484,
+  102.47299194335938
+ ],
+ "converted": true
+}

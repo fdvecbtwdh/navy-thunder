@@ -1,0 +1,41 @@
+{
+ "ship_id": "ijn_nagato",
+ "wt_unit_id": "jp_battleship_nagato",
+ "source_grp": "jap_battleship_nagato.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 456530
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 181560
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 11921
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 767
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -17.297191619873047,
+  -9.487391471862793,
+  -116.74812316894531
+ ],
+ "bbox_nt_max": [
+  17.29719352722168,
+  43.290252685546875,
+  112.58390045166016
+ ],
+ "converted": true
+}

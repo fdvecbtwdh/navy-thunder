@@ -1,0 +1,71 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_battleship_nagato.grp",
+ "entry": "battleship_nagato",
+ "bbox_wt": [
+  [
+   -116.74812316894531,
+   -9.487391471862793,
+   -17.29719352722168
+  ],
+  [
+   112.58390045166016,
+   43.290252685546875,
+   17.297191619873047
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -17.297191619873047,
+   -9.487391471862793,
+   -116.74812316894531
+  ],
+  [
+   17.29719352722168,
+   43.290252685546875,
+   112.58390045166016
+  ]
+ ],
+ "nodes": 489,
+ "skeleton_nodes": 1348,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 442,
+   "tris": 456530,
+   "bytes": 24625744
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 343,
+   "tris": 181560,
+   "bytes": 11023064
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 138,
+   "tris": 11921,
+   "bytes": 974480
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 6,
+   "tris": 767,
+   "bytes": 68336
+  }
+ ],
+ "warnings": [
+  "lod0 rigid aa_gun_46 elem dropped: 6/24 indices out of range",
+  "lod0 rigid aa_gun_60 elem dropped: 24/24 indices out of range",
+  "lod2 rigid flag elem dropped: 36/144 indices out of range",
+  "lod2 rigid antenna_target_location_01 elem dropped: 24/24 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

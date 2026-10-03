@@ -1,0 +1,71 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_cruiser_northampton_class.grp",
+ "entry": "cruiser_northampton_class",
+ "bbox_wt": [
+  [
+   -93.0394515991211,
+   -6.732131481170654,
+   -13.161666870117188
+  ],
+  [
+   91.1527099609375,
+   45.74665451049805,
+   13.152889251708984
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -13.152889251708984,
+   -6.732131481170654,
+   -93.0394515991211
+  ],
+  [
+   13.161666870117188,
+   45.74665451049805,
+   91.1527099609375
+  ]
+ ],
+ "nodes": 202,
+ "skeleton_nodes": 558,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 168,
+   "tris": 337897,
+   "bytes": 17909148
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 168,
+   "tris": 150806,
+   "bytes": 8464360
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 43,
+   "tris": 7088,
+   "bytes": 517672
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 7,
+   "tris": 789,
+   "bytes": 67016
+  }
+ ],
+ "warnings": [
+  "lod0 rigid catapult_mount_02 elem dropped: 69/2238 indices out of range",
+  "lod1 rigid ex_decor_01 elem dropped: 48/285 indices out of range",
+  "lod2 rigid catapult_mount_02 elem dropped: 42/54 indices out of range",
+  "lod3 rigid ex_armor_r_04 elem dropped: 36/36 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

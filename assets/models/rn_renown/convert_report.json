@@ -1,0 +1,72 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\uk_battlecruiser_renown.grp",
+ "entry": "battlecruiser_renown",
+ "bbox_wt": [
+  [
+   -124.07062530517578,
+   -8.666269302368164,
+   -15.339641571044922
+  ],
+  [
+   121.09896087646484,
+   47.27463150024414,
+   15.339646339416504
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -15.339646339416504,
+   -8.666269302368164,
+   -124.07062530517578
+  ],
+  [
+   15.339641571044922,
+   47.27463150024414,
+   121.09896087646484
+  ]
+ ],
+ "nodes": 404,
+ "skeleton_nodes": 1046,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 200.0,
+   "file": "model_lod0.glb",
+   "rigids": 376,
+   "tris": 484646,
+   "bytes": 26581064
+  },
+  {
+   "lod": 1,
+   "range_m": 600.0,
+   "file": "model_lod1.glb",
+   "rigids": 376,
+   "tris": 224192,
+   "bytes": 13099488
+  },
+  {
+   "lod": 2,
+   "range_m": 2000.0,
+   "file": "model_lod2.glb",
+   "rigids": 48,
+   "tris": 7846,
+   "bytes": 535780
+  },
+  {
+   "lod": 3,
+   "range_m": 13000.0,
+   "file": "model_lod3.glb",
+   "rigids": 15,
+   "tris": 782,
+   "bytes": 90776
+  }
+ ],
+ "warnings": [
+  "lod2 rigid flag elem dropped: 72/144 indices out of range",
+  "lod3 rigid main_caliber_turret_01 elem dropped: 9/9 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 9/9 indices out of range",
+  "lod3 rigid main_caliber_turret_02 elem dropped: 12/24 indices out of range",
+  "lod3 rigid main_caliber_turret_02 elem dropped: 9/9 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

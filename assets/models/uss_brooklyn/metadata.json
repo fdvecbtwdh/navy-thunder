@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_brooklyn",
+ "wt_unit_id": "us_cruiser_brooklyn_class_brooklyn",
+ "source_grp": "usa_cruiser_brooklyn_class_brooklyn.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 150.0,
+   "tris": 305963
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 400.0,
+   "tris": 134322
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1300.0,
+   "tris": 7181
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 11000.0,
+   "tris": 779
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -9.878419876098633,
+  -6.519294738769531,
+  -96.37322235107422
+ ],
+ "bbox_nt_max": [
+  9.878419876098633,
+  41.69308090209961,
+  92.74065399169922
+ ],
+ "converted": true
+}

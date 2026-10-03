@@ -1,0 +1,75 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\jap_destroyer_kagero.grp",
+ "entry": "destroyer_kagero",
+ "bbox_wt": [
+  [
+   -58.30453872680664,
+   -4.470309734344482,
+   -5.6421895027160645
+  ],
+  [
+   60.4560432434082,
+   23.37316131591797,
+   5.642188549041748
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -5.642188549041748,
+   -4.470309734344482,
+   -58.30453872680664
+  ],
+  [
+   5.6421895027160645,
+   23.37316131591797,
+   60.4560432434082
+  ]
+ ],
+ "nodes": 109,
+ "skeleton_nodes": 264,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 81,
+   "tris": 281831,
+   "bytes": 13931468
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 81,
+   "tris": 140159,
+   "bytes": 7388248
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 49,
+   "tris": 10596,
+   "bytes": 665944
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 7,
+   "tris": 964,
+   "bytes": 75060
+  }
+ ],
+ "warnings": [
+  "lod0 rigid aa_gun_05 elem dropped: 6/24 indices out of range",
+  "lod0 rigid aa_gun_02 elem dropped: 24/24 indices out of range",
+  "lod0 rigid gun_barrel_08 elem dropped: 54/72 indices out of range",
+  "lod1 rigid gun_barrel_05 elem dropped: 54/72 indices out of range",
+  "lod2 rigid superstructure_top elem dropped: 27/60 indices out of range",
+  "lod2 rigid ex_decor_l_04 elem dropped: 48/60 indices out of range",
+  "lod3 rigid main_caliber_turret_03 elem dropped: 18/24 indices out of range",
+  "lod3 rigid main_caliber_turret_02 elem dropped: 24/24 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

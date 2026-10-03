@@ -55,6 +55,14 @@ headless 可跑完整 AI 对战并输出战报。
 
 数据集:32 艘舰(美/日/英/德;24 艘 WT 提取+模板混成、6 艘史实手工)、36 弹种、Type 93 鱼雷、1 机型;导弹制导代码在库但未接入战斗(`MissileSystem` 无调用方)。
 
+### 真实舰船资产管线(Phase 03,2026-10-03 交付)
+
+- [x] **BIM2→glTF 转换器**(`tools/convert_bim2_gltf.py`):War Thunder 客户端 .grp → 4 级 LOD 的 .glb(输入=用户自有客户端,不分发 WT 资产);Oodle 三级降级、两种实测顶点布局、packed IB、GeomNodeTree 骨架桥接、nodeMap 挂点表
+- [x] **批量转换**(`tools/convert_fleet_models.py`):舰队 23 舰全部转换成功,`assets/models/<id>/`(metadata.json + model_lod0..3.glb + nodeMap.json)
+- [x] **Godot 消费端**:`ShipAssetRegistry`(数据驱动)+`ShipVisualFactory`+自研 `GlbLoader`+`ShipVisual` 真实模型/程序化占位双轨(缺模型必可玩);LOD 按相机距离切换
+- [x] 验收:3v3 headless 冒烟(2400s 全程零同步失败)、fallback 冒烟(空资产目录)、资产一致性测试、`scenarios/asset_visual.json` 视觉验收场景
+- [ ] 贴图管线(dxp→dds,P03-2)、击毁态 dmg 模型(P03-5)——Phase 04 尾/Phase 08
+
 ## 快速开始
 
 需要 [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)。

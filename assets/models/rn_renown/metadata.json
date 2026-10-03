@@ -1,0 +1,41 @@
+{
+ "ship_id": "rn_renown",
+ "wt_unit_id": "uk_battlecruiser_renown",
+ "source_grp": "uk_battlecruiser_renown.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 200.0,
+   "tris": 484646
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 600.0,
+   "tris": 224192
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 2000.0,
+   "tris": 7846
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 13000.0,
+   "tris": 782
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -15.339646339416504,
+  -8.666269302368164,
+  -124.07062530517578
+ ],
+ "bbox_nt_max": [
+  15.339641571044922,
+  47.27463150024414,
+  121.09896087646484
+ ],
+ "converted": true
+}

@@ -1,0 +1,75 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_destroyer_gearing.grp",
+ "entry": "destroyer_gearing",
+ "bbox_wt": [
+  [
+   -61.68138885498047,
+   -6.048088550567627,
+   -7.1600518226623535
+  ],
+  [
+   60.16282272338867,
+   27.82413673400879,
+   7.305851936340332
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -7.305851936340332,
+   -6.048088550567627,
+   -61.68138885498047
+  ],
+  [
+   7.1600518226623535,
+   27.82413673400879,
+   60.16282272338867
+  ]
+ ],
+ "nodes": 202,
+ "skeleton_nodes": 578,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 140.0,
+   "file": "model_lod0.glb",
+   "rigids": 169,
+   "tris": 310912,
+   "bytes": 15856780
+  },
+  {
+   "lod": 1,
+   "range_m": 350.0,
+   "file": "model_lod1.glb",
+   "rigids": 168,
+   "tris": 123525,
+   "bytes": 6592472
+  },
+  {
+   "lod": 2,
+   "range_m": 1000.0,
+   "file": "model_lod2.glb",
+   "rigids": 41,
+   "tris": 5137,
+   "bytes": 382484
+  },
+  {
+   "lod": 3,
+   "range_m": 10000.0,
+   "file": "model_lod3.glb",
+   "rigids": 6,
+   "tris": 281,
+   "bytes": 26316
+  }
+ ],
+ "warnings": [
+  "lod0 rigid ex_decor_01 elem dropped: 66/1860 indices out of range",
+  "lod0 rigid superstructure elem dropped: 54/660 indices out of range",
+  "lod1 rigid superstructure elem dropped: 54/660 indices out of range",
+  "lod2 rigid antenna_target_tagging_01 elem dropped: 72/120 indices out of range",
+  "lod2 rigid aa_turret_05 elem dropped: 30/54 indices out of range",
+  "lod3 rigid superstructure elem dropped: 12/36 indices out of range",
+  "lod3 rigid superstructure elem dropped: 24/24 indices out of range",
+  "lod3 rigid tt_01 elem dropped: 24/24 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

@@ -1,0 +1,73 @@
+{
+ "source": "D:\\WarThunder\\content\\base\\res\\ships\\usa_cruiser_new_orleans_class.grp",
+ "entry": "cruiser_new_orleans_class",
+ "bbox_wt": [
+  [
+   -88.83248901367188,
+   -7.232594966888428,
+   -12.49183464050293
+  ],
+  [
+   90.70320892333984,
+   36.792198181152344,
+   10.72021770477295
+  ]
+ ],
+ "bbox_nt": [
+  [
+   -10.72021770477295,
+   -7.232594966888428,
+   -88.83248901367188
+  ],
+  [
+   12.49183464050293,
+   36.792198181152344,
+   90.70320892333984
+  ]
+ ],
+ "nodes": 287,
+ "skeleton_nodes": 812,
+ "lods": [
+  {
+   "lod": 0,
+   "range_m": 150.0,
+   "file": "model_lod0.glb",
+   "rigids": 256,
+   "tris": 395504,
+   "bytes": 21329532
+  },
+  {
+   "lod": 1,
+   "range_m": 400.0,
+   "file": "model_lod1.glb",
+   "rigids": 250,
+   "tris": 162164,
+   "bytes": 9214096
+  },
+  {
+   "lod": 2,
+   "range_m": 1300.0,
+   "file": "model_lod2.glb",
+   "rigids": 60,
+   "tris": 7538,
+   "bytes": 582356
+  },
+  {
+   "lod": 3,
+   "range_m": 11000.0,
+   "file": "model_lod3.glb",
+   "rigids": 5,
+   "tris": 785,
+   "bytes": 70328
+  }
+ ],
+ "warnings": [
+  "lod0 rigid ex_armor_r_04 elem dropped: 12/60 indices out of range",
+  "lod0 rigid ex_armor_l_06 elem dropped: 93/1806 indices out of range",
+  "lod0 rigid ex_armor_l_08 elem dropped: 24/24 indices out of range",
+  "lod1 rigid main_caliber_turret_01 elem dropped: 48/240 indices out of range",
+  "lod2 rigid aircraft_01 elem dropped: 42/627 indices out of range",
+  "lod3 rigid superstructure_front elem dropped: 24/24 indices out of range"
+ ],
+ "node_map": "nodeMap.json"
+}

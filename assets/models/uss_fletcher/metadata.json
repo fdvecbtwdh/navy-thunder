@@ -1,0 +1,41 @@
+{
+ "ship_id": "uss_fletcher",
+ "wt_unit_id": "us_destroyer_fletcher",
+ "source_grp": "usa_destroyer_fletcher.grp",
+ "coordinate": "NT_STANDARD",
+ "model": "model_lod0.glb",
+ "lods": {
+  "0": {
+   "file": "model_lod0.glb",
+   "range_m": 140.0,
+   "tris": 263773
+  },
+  "1": {
+   "file": "model_lod1.glb",
+   "range_m": 350.0,
+   "tris": 116379
+  },
+  "2": {
+   "file": "model_lod2.glb",
+   "range_m": 1000.0,
+   "tris": 4380
+  },
+  "3": {
+   "file": "model_lod3.glb",
+   "range_m": 10000.0,
+   "tris": 436
+  }
+ },
+ "node_map": "nodeMap.json",
+ "bbox_nt_min": [
+  -6.569769382476807,
+  -4.942333221435547,
+  -56.21052932739258
+ ],
+ "bbox_nt_max": [
+  6.569769382476807,
+  26.973234176635742,
+  56.25954055786133
+ ],
+ "converted": true
+}
