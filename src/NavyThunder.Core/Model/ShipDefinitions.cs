@@ -52,12 +52,15 @@ public enum PartKind
     Hoist,
     TorpedoTube,
     ReadyRack,
+    Funnel,
+    AntiTorpedo,
 }
 
 /// <summary>
 /// One damageable ship part (compartment or module). Parts are axis-aligned boxes in
-/// ship-local space: X = longitudinal (bow +), Y = vertical (waterline 0), Z = lateral.
-/// Crew convert damage via the official 125 HP/crew anchor (wtReference crew_hp_per_member).
+/// ship-local space: Z = longitudinal (bow +), Y = vertical (waterline 0), X = lateral
+/// (starboard +; PROJECT_DESIGN §8.2). Crew convert damage via the official 125 HP/crew
+/// anchor (wtReference crew_hp_per_member).
 /// </summary>
 public sealed record ShipPartDefinition
 {
@@ -88,6 +91,13 @@ public sealed record ShipPartDefinition
 
     /// <summary>Turret group id for turrets/hoists/ready racks (first-stage ammo bookkeeping).</summary>
     public string? TurretGroup { get; init; }
+
+    /// <summary>
+    /// Fraction (0..1) of hydroShock damage this part absorbs for the interior behind it
+    /// (Phase 04 TDS, MDR-0012: geometry + compartment absorption layer; NEVER applies to
+    /// underwater AP — that travels on the kinetic channel). AntiTorpedo parts only.
+    /// </summary>
+    public double HydroShockAbsorptionPct { get; init; }
 }
 
 public sealed record ShipDefinition

@@ -38,6 +38,10 @@ public sealed class DamageBridgeSystem : ISimulationSystem
     /// <summary>Optional fire system: combat damage rolls ignition through it (MDR-0010).</summary>
     public FireSystem? Fire { get; set; }
 
+    /// <summary>Optional flooding system: kinetic holes of the largest caliber create
+    /// small-class breaches (W5 — kinetic flooding holes only from the biggest guns).</summary>
+    public FloodingSystem? Flooding { get; set; }
+
     /// <summary>Shell-category ignition multipliers (HE families burn, caps less so).</summary>
     public double IgnitionMultiplier(ShellCategory category) => category switch
     {
@@ -99,6 +103,7 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         Vec3 dirLocal = hull.ToLocalDirection(dir);
         double totalDamage = KineticDamagePerCbrtKg * Math.Cbrt(shell.MassKg);
         var traversed = TraceInterior(ship, origin, dirLocal, depth);
+        bool largestCaliber = IsLargestCaliber(ship, impact.ShellId);
 
         // Ignition rolls on the flammable parts of every SECTION the shell line passes
         // through, wrecked or not (battles end with burning wrecks). Part boxes tile only
@@ -126,6 +131,7 @@ public sealed class DamageBridgeSystem : ISimulationSystem
         double lengthSum = traversed.Sum(t => t.PathLength);
         foreach (var (part, pathLength) in traversed)
         {
+            bool wasAlive = !part.Destroyed;
             _registry.Apply(new DamageEvent
             {
                 Channel = DamageChannel.Kinetic,
@@ -136,7 +142,34 @@ public sealed class DamageBridgeSystem : ISimulationSystem
                 Tick = world.TickIndex,
                 Time = world.Time,
             });
+
+            // W5 kinetic breach: only the target's largest caliber opens flooding holes,
+            // and only when the trace kills a below-waterline compartment.
+            if (largestCaliber && wasAlive && part.Destroyed && part.Definition.YMinM < 0)
+            {
+                Flooding?.CreateBreach(world, ship.TargetId, impact.Position, 0.5,
+                    FloodingSystem.BreachClass.ShellSmall);
+            }
         }
+    }
+
+    private bool IsLargestCaliber(Ship ship, string shellId)
+    {
+        if (!_shells.TryGetValue(shellId, out var shell))
+        {
+            return false;
+        }
+
+        double largest = 0;
+        foreach (var gun in ship.Definition.Guns)
+        {
+            if (_shells.TryGetValue(gun.ShellId, out var primary))
+            {
+                largest = Math.Max(largest, primary.CaliberMm);
+            }
+        }
+
+        return shell.CaliberMm >= largest && largest > 0;
     }
 
     /// <summary>

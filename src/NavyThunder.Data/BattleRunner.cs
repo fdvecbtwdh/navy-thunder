@@ -111,6 +111,7 @@ public sealed class BattleRunner
         Bridge = new DamageBridgeSystem(Registry, repo.Shells);
         Fire = new FireSystem(repo.ToFireModel(), Registry);
         Bridge.Fire = Fire; // combat damage rolls ignition through the fire system (MDR-0010)
+        Bridge.Flooding = Flooding; // largest-caliber kinetic holes -> small breaches (W5)
         Flooding = new FloodingSystem(Registry, Fire);
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);

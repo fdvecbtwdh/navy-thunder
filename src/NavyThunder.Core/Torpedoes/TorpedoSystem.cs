@@ -171,7 +171,8 @@ public sealed class TorpedoSystem : ISimulationSystem
                     BreachRadiusM = patchRadius,
                 });
 
-                _flooding?.CreateBreach(world, t.TargetId, hit.Point, patchRadius);
+                _flooding?.CreateBreach(world, t.TargetId, hit.Point, patchRadius,
+                    FloodingSystem.BreachClass.TorpedoLarge);
                 _registry.Apply(new DamageEvent
                 {
                     Channel = DamageChannel.HydroShock,

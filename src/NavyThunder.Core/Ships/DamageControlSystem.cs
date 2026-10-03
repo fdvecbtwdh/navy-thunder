@@ -38,7 +38,8 @@ public sealed class DamageControlSystem : ISimulationSystem
     /// <summary>Active manual flow (Manual mode only).</summary>
     public DcFlow? ManualFlow { get; set; }
 
-    /// <summary>Patch time per breach (s) — WT Leviathans: 5-20 s for shell holes.</summary>
+    /// <summary>Patch time fallback (s) for legacy callers; per-class tiers live in
+    /// FloodingSystem.ClassSpec (W5 5-20 s: shell holes fast, torpedo holes slow).</summary>
     public double BreachPatchSeconds { get; init; } = 12.0;
 
     public double ExtinguishSeconds { get; init; } = 10.0;
@@ -106,7 +107,8 @@ public sealed class DamageControlSystem : ISimulationSystem
             }
 
             part.RepairWork += work;
-            if (part.RepairWork >= BreachPatchSeconds)
+            double needed = FloodingSystem.ClassSpec(part.BreachClass ?? FloodingSystem.BreachClass.BlastMedium).PatchSeconds;
+            if (part.RepairWork >= needed)
             {
                 part.Breached = false;
                 part.RepairWork = 0;

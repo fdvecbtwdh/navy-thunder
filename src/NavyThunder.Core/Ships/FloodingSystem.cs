@@ -11,10 +11,29 @@ namespace NavyThunder.Core.Ships;
 /// Flooding, pumps, buoyancy and list (MDR-0008). Only breaches below the waterline
 /// admit water; pumps counter-flow; flooded compartments kill their crew, lose their
 /// buoyancy share and drown fires; lateral imbalance produces list.
+/// Phase 04 (MDR-0008 addendum): breaches carry a class — shell kinetic holes are
+/// small and patch fast, blast holes medium, torpedo holes large, slow to patch and
+/// flooding hardest (W5 patch-time tiers 5-20 s).
 /// </summary>
 public sealed class FloodingSystem : ISimulationSystem
 {
     public const string BreachFlowCalibrationId = "flooding_rate_per_m_breach";
+
+    public enum BreachClass
+    {
+        ShellSmall,  // kinetic penetration of the largest caliber (W5: kinetic holes only there)
+        BlastMedium, // explosion-caused destruction / ready-rack hits
+        TorpedoLarge,
+    }
+
+    /// <summary>Per-class inflow multiplier and DC patch time (s, W5 5-20 s tiers).</summary>
+    public static (double FlowMultiplier, double PatchSeconds) ClassSpec(BreachClass c) => c switch
+    {
+        BreachClass.ShellSmall => (1.0, 5.0),
+        BreachClass.BlastMedium => (1.5, 12.0),
+        BreachClass.TorpedoLarge => (3.0, 20.0),
+        _ => (1.0, 12.0),
+    };
 
     private readonly DamageRegistry _registry;
     private readonly FireSystem? _fire;
@@ -41,7 +60,8 @@ public sealed class FloodingSystem : ISimulationSystem
     }
 
     /// <summary>Records a breach on the part containing the point (below waterline only).</summary>
-    public void CreateBreach(Ship ship, Vec3 localPoint, double radiusM)
+    public void CreateBreach(Ship ship, Vec3 localPoint, double radiusM,
+        BreachClass breachClass = BreachClass.BlastMedium)
     {
         var part = ship.PartAt(localPoint)
                    ?? ship.Parts.Values
@@ -54,18 +74,20 @@ public sealed class FloodingSystem : ISimulationSystem
         }
 
         part.Breached = true;
+        part.BreachClass = breachClass;
         part.WaterLevel = Math.Min(0.9, part.WaterLevel + radiusM * 0.03); // initial ingress by breach size
     }
 
     /// <summary>Target-id based entry used by torpedoes and the damage bridge.
     /// Accepts WORLD coordinates and converts through the hull's ShipTransform
     /// (Phase 01: rotation-aware — a plain position subtraction is heading-0 only).</summary>
-    public void CreateBreach(SimulationWorld world, string targetId, Vec3 worldPoint, double radiusM)
+    public void CreateBreach(SimulationWorld world, string targetId, Vec3 worldPoint, double radiusM,
+        BreachClass breachClass = BreachClass.BlastMedium)
     {
         var ship = Ships.FirstOrDefault(s => s.TargetId == targetId);
         if (ship is not null)
         {
-            CreateBreach(ship, ship.WorldTransform.ToLocal(worldPoint), radiusM);
+            CreateBreach(ship, ship.WorldTransform.ToLocal(worldPoint), radiusM, breachClass);
         }
     }
 
@@ -85,10 +107,11 @@ public sealed class FloodingSystem : ISimulationSystem
                 if (part.Definition.Kind is PartKind.Compartment or PartKind.Magazine or PartKind.Boiler
                     or PartKind.Engine or PartKind.Turbine or PartKind.Steering or PartKind.FuelTank)
                 {
-                    // Inflow from below-waterline breaches.
+                    // Inflow from below-waterline breaches, scaled by the breach class.
                     if (part.Breached && !part.Flooded && part.Definition.YMinM < 0)
                     {
-                        part.WaterLevel = Math.Min(1.0, part.WaterLevel + FlowPerBreathMeter * deltaTime);
+                        double flowMult = ClassSpec(part.BreachClass ?? BreachClass.BlastMedium).FlowMultiplier;
+                        part.WaterLevel = Math.Min(1.0, part.WaterLevel + FlowPerBreathMeter * flowMult * deltaTime);
                     }
 
                     // Pumps drain flooded compartments.

@@ -21,6 +21,7 @@ public sealed class ShipPartState
     public double CrewDeadFraction { get; internal set; }
     public double WaterLevel { get; internal set; }   // 0..1, compartments with breaches
     public bool Breached { get; internal set; }
+    public FloodingSystem.BreachClass? BreachClass { get; internal set; }
     public double RepairWork { get; internal set; }   // accumulated damage-control seconds
     public bool MagazineExploded { get; internal set; }
 
@@ -211,10 +212,60 @@ public sealed class Ship : Entity, IDamageSink
                 ApplyRadial(e);
                 break;
 
+            case DamageChannel.HydroShock when e.Radius > 0:
+                ApplyHydroShock(e);
+                break;
+
             default:
                 ApplyPoint(e, e.Position, e.Amount);
                 break;
         }
+    }
+
+    /// <summary>
+    /// Underwater blast (MDR-0012): radial interior damage filtered through live TDS
+    /// layers (Phase 04). TDS absorption is geometric: only AntiTorpedo parts that
+    /// CONTAIN the detonation point shield what is behind them; a destroyed TDS layer
+    /// protects nothing (W5 bugfix semantics). Underwater AP never reaches this path
+    /// (it travels on the kinetic channel), so TDS does not stop it.
+    /// </summary>
+    private void ApplyHydroShock(DamageEvent e)
+    {
+        double absorption = Parts.Values
+            .Where(p => p.Definition.Kind == PartKind.AntiTorpedo
+                        && !p.Destroyed
+                        && p.Definition.HydroShockAbsorptionPct > 0
+                        && p.Contains(e.Position))
+            .Select(p => Math.Clamp(p.Definition.HydroShockAbsorptionPct, 0.0, 0.95))
+            .DefaultIfEmpty(0.0)
+            .Max();
+
+        if (absorption > 0)
+        {
+            var shields = Parts.Values
+                .Where(p => p.Definition.Kind == PartKind.AntiTorpedo && !p.Destroyed
+                            && p.Definition.HydroShockAbsorptionPct > 0 && p.Contains(e.Position))
+                .ToList();
+            double shieldSum = shields.Sum(p => Math.Max(1.0, p.Definition.Hp));
+            foreach (var shield in shields)
+            {
+                double w = Math.Max(1.0, shield.Definition.Hp) / shieldSum;
+                // The layer soaks the blast: it takes the absorbed energy as HP damage.
+                DamagePart(shield, e.Amount * absorption * w, DamageChannel.HydroShock);
+            }
+        }
+
+        ApplyRadial(new DamageEvent
+        {
+            Channel = DamageChannel.HydroShock,
+            SourceId = e.SourceId,
+            TargetId = e.TargetId,
+            Position = e.Position,
+            Radius = e.Radius,
+            Amount = e.Amount * (1.0 - absorption),
+            Tick = e.Tick,
+            Time = e.Time,
+        });
     }
 
     /// <summary>Point damage: the part containing the point takes the full amount.</summary>
@@ -305,9 +356,13 @@ public sealed class Ship : Entity, IDamageSink
                 part.CrewDeadFraction = 1.0;
             }
 
-            if (part.Definition.YMinM < 0)
+            if (part.Definition.YMinM < 0 && channel != DamageChannel.Kinetic)
             {
-                part.Breached = true; // destroyed below-waterline compartment = breach (MDR-0008)
+                // Destroyed below-waterline compartment = blast-class breach (MDR-0008).
+                // Kinetic holes are classed by the damage bridge (W5: only the largest
+                // caliber punches flooding holes).
+                part.Breached = true;
+                part.BreachClass = FloodingSystem.BreachClass.BlastMedium;
             }
         }
     }
@@ -337,11 +392,13 @@ public sealed class Ship : Entity, IDamageSink
 
         if (Definition.Class.IsCapital())
         {
+            // MDR-0007 addendum (Phase 04): the official text reads THREE destroyed
+            // sections (W4); the previous 2-section code lost a section to rounding.
+            // Battle-pace effects go through section HP, not the count.
             int destroyedMid = Sections.Count(s => s.Definition.Role == HullSectionRole.Mid && s.Destroyed);
-            if (destroyedMid >= 2)
+            if (destroyedMid >= 3)
             {
                 UnsinkabilityLost = true;
-                UnsinkabilityLostTime ??= null;
             }
 
             return;
