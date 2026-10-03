@@ -117,7 +117,8 @@ public partial class TacticalMap : CanvasLayer
     {
         Layer = 4;
         AddChild(_canvas);
-        Visible = false;
+        // Verification/UX hook: start with the map open (M toggles at runtime).
+        Visible = OS.GetEnvironment("NT_FRONTEND_MAP") == "1";
     }
 
     public void Bind(BattleRunner runner)
