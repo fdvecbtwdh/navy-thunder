@@ -17,3 +17,4 @@ __pycache__/
 # Phase 03: converted WT-derived ship models stay local (LICENSE_AUDIT assumption 3:
 # converter input = user's own client). metadata/nodeMap/convert_report JSON are kept.
 assets/models/*/model_lod*.glb
+assets/models/*/preview_*.ppm
