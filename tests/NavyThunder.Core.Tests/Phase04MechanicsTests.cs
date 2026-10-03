@@ -168,4 +168,20 @@ public class Phase04MechanicsTests(ITestOutputHelper output)
         ship.CheckUnsinkability();
         Assert.True(ship.UnsinkabilityLost, "3 destroyed mid sections = unsinkability lost (W4)");
     }
+
+    [Fact]
+    public void Aa_Mounts_Come_From_Ship_Data_Not_Hardcode()
+    {
+        var repo = Repo();
+        var iowa = repo.Ships["uss_iowa"];
+        Assert.NotEmpty(iowa.AaMounts);
+        Assert.All(iowa.AaMounts, m =>
+        {
+            Assert.True(m.RangeM > 0 && m.MuzzleVelocityMs > 0 && m.Count > 0);
+            Assert.False(string.IsNullOrWhiteSpace(m.ShellId));
+        });
+        // Deterministic expansion: BattleRunner spawns exactly Count mounts per group.
+        int expected = iowa.AaMounts.Sum(m => m.Count);
+        Assert.True(expected >= 4, $"Iowa should carry a real AA battery, got {expected}");
+    }
 }

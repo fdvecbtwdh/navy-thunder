@@ -146,6 +146,19 @@ public static class DataValidator
             errors.Add($"ship '{ship.Id}': buoyancy shares sum to {buoyancy:0.#} %, expected ~100");
         }
 
+        foreach (var aa in ship.AaMounts)
+        {
+            if (aa.Count <= 0 || aa.RangeM <= 0 || aa.MuzzleVelocityMs <= 0 || aa.RoundsPerMinute <= 0)
+            {
+                errors.Add($"ship '{ship.Id}': AA mount group has invalid count/range/muzzle/rpm");
+            }
+
+            if (string.IsNullOrWhiteSpace(aa.ShellId))
+            {
+                errors.Add($"ship '{ship.Id}': AA mount ShellId is required");
+            }
+        }
+
         var turretGroups = ship.Parts.Where(p => p.TurretGroup is not null)
             .Select(p => p.TurretGroup!).ToHashSet();
         foreach (var gun in ship.Guns)

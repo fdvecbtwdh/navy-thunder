@@ -174,25 +174,31 @@ public sealed class BattleRunner
                 explosions.Targets.Add(armor);
                 _armorByTargetId[ship.TargetId] = armor;
 
-                // R1.4 (partial): hull AA battery - one VT barrage mount tracking the ship
-                // until it dies; per-turret data-driven mounts remain R1.4 completion.
-                // (spawn.Aa == false opts static test targets out of engaging aircraft)
-                var aaMount = new AAMount
-                {
-                    Id = $"{ship.TargetId}/aa",
-                    Position = Vec3.Zero, // superseded by the tracking provider
-                    PositionProvider = () => ship.WorldPosition,
-                    IsActive = () => ship.Alive,
-                    ShellId = "usn_127mm_mk31_aa_vt",
-                    RangeM = 5000,
-                    MuzzleVelocityMs = 792,
-                    RoundsPerMinute = 60,
-                    HorizontalMrad = 15,
-                    VerticalMrad = 12,
-                };
+                // Phase 04: AA mounts come from ShipDefinition.AaMounts (P04-2) —
+                // no hardcoded battery. (spawn.Aa == false opts static test targets
+                // out of engaging aircraft.)
                 if (spawn.Aa)
                 {
-                    antiAir.Mounts.Add(aaMount);
+                    int mountIdx = 0;
+                    foreach (var group in ship.Definition.AaMounts)
+                    {
+                        for (int i = 0; i < group.Count; i++)
+                        {
+                            antiAir.Mounts.Add(new AAMount
+                            {
+                                Id = $"{ship.TargetId}/aa{mountIdx++}",
+                                Position = Vec3.Zero, // superseded by the tracking provider
+                                PositionProvider = () => ship.WorldPosition,
+                                IsActive = () => ship.Alive,
+                                ShellId = group.ShellId,
+                                RangeM = group.RangeM,
+                                MuzzleVelocityMs = group.MuzzleVelocityMs,
+                                RoundsPerMinute = group.RoundsPerMinute,
+                                HorizontalMrad = group.HorizontalMrad,
+                                VerticalMrad = group.VerticalMrad,
+                            });
+                        }
+                    }
                 }
             }
         }

@@ -100,6 +100,26 @@ public sealed record ShipPartDefinition
     public double HydroShockAbsorptionPct { get; init; }
 }
 
+/// <summary>
+/// One data-driven AA battery group (Phase 04, MDR-0014): the runtime spawns one
+/// AAMount per authored entry. AA is an independent dps channel — no penetration math.
+/// </summary>
+public sealed record AaMountDefinition
+{
+    public required string ShellId { get; init; }
+
+    /// <summary>How many physical mounts this entry expands to at battle build.</summary>
+    public int Count { get; init; } = 1;
+
+    public required double RangeM { get; init; }
+    public required double MuzzleVelocityMs { get; init; }
+    public double RoundsPerMinute { get; init; } = 60;
+
+    /// <summary>Barrage dispersion (milliradians; crude on purpose, MDR-0014).</summary>
+    public double HorizontalMrad { get; init; } = 15.0;
+    public double VerticalMrad { get; init; } = 12.0;
+}
+
 public sealed record ShipDefinition
 {
     public required string Id { get; init; }
@@ -154,6 +174,9 @@ public sealed record ShipDefinition
     // ---------------- weapons (R0.1) ----------------
 
     public NavalGunDefinition[] Guns { get; init; } = [];
+
+    /// <summary>Data-driven AA battery (Phase 04): empty = the ship carries no AA mounts.</summary>
+    public AaMountDefinition[] AaMounts { get; init; } = [];
 }
 
 /// <summary>One naval gun mount: linked to its turret-group parts (reload/ammo/destruction).</summary>

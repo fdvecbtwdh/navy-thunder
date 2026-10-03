@@ -141,6 +141,51 @@ def build_guns(name, cls, deck_y, half_b, turret_group_count, barrels, shell, rp
     return guns
 
 
+AA_MOUNT_SPECS = [
+    # (cal_lo, cal_hi, range_m, muzzle_ms, rpm, h_mrad, v_mrad, mounts_per_barrels)
+    # The VT shell is shared across AA families until the AA-shell extraction lands
+    # (W3 tail); dps differences come from rpm and mount count. MDR-0014: AA is an
+    # independent dps channel — no penetration math.
+    (100, 999, 5000, 792, 60, 15, 12, 2),
+    (37, 99, 2500, 880, 120, 12, 10, 4),
+    (0, 36, 1200, 840, 250, 10, 8, 6),
+]
+
+AA_SHELL = "usn_127mm_mk31_aa_vt"
+
+CLASS_DEFAULT_AA = {
+    # ships without a WT weaponsSummary get a class-typical light battery
+    "Destroyer": [{"count": 2, "rangeM": 1200, "muzzleVelocityMs": 840, "roundsPerMinute": 250,
+                    "horizontalMrad": 10, "verticalMrad": 8, "shellId": AA_SHELL}],
+    "Cruiser": [{"count": 3, "rangeM": 2500, "muzzleVelocityMs": 880, "roundsPerMinute": 120,
+                  "horizontalMrad": 12, "verticalMrad": 10, "shellId": AA_SHELL}],
+    "Battlecruiser": [{"count": 4, "rangeM": 5000, "muzzleVelocityMs": 792, "roundsPerMinute": 60,
+                        "horizontalMrad": 15, "verticalMrad": 12, "shellId": AA_SHELL}],
+    "Battleship": [{"count": 4, "rangeM": 5000, "muzzleVelocityMs": 792, "roundsPerMinute": 60,
+                     "horizontalMrad": 15, "verticalMrad": 12, "shellId": AA_SHELL}],
+}
+
+
+def aa_mounts(summary, cls):
+    """P04-2: data-driven AA battery synthesized from the WT weaponsSummary
+    ('76x40mm; 52x20mm' -> per-caliber mount groups). No summary -> class default."""
+    groups = [(int(n), int(float(cal))) for n, cal in WEAPON_RE.findall(summary or "")]
+    if not groups:
+        return CLASS_DEFAULT_AA.get(cls, [])
+    mounts = []
+    for n, cal in groups:
+        for lo, hi, rng, mv, rpm, hd, vd, per_barrels in AA_MOUNT_SPECS:
+            if lo <= cal <= hi:
+                count = max(1, min(8, n // per_barrels))
+                mounts.append({
+                    "shellId": AA_SHELL, "count": count, "rangeM": rng,
+                    "muzzleVelocityMs": mv, "roundsPerMinute": rpm,
+                    "horizontalMrad": hd, "verticalMrad": vd,
+                })
+                break
+    return mounts or CLASS_DEFAULT_AA.get(cls, [])
+
+
 def capital_like(cls):
     return cls in ("Battleship", "Battlecruiser", "Cruiser")
 
@@ -330,6 +375,7 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
         "displayName": name.replace("_", " ").upper(),
         "class": cls,
         "guns": guns,
+        "aaMounts": aa_mounts(wt.get("weaponsSummary", ""), cls),
         "displacementT": disp,
         "lengthM": length,
         "beamM": beam,
