@@ -1,0 +1,49 @@
+{
+  "name": "heading_check",
+  "maxDurationS": 240,
+  "seed": 9001,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": -1100,
+          "z": -1100,
+          "headingDeg": 0,
+          "throttle": 0.0
+        },
+        {
+          "ship": "test_battleship",
+          "x": 1100,
+          "z": -1100,
+          "headingDeg": 90,
+          "throttle": 0.0
+        }
+      ],
+      "aircraft": []
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": 1100,
+          "z": 1100,
+          "headingDeg": 180,
+          "throttle": 0.0
+        },
+        {
+          "ship": "test_battleship",
+          "x": -1100,
+          "z": 1100,
+          "headingDeg": 270,
+          "throttle": 0.0
+        }
+      ],
+      "aircraft": []
+    }
+  ]
+}

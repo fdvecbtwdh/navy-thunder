@@ -26,6 +26,7 @@ public partial class BattleScene3D : Node3D
     private double _simSpeed = 4.0;
     private double _smokeAccumulator;
     private double _nextReportAt = 30;
+    private double _nextTimePrintAt = 10;
     private double _nextSyncCheckAt = 10;
     private int _syncFailures;
     private bool _smokeStructureChecked;
@@ -133,7 +134,13 @@ public partial class BattleScene3D : Node3D
             BackgroundMode = Godot.Environment.BGMode.Sky,
             AmbientLightEnergy = 0.7f,
         };
-        var sky = new Sky { SkyMaterial = new ProceduralSkyMaterial() };
+        var sky = new Sky { SkyMaterial = new ProceduralSkyMaterial
+        {
+            SkyTopColor = new Color(0.38f, 0.55f, 0.78f),
+            SkyHorizonColor = new Color(0.72f, 0.80f, 0.86f),
+            GroundBottomColor = new Color(0.06f, 0.12f, 0.16f),
+            GroundHorizonColor = new Color(0.70f, 0.78f, 0.84f),
+        } };
         environment.Sky = sky;
         env.Environment = environment;
         AddChild(env);
@@ -362,6 +369,12 @@ public partial class BattleScene3D : Node3D
         ApplyShellToggle();
         CollectEffects();
 
+        if (_runner.World.Time >= _nextTimePrintAt)
+        {
+            _nextTimePrintAt += 10;
+            GD.Print($"P02 t={_runner.World.Time:0}s projectiles={_runner.Ballistics.Projectiles.Count}");
+        }
+
         foreach (var ship in _runner.Ships)
         {
             _shipMounts[ship.TargetId] = ship.WorldPosition;
@@ -391,6 +404,16 @@ public partial class BattleScene3D : Node3D
             _cameraRig.Track(_shipVisuals[_playerShip.TargetId], _playerShip.WorldPosition);
             _audio?.SetListener(new Vector2((float)_playerShip.WorldPosition.X, (float)_playerShip.WorldPosition.Z));
         }
+        if (OS.GetEnvironment("NT_FRONTEND_CAMFOCUS") is { } focusEnv && focusEnv.Length > 0)
+        {
+            // Verification hook: lock the camera focus to a world point (e.g. a formation
+            // centre) instead of following the player ship.
+            var parts = focusEnv.Split(',');
+            if (parts.Length == 2 && float.TryParse(parts[0], out float fx) && float.TryParse(parts[1], out float fz))
+            {
+                _cameraRig.LockFocus(new Vector3(fx, 0, fz));
+            }
+        }
         _hud.UpdateHud(_runner.World.Time, _runner.Guns.ReloadRemainingOf(_playerShip?.TargetId ?? ""));
         _tacticalMap.PushEffects(_effects, _runner.World.Time, showFx: true);
 
@@ -419,11 +442,16 @@ public partial class BattleScene3D : Node3D
             return;
         }
 
-        if (!_shotTaken && _shotPath.Length > 0 && _runner.World.Time >= 60)
+        if (!_shotTaken && _shotPath.Length > 0 && _runner.World.Time >= ShotTime())
         {
             var img = GetViewport().GetTexture().GetImage();
             img.SavePng(_shotPath);
             _shotTaken = true;
+            var ps = _playerShip!;
+            var pv = _shipVisuals[ps.TargetId];
+            GD.Print($"SHOT at t={_runner.World.Time:0}s shipHeading={ps.HeadingDeg:0.#}° " +
+                     $"nodeYaw={pv.Rotation.Y * 180 / Math.PI:0.#}° nodePos={pv.Position} " +
+                     $"camGlobal={_cameraRig.GlobalPosition} camFwd={_cameraRig.Camera.GlobalTransform.Basis.Z}");
         }
 
         if (_runner.Battle.Result != NavyThunder.Core.Battle.BattleResult.Running && !_reportShown)
@@ -586,6 +614,10 @@ public partial class BattleScene3D : Node3D
         foreach (var (targetId, visual) in _shipVisuals)
         {
             var ship = visual.Ship;
+            if (!ship.Alive)
+            {
+                continue; // sunk ships carry an intentional presentation sink offset
+            }
             var corePos = ship.WorldPosition;
             var nodePos = visual.Position;
             double dist = new Vec3(nodePos.X - corePos.X, nodePos.Y - corePos.Y, nodePos.Z - corePos.Z).Length;
@@ -602,7 +634,10 @@ public partial class BattleScene3D : Node3D
         _syncFailures += bad;
         if (bad == 0)
         {
-            GD.Print($"P02 SYNC CHECK t={_runner.World.Time:0}s: PASS ({_shipVisuals.Count} ships, 0.05 m / 0.01 rad)");
+            var first = _shipVisuals.Values.First();
+            GD.Print($"P02 SYNC CHECK t={_runner.World.Time:0}s: PASS ({_shipVisuals.Count} ships, 0.05 m / 0.01 rad) " +
+                     $"[dbg ship heading={first.Ship.HeadingDeg:0.#}° nodeYaw={first.Rotation.Y * 180 / Math.PI:0.#}° " +
+                     $"camGlobal={_cameraRig.GlobalPosition} camFwd={_cameraRig.Camera.GlobalTransform.Basis.Z}]");
         }
     }
 
@@ -625,6 +660,9 @@ public partial class BattleScene3D : Node3D
         }
         return d;
     }
+
+    private static float ShotTime() =>
+        OS.GetEnvironment("NT_FRONTEND_SHOTTIME") is { } s && float.TryParse(s, out float t) ? t : 60f;
 
     /// <summary>Packaged builds keep data/ next to the exe; dev runs walk to the sln.</summary>
     private static string FindRepoRoot()

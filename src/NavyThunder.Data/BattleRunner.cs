@@ -284,6 +284,7 @@ public sealed class BattleRunner
         }
 
         NavalAi.Ships.Remove(ship);
+        NavalAi.ReleaseMind(targetId); // Phase 02: the mind loop, not Ships, steers her
         PlayerShip = ship;
     }
 

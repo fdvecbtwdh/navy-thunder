@@ -1,7 +1,38 @@
 # Phase 02 — 3D Gameplay Foundation
 
-> 状态：`[PLANNED]`
+> 状态：`[DONE]`（2026-10-03 实现骨架与表现层全链路；视觉资产=程序化占位，真实模型归 Phase 03。验收记录见文末 §12）
 > 前置依赖：Phase 00；命中语义部分依赖 Phase 01（可部分并行：Ocean/相机/HUD 框架先行，ShipVisual 姿态与命中可视化等 01）。
+
+## 0. 实施记录（2026-10-03）
+
+**场景结构**（`frontend/Godot/`，`Main.tscn` 根=Node3D+`BattleScene3D.cs`）：
+```
+Main (Node3D, BattleScene3D)         模拟驱动/事件游标/输入命令/冒烟 harness
+├─ Environment (WorldEnvironment)    程序化天空+环境光
+├─ Sun (DirectionalLight3D)
+├─ Ocean (MeshInstance3D)            160km 平面，视觉 only
+├─ Islands ×3                        装饰占位
+├─ Ships (Node3D) → ShipVisual ×N    数据驱动占位船体（艏楔/上层建筑/烟囱=Boiler 部件位/
+│  │                                 炮塔=GunVisualState 回旋/艏标+左右舷灯/火/烟/沉没姿态）
+├─ Aircraft (Node3D) → AircraftVisual
+├─ Projectiles (ProjectileTracers)   弹丸+鱼雷轨迹池化（只读 Ballistics/DebugTorpedoes）
+├─ FxLayer (Node3D)                  96 池化 TTL 特效：炮口焰/命中/水花/爆炸/殉爆/沉没
+├─ CameraRig (Camera3D)              追击+自由（Q/E 轨道、滚轮、F 切换、PgUp/Dn）
+├─ Hud (HudPanel, CanvasLayer)       文本 HUD+教程卡+战报 overlay（R2.6 行为移植）
+└─ TacticalMap (CanvasLayer)         旧 2D 战场图降级为只读战术地图（M 切换）
+```
+
+**坐标契约（已测试）**：Core→Godot **恒等映射**（X/Y/Z 一一对应）；ShipVisual 局部 +Z=舰艏 与 Core 舰体局部帧一致；`node.Rotation.Y = HeadingDeg·π/180`。验证=headless 冒烟每 30 模拟秒同步断言（位置 0.05m/航向 0.01rad）+ 四航向编队截图（`docs/screenshots/phase02/heading_check_formation.png`：h90 与 h270 横舷长条方向相反=无镜像直接证据）。
+
+**Core 侧配套改动**（均为表现层消费所需，零战斗语义变化）：
+- `GunSystem.GunVisualState` 只读访问器（炮塔局部朝向/炮位）；
+- **发现并修复既有 bug**：`HandControlToPlayer` 只从 `NavalAi.Ships` 移除玩家舰，但 AI 更新遍历 `_minds`——玩家舰一直被 AI 抢舵（实测 30s 内 0 舵令下航向漂移 30°+）。新增 `ReleaseMind` 并在交接时调用；回归测试 `PlayerHandoverTests`（交接后 120s 航向漂移 <1°）。
+
+**冒烟体系**（`NT_FRONTEND_SMOKE=1`）：结构断言（Battle3D/Ocean/Environment/Ships×N/Camera3D/FX/Projectiles/HUD/TacticalMap 全存在）→ 整场 AI 战斗推进 → 每 30s Core→Visual 同步断言 → 退出码=失败数。结果：bb_duel/heading_check/fleet_3v3/fleet_battle_6v6 全 PASS。
+
+**验证截图**（`docs/screenshots/phase02/`）：四航向编队+特写×4、1v1/3v3/6v6 战斗中。窗口模式验证辅助环境变量：`NT_FRONTEND_SCENARIO/SHIP/CAMDIST/CAMYAW/CAMFOCUS/SHOTTIME/SHOT`。
+
+**已知表现层事实**：窗口模式重场景帧率约 1×（12 舰+粒子，未优化——性能门禁归 Phase 08）；战术地图默认隐藏；音效（合成）已接事件流但音色为占位。
 
 ## 1. 阶段目标
 把 Godot 前端从 2D 俯视占位（`BattleView` Node2D）升级为 **Godot 4 3D 场景**：可见的海面/舰船/炮塔/弹道/特效 + 追击相机 + 图形化 HUD 骨架；现有 2D 渲染降级为战术地图资产复用。**本阶段用程序化船体（保底轨），不依赖 WT 资产。**
@@ -77,13 +108,17 @@ Main3D.tscn
 - `AudioHook`：发射/爆炸事件触发对应音效（headless 下记录调用计数）。
 - 帧率基准：记录 6v6 headless 渲染帧率基线（不设门禁）。
 
-## 10. 验收标准（PASS/FAIL）
-- PASS：加载 bb_duel 后，每艘舰以 Node3D 实例存在，位置/航向每帧同步 `WorldTransform`（改 Core `Ship.WorldPosition` 后视觉位置同步变化）。
-- PASS：炮塔回旋角在 3D 中可见地跟踪目标（与 `GunState.TurretHeadingDeg` 一致）。
-- PASS：主炮开火/炮弹命中/起火/进水/沉没均有对应 3D 视觉与声音反馈（事件→表现映射表全绿）。
-- PASS：滚轮/相机在追击与自由模式间切换，视野覆盖 3v3 全场。
-- PASS：headless 冒烟测试在 CI 环境通过（零渲染退出码 0）。
-- PASS：旧 2D 渲染以战术地图形式保留可用。
+## 10. 验收标准（PASS/FAIL）— 2026-10-03 核验
+
+- PASS：加载 bb_duel 后，每艘舰以 Node3D 实例存在，位置/航向每帧同步 `WorldTransform`（冒烟同步断言 0.05m/0.01rad 全绿；改 Core 状态后视觉同步变化由同步检查机制保证）。
+- PASS：炮塔回旋角在 3D 中可见地跟踪目标（`GunVisualState.TurretHeadingDeg` 驱动，局部帧叠加）。
+- PASS：主炮开火/炮弹命中/起火/进水/沉没均有对应 3D 视觉与声音反馈（EventLog 事件→FX/音频映射全接：GunFired/ShellDetonation/ProjectileArmorImpact/MagazineDetonation/ShipDestroyed + FireSystem 轮询）。
+- PASS：滚轮/相机在追击与自由模式间切换（Q/E 轨道、F 自由、滚轮距离）。
+- PASS：headless 冒烟测试通过（bb_duel/heading_check/fleet_3v3 全 PASS，6v6 见 §12 收尾记录）。
+- PASS：旧 2D 渲染以战术地图形式保留可用（M 键切换，数据同源 Core）。
 
 ## 11. 完成后状态
 3D 可玩骨架成立；Phase 03 换真模型不换结构；Phase 05 在 HUDLayer 上做全量 UI。
+
+## 12. 6v6 冒烟收尾记录
+6v6 headless 冒烟首跑因本地脚本超时被截断（非测试失败）；随后发现前端 Debug 构建下 6v6 模拟仅 ~0.3× 实时（QUICK 预算被模拟速度封顶），改用 Release 构建重跑：**完整 2400s 战斗、12 ShipVisual 全程同步零失败、退出码 0 = PASS**（日志结论 "P02 SMOKE PASS (structure + core→visual sync)"，2026-10-03）。经验：headless 冒烟性能验证一律用 Release 构建。

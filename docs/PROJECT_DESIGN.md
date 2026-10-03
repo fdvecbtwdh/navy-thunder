@@ -47,16 +47,16 @@
 | 1 | 主菜单（标题/版本/开始/退出） | `[DONE]` | `frontend/Godot/MenuView.cs`；选舰+设置已通 |
 | 2 | 选舰（从舰队数据） | `[DONE]` | 30 舰下拉框，`SessionState.SelectedShipId` → `BattleRunner(playerShipOverride)` |
 | 3 | 设置（音量/语言/持久化） | `[PARTIAL]` | Master/Effects 音量+zh/en 已通；**Ambient 音量硬编码 0.6 无 UI**；无图像/键位设置 |
-| 4 | 战斗场景 | `[PROTOTYPE]` | 2D 俯视占位（`BattleView` Node2D）；Phase 02 起换 3D |
-| 5 | 玩家操舰（舵/油门） | `[PARTIAL]` | WASD 已通（R2.2）；无油门档位 UI、无倒车 |
+| 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立**（Phase 02：Node3D 战斗场/ShipVisual/相机/海面/特效/战术地图，见 PHASE_02 §0）；船体为程序化占位，真实模型归 Phase 03 |
+| 5 | 玩家操舰（舵/油门） | `[PARTIAL]` | WASD 已通（R2.2；**P02 修复 AI 抢舵 bug**）；无油门档位 UI、无倒车 |
 | 6 | 瞄准与开火 | `[PARTIAL]` | 悬停自动交战已通；无玩家瞄准流程（测距/试射/修正）、无提前量指示（`FcsSolver` 在库未接） |
 | 7 | 弹种切换 | `[DONE]` | R 键 AP/HE（R3） |
 | 8 | 损伤 HUD（分段血条/FIRE/FLOOD 标记） | `[PARTIAL]` | 文本面板已通（R2.4 简化版）；无图形化分段图、无模块 x-ray |
 | 9 | **玩家损管操作** | `[PLANNED]` | **不存在**：`DamageControlSystem` 全自动，前端零 DC 输入；教程卡文案"[FIRE]/[FLOOD] 需损管处置"与实现不符（2026-10-02 修正文档已记录） |
 | 10 | 战报页 | `[DONE]` | 胜负/时长/损失/逐舰存活，返回菜单（R2.6） |
 | 11 | 全 AI 观战 | `[PARTIAL]` | headless `SimRunner` 完整可跑 `[DONE]`；前端"观战模式"入口 `[PLANNED]` |
-| 12 | 战术地图 | `[PROTOTYPE]` | 无独立地图；滚轮缩放的 2D 战场可降级复用为 Phase 05 战术地图 |
-| 13 | 音效 | `[PROTOTYPE]` | 合成音效 6 种已备（`Sfx.cs`），**`PlayGun/PlayExplosion` 零调用点，战斗仅海浪环境音**（2026-10-02 修正 RELEASE_CHECKLIST Gate 7） |
+| 12 | 战术地图 | `[DONE]` | 旧 2D 战场图降级为只读战术地图（P02，M 键切换），数据同源 Core |
+| 13 | 音效 | `[PARTIAL]` | 合成音效 6 种已生成并**已接入战斗事件**（P02：GunFired/ShellDetonation/MagazineDetonation/ShipDestroyed→播放）；音色为程序合成占位，真实声学归 Phase 03+ |
 | 14 | 小地图 | `[PLANNED]` | 无 |
 | 15 | 舰船建造器 | `[PLANNED]` | 无任何实现；设计见 §10 |
 | 16 | 舰船管理（收藏/导入/导出） | `[PLANNED]` | 无 |
@@ -481,3 +481,4 @@ Phase 00 基础与文档统一
 |---|---|
 | 2026-10-02 | 初版：基于全仓调查 + WT/NavalArt/资产技术研究建立 |
 | 2026-10-02 | Phase 01 实施完成：§5 空间几何裁决落地（`Geometry/ShipTransform` + 局部坐标板 + 逆变换射线命中）；坐标约定 +Z=舰艏 已随数据迁移生效；新增 FACT——数据帧 = 船体局部（+X 右舷/+Y 上/+Z 舰艏），所有舰船/飞机数据与命中几何遵守；行为基线变化（对称编成出现合法平局）记录于 PHASE_01 §0 |
+| 2026-10-03 | Phase 02 实施完成：§8 3D 前端结构落地（Battle3D 根 + ShipVisual/炮塔/弹丸/飞机/FX/相机/海面 + HUD + TacticalMap 降级复用）；Core→Godot 恒等坐标映射经冒烟同步断言与四航向截图验证；**修复既有 bug——玩家交接后 AI 仍经 mind 循环抢舵**（`SimpleNavalAISystem.ReleaseMind`，回归测试 `PlayerHandoverTests`）；产品结构表状态更新：#4 战斗场景 [PROTOTYPE]→3D 骨架 [DONE-占位资产]、#12 战术地图 [DONE]、#13 音效接线 [DONE-合成音] |

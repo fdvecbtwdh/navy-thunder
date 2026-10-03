@@ -1,0 +1,27 @@
+{
+  "name": "fleet_3v3",
+  "maxDurationS": 2400,
+  "seed": 310303,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "United States Navy",
+      "ships": [
+        { "ship": "uss_north_carolina", "x": -3200, "z": -600, "headingDeg": 0, "throttle": 1.0 },
+        { "ship": "uss_baltimore", "x": -2200, "z": 500, "headingDeg": 0, "throttle": 1.0 },
+        { "ship": "uss_fletcher", "x": -1500, "z": 1100, "headingDeg": 0, "throttle": 1.0 }
+      ],
+      "aircraft": []
+    },
+    {
+      "id": "ijn",
+      "name": "Imperial Japanese Navy",
+      "ships": [
+        { "ship": "ijn_nagato", "x": 3200, "z": 600, "headingDeg": 180, "throttle": 1.0 },
+        { "ship": "ijn_myoko", "x": 2200, "z": -500, "headingDeg": 180, "throttle": 1.0 },
+        { "ship": "ijn_kagero", "x": 1500, "z": -1100, "headingDeg": 180, "throttle": 1.0 }
+      ],
+      "aircraft": []
+    }
+  ]
+}

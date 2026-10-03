@@ -21,6 +21,15 @@ public partial class CameraRig : Node3D
 
     public override void _Ready()
     {
+        if (OS.GetEnvironment("NT_FRONTEND_CAMDIST") is { } distEnv && float.TryParse(distEnv, out float d))
+        {
+            _distance = Mathf.Clamp(d, 60f, 4000f);
+        }
+        if (OS.GetEnvironment("NT_FRONTEND_CAMYAW") is { } yawEnv && float.TryParse(yawEnv, out float yawDeg))
+        {
+            _yaw = yawDeg * MathF.PI / 180f;
+        }
+
         _camera = new Camera3D
         {
             Current = true,
@@ -36,6 +45,11 @@ public partial class CameraRig : Node3D
         _target = target;
         _freeFocus = new Vector3((float)initialFocus.X, 0, (float)initialFocus.Z);
     }
+
+    private Vector3? _lockedFocus;
+
+    /// <summary>Verification hook: pin the orbit focus to a fixed world point.</summary>
+    public void LockFocus(Vector3 focus) => _lockedFocus = focus;
 
     public override void _UnhandledInput(InputEvent e)
     {
@@ -101,6 +115,10 @@ public partial class CameraRig : Node3D
             {
                 _freeFocus.Y = MathF.Max(5f, _freeFocus.Y - pan);
             }
+        }
+        else if (_lockedFocus is { } locked)
+        {
+            _freeFocus = locked;
         }
         else if (_target is not null)
         {

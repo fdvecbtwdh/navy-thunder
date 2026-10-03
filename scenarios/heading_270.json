@@ -1,0 +1,35 @@
+{
+  "name": "heading_270",
+  "maxDurationS": 240,
+  "seed": 9001,
+  "teams": [
+    {
+      "id": "usn",
+      "name": "USN",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": 0,
+          "z": 0,
+          "headingDeg": 270,
+          "throttle": 0.0
+        }
+      ],
+      "aircraft": []
+    },
+    {
+      "id": "ijn",
+      "name": "IJN",
+      "ships": [
+        {
+          "ship": "test_battleship",
+          "x": 25000,
+          "z": 25000,
+          "headingDeg": 270,
+          "throttle": 0.0
+        }
+      ],
+      "aircraft": []
+    }
+  ]
+}

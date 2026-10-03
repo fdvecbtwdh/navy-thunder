@@ -323,6 +323,14 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
         _minds[ship.TargetId] = mind;
     }
 
+    /// <summary>
+    /// Stops the AI from steering this ship (player handover, R2.2). She remains a valid
+    /// TARGET for other minds. Phase 02 fix: the update loop iterates _minds, so removing
+    /// the ship from <see cref="Ships"/> alone left the AI overwriting the player's helm
+    /// every tick.
+    /// </summary>
+    public void ReleaseMind(string targetId) => _minds.Remove(targetId);
+
     private static double BearingDeg(Vec3 from, Vec3 to)
     {
         Vec3 d = to - from;
