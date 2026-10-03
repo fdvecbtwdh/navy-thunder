@@ -144,7 +144,16 @@ public sealed class Ship : Entity, IDamageSink
             }
 
             double alive = propulsion.Count(p => !p.Destroyed);
-            return alive / propulsion.Count;
+            double factor = alive / propulsion.Count;
+            // Phase 04 (W2 module consequences): destroyed funnels choke the draft —
+            // each lost funnel costs 15 % of the design speed.
+            var funnels = Parts.Values.Where(p => p.Definition.Kind == PartKind.Funnel).ToList();
+            if (funnels.Count > 0)
+            {
+                factor *= Math.Pow(0.85, funnels.Count(p => p.Destroyed));
+            }
+
+            return factor;
         }
     }
 
@@ -410,12 +419,30 @@ public sealed class Ship : Entity, IDamageSink
 
     // ------------------------------------------------------ first-stage ammo (MDR-0011)
 
-    /// <summary>Returns the current reload factor for the group (1 nominal, higher when resupplying).</summary>
+    /// <summary>Returns the current reload factor for the group (1 nominal, higher when
+    /// resupplying). Phase 04 (W2): destroyed hoists in the group slow the feed another
+    /// 20 % (W2 loading-penalty band 10-20 %, worst tier for a destroyed hoist).</summary>
     public double CurrentReloadFactor(SimulationWorld world, string turretGroup)
     {
         UpdateResupply(world);
-        return _readyRacks.GetValueOrDefault(turretGroup) > 0 ? 1.0 : ReadyRackReloadFactor;
+        double factor = _readyRacks.GetValueOrDefault(turretGroup) > 0 ? 1.0 : ReadyRackReloadFactor;
+        var hoists = Parts.Values.Where(p =>
+            p.Definition.TurretGroup == turretGroup && p.Definition.Kind == PartKind.Hoist).ToList();
+        if (hoists.Count > 0)
+        {
+            double alive = hoists.Count(p => !p.Destroyed);
+            if (alive == 0)
+            {
+                factor *= 1.2;
+            }
+        }
+
+        return factor;
     }
+
+    /// <summary>Rudder held by a destroyed steering gear (Phase 04 W2: the ship yaws on
+    /// with the stuck rudder instead of straightening out; DC can repair the gear).</summary>
+    public double StuckRudder { get; internal set; }
 
     public int ReadyRackCount(string turretGroup) => _readyRacks.GetValueOrDefault(turretGroup);
 

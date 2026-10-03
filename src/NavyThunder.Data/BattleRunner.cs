@@ -115,7 +115,7 @@ public sealed class BattleRunner
         Flooding = new FloodingSystem(Registry, Fire);
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);
-        NavalAi = new SimpleNavalAISystem(Registry) { Guns = Guns };
+        NavalAi = new SimpleNavalAISystem(Registry) { Guns = Guns, DamageControl = DamageControl, Fire = Fire };
         var damageControl = new DamageControlSystem { Fire = Fire, Flooding = Flooding };
         var adjudicator = new KillAdjudicatorSystem(Registry);
         DamageControl = damageControl;

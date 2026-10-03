@@ -1,4 +1,5 @@
 using NavyThunder.Core.Armor;
+using NavyThunder.Core.Fire;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Damage;
 using NavyThunder.Core.Mathematics;
@@ -46,6 +47,13 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
     public List<Ship> Ships { get; } = [];
     public GunSystem? Guns { get; set; }
 
+    /// <summary>Per-ship damage-control orders (Phase 04): same interface the player uses;
+    /// the AI re-prioritizes from its ship's damage state every replan.</summary>
+    public DamageControlSystem? DamageControl { get; set; }
+
+    /// <summary>Fire state for the AI's DC prioritization (wired by the battle runner).</summary>
+    public FireSystem? Fire { get; set; }
+
     /// <summary>
     /// Preferred engagement band as fractions of the best gun range. Naval gunfire only
     /// converts against a maneuvering hull inside the band where ballistic time of flight
@@ -83,6 +91,7 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
             {
                 mind.NextReplanS = world.Time + 2.0;
                 mind.TargetId = PickTarget(ship, mind);
+                UpdateDamageControlPriorities(ship);
             }
 
             var target = ResolveTarget(mind.TargetId);
@@ -95,6 +104,29 @@ public sealed class SimpleNavalAISystem : ISimulationSystem
             UpdateManeuver(world, ship, mind, target);
             UpdateGuns(ship, target);
         }
+    }
+
+    /// <summary>Phase 04 (W2/P04-6): DC priority follows the damage state — burning first
+    /// (fires kill fast), then flooding repair, then the default order. Deterministic,
+    /// no RNG: a pure read of ship state through the shared SetOrders interface.</summary>
+    private void UpdateDamageControlPriorities(Ship ship)
+    {
+        if (DamageControl is null)
+        {
+            return;
+        }
+
+        bool flooding = ship.Parts.Values.Any(p => p.Breached && p.Definition.YMinM < 0);
+        bool burning = Fire is not null
+                       && Fire.Fires.Any(f => f.Active && f.HostId.StartsWith(ship.TargetId, StringComparison.Ordinal));
+
+        List<DcFlow> priority = flooding switch
+        {
+            true => [DcFlow.Repair, DcFlow.Extinguishing, DcFlow.Unwatering],
+            false when burning => [DcFlow.Extinguishing, DcFlow.Repair, DcFlow.Unwatering],
+            _ => [DcFlow.Repair, DcFlow.Extinguishing, DcFlow.Unwatering],
+        };
+        DamageControl.SetOrders(ship.TargetId, priority: priority);
     }
 
     private void AccumulateThreat(SimulationWorld world)

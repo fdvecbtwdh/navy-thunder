@@ -45,10 +45,16 @@ public sealed class ShipNavigationSystem : ISimulationSystem
                 ? maxSpeed
                 : ship.SpeedKnots + Math.Sign(maxSpeed - ship.SpeedKnots) * accel;
 
-            // Rudder authority scales with speed through the water (no steering in stop);
-            // a destroyed steering gear freezes the rudder but the ship keeps way on.
+            // Rudder authority scales with speed through the water (no steering in stop).
+            // Phase 04 (W2): a destroyed steering gear leaves the rudder STUCK at its last
+            // ordered position — the ship yaws on (drift) instead of straightening out;
+            // damage control can repair the gear (DamageControlSystem).
             double speedFactor = Math.Clamp(ship.SpeedKnots / Math.Max(1.0, ship.Definition.MaxSpeedKnots * 0.4), 0.0, 1.0);
-            double rudder = ship.HasHelm ? ship.RudderCommand : 0.0;
+            if (ship.HasHelm)
+            {
+                ship.StuckRudder = ship.RudderCommand;
+            }
+            double rudder = ship.HasHelm ? ship.RudderCommand : ship.StuckRudder;
             double turn = rudder * ship.Definition.TurnRateDegPerS * speedFactor * deltaTime;
             ship.HeadingDeg = (ship.HeadingDeg + turn + 360.0) % 360.0;
 

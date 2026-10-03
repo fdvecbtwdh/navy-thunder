@@ -1,4 +1,5 @@
 using NavyThunder.Core.Fire;
+using NavyThunder.Core.Model;
 using NavyThunder.Core.World;
 
 namespace NavyThunder.Core.Ships;
@@ -38,6 +39,25 @@ public sealed class DamageControlSystem : ISimulationSystem
     /// <summary>Active manual flow (Manual mode only).</summary>
     public DcFlow? ManualFlow { get; set; }
 
+    /// <summary>
+    /// Per-ship damage-control orders (Phase 04, PHASE_04 P04-6): the SAME interface
+    /// serves the player and the AI — one call sets mode/priority for one ship, falling
+    /// back to the fleet-wide defaults when the ship has no override.
+    /// </summary>
+    private readonly Dictionary<string, (DcMode Mode, List<DcFlow> Priority)> _orders = [];
+
+    public void SetOrders(string shipTargetId, DcMode? mode = null, IReadOnlyList<DcFlow>? priority = null)
+    {
+        var existing = _orders.GetValueOrDefault(shipTargetId, (Mode, Priority));
+        _orders[shipTargetId] = (mode ?? existing.Mode, priority is { Count: > 0 } ? [.. priority] : existing.Priority);
+    }
+
+    public (DcMode Mode, IReadOnlyList<DcFlow> Priority) GetOrders(string shipTargetId)
+    {
+        var o = _orders.GetValueOrDefault(shipTargetId);
+        return (o.Mode, o.Priority is { Count: > 0 } p ? p : Priority);
+    }
+
     /// <summary>Patch time fallback (s) for legacy callers; per-class tiers live in
     /// FloodingSystem.ClassSpec (W5 5-20 s: shell holes fast, torpedo holes slow).</summary>
     public double BreachPatchSeconds { get; init; } = 12.0;
@@ -74,8 +94,9 @@ public sealed class DamageControlSystem : ISimulationSystem
             }
 
             double speed = DcCoefficient(ship);
-            var flows = Mode == DcMode.Automatic
-                ? Priority
+            var (shipMode, shipPriority) = GetOrders(ship.TargetId);
+            var flows = shipMode == DcMode.Automatic
+                ? shipPriority
                 : ManualFlow is { } m ? [m] : [];
 
             foreach (var flow in flows)
@@ -96,22 +117,37 @@ public sealed class DamageControlSystem : ISimulationSystem
         }
     }
 
+    /// <summary>Repair time for a destroyed steering gear (W2: the rudder is repairable,
+    /// not lost forever; DC work restores it).</summary>
+    public double SteeringRepairSeconds { get; init; } = 20.0;
+
     private void PatchBreaches(Ship ship, double work)
     {
         // Accumulate repair work per breached part via its WaterLevel-independent counter.
         foreach (var part in ship.Parts.Values)
         {
-            if (!part.Breached || part.Destroyed)
+            if (part.Breached && !part.Destroyed)
             {
-                continue;
+                part.RepairWork += work;
+                double needed = FloodingSystem.ClassSpec(part.BreachClass ?? FloodingSystem.BreachClass.BlastMedium).PatchSeconds;
+                if (part.RepairWork >= needed)
+                {
+                    part.Breached = false;
+                    part.RepairWork = 0;
+                }
             }
 
-            part.RepairWork += work;
-            double needed = FloodingSystem.ClassSpec(part.BreachClass ?? FloodingSystem.BreachClass.BlastMedium).PatchSeconds;
-            if (part.RepairWork >= needed)
+            // Phase 04 (W2): a destroyed steering gear is repairable by the repair flow.
+            if (part.Destroyed && part.Definition.Kind == PartKind.Steering)
             {
-                part.Breached = false;
-                part.RepairWork = 0;
+                part.RepairWork += work;
+                if (part.RepairWork >= SteeringRepairSeconds)
+                {
+                    part.Destroyed = false;
+                    part.Hp = Math.Max(part.Hp, part.Definition.Hp * 0.3);
+                    part.RepairWork = 0;
+                    part.Breached = false;
+                }
             }
         }
     }

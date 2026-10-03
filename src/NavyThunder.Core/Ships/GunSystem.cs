@@ -249,6 +249,10 @@ public sealed class GunSystem : ISimulationSystem
             {
                 HorizontalMrad = gun.Definition.HorizontalMrad,
                 VerticalMrad = gun.Definition.VerticalMrad,
+                // Phase 04 (W2): with the fire-control post destroyed the battery falls
+                // back to local laying — 50 % wider salvo (approximation, W2 band).
+                PenaltyMultiplier = gun.Ship.Parts.Values.Any(
+                    p => p.Definition.Kind == PartKind.FireControl && p.Destroyed) ? 1.5 : 1.0,
             };
             var rng = world.Rng("guns");
 
