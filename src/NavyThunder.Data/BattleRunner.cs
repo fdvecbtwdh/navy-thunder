@@ -113,6 +113,7 @@ public sealed class BattleRunner
         Bridge.Fire = Fire; // combat damage rolls ignition through the fire system (MDR-0010)
         Bridge.Flooding = Flooding; // largest-caliber kinetic holes -> small breaches (W5)
         Flooding = new FloodingSystem(Registry, Fire);
+        var fireSpread = new NavyThunder.Core.Fire.FireSpreadSystem(Fire, Flooding.Ships); // turret->hoist->magazine (P04-6)
         var navigation = new ShipNavigationSystem();
         Guns = new GunSystem(repo.Shells, Ballistics);
         NavalAi = new SimpleNavalAISystem(Registry) { Guns = Guns, DamageControl = DamageControl, Fire = Fire };
@@ -264,6 +265,7 @@ public sealed class BattleRunner
         World.AddSystem(Bridge);
         World.AddSystem(Flooding);
         World.AddSystem(Fire);
+        World.AddSystem(fireSpread); // turret->hoist->magazine spread (P04-6)
         World.AddSystem(navigation);
         World.AddSystem(NavalAi);
         World.AddSystem(Guns);

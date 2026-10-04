@@ -167,8 +167,15 @@ public sealed class KillAdjudicatorSystem : ISimulationSystem
 
     private static int EstimateMagazineRounds(Ship ship)
     {
-        // First-order estimate from magazine count when no authored ammo counts exist.
-        int magazines = Math.Max(1, ship.Parts.Values.Count(p => p.Definition.Kind == PartKind.Magazine));
-        return 40 * magazines;
+        // P04-9 (W5): detonation power scales with REMAINING ammunition. No authored
+        // main-magazine counts exist, so the estimate uses what the sim tracks:
+        // each surviving magazine's base load plus the ready racks of turret groups
+        // still fed by a live hoist chain (approximation, MDR-0011).
+        int magazines = Math.Max(1, ship.Parts.Values
+            .Count(p => p.Definition.Kind == PartKind.Magazine && !p.Destroyed));
+        int turretGroups = ship.Parts.Values
+            .Where(p => p.Definition.Kind == PartKind.Turret && !p.Destroyed && p.Definition.TurretGroup is not null)
+            .Select(p => p.Definition.TurretGroup!).Distinct().Count();
+        return 40 * magazines + ship.Definition.FirstStageRoundsPerTurret * turretGroups;
     }
 }

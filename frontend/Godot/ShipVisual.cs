@@ -380,7 +380,10 @@ public partial class ShipVisual : Node3D
 
         // Simulation → presentation: identity coordinate mapping (documented contract).
         Position = new Vector3((float)ship.WorldPosition.X, (float)ship.WorldPosition.Y, (float)ship.WorldPosition.Z);
-        Rotation = new Vector3(0, (float)(ship.HeadingDeg * Math.PI / 180.0), 0);
+        // Phase 04 (P04-7): flooding imbalance shows as a read-only list roll around the
+        // hull's longitudinal axis (Core owns the physics; this is presentation only).
+        float rollRad = ship.Lost ? 0f : (float)(-ship.ListDeg * Math.PI / 180.0);
+        Rotation = new Vector3(0, (float)(ship.HeadingDeg * Math.PI / 180.0), rollRad);
 
         // Distance LOD (PHASE_03 §15): pick the first level whose switch range
         // covers the camera distance; re-evaluated a few times per second.
@@ -450,6 +453,7 @@ public partial class ShipVisual : Node3D
             float since = (float)(simTime - (ship.DestroyedTime ?? simTime));
             float t = Mathf.Clamp(since / 30f, 0f, 1f);
             Position = new Vector3(Position.X, Position.Y - t * 12f, Position.Z);
+            // Sinking roll takes over from the live list once she is lost.
             Rotation = new Vector3(Rotation.X, Rotation.Y, Mathf.Clamp(since * 0.03f, 0f, 0.9f));
             if (since > 30f)
             {

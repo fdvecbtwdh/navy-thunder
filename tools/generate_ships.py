@@ -295,9 +295,12 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
     for i in range(mag_count):
         section = mid_ids[i % len(mid_ids)]
         x_center = -0.3 * half_l + i * (0.6 * half_l / max(1, mag_count - 1))
+        # P04 fire chain: magazines join a turret group so hoist fires can reach them.
+        group = chr(65 + (i % turret_groups)) if i < turret_groups else None
         add(f"{name}_mag_{chr(65 + i)}", "Magazine", section, disp * 0.012,
             round(crew * 0.02), x_center - 6, x_center + 6,
-            keel + 0.5, keel + draft * 0.4, -half_b + 1.5, half_b - 1.5, 14.0 / mag_count)
+            keel + 0.5, keel + draft * 0.4, -half_b + 1.5, half_b - 1.5, 14.0 / mag_count,
+            group=group)
 
     add(f"{name}_boiler_1", "Boiler", mid_ids[0], disp * 0.015, round(crew * 0.03),
         -half_b * 0.0 + 0.5, 0.5, keel + 0.5, 1, -half_b + 2, half_b - 2, 9)
@@ -323,6 +326,33 @@ def build_ship(row, wt_units, wt_weapons, shell_catalog, he_catalog):
             disp * 0.006, round(crew * 0.04), x - 5, x + 5,
             deck_y - 2, deck_y + 2, -half_b + 3, half_b - 3,
             2.0 / turret_groups, open_=True, group=chr(65 + g))
+    # P04 module consequences (W2): funnels choke the draft when destroyed.
+    funnel_count = 2 if capital else 1
+    for fi in range(funnel_count):
+        fx0 = -0.15 * half_l + fi * 0.3 * half_l
+        add(f"{name}_funnel_{fi + 1}", "Funnel", mid_ids[min(fi, len(mid_ids) - 1)],
+            disp * 0.002, 0, fx0, fx0 + 4, deck_y - 1, deck_y + 4.5,
+            -half_b + 3, half_b - 3, 0)
+
+    # P04 fire chain (W5): one hoist per turret group, magazine-to-turret elevator.
+    for g in range(turret_groups):
+        x = half_l * (0.75 - 0.45 * g / max(1, turret_groups - 1) if turret_groups > 1 else 0.7)
+        add(f"{name}_hoist_{chr(65 + g)}", "Hoist",
+            f"{name}_bow" if x > 0.5 * half_l else mid_ids[0],
+            disp * 0.003, 2, x - 1.5, x + 1.5,
+            keel + draft * 0.4, deck_y - 2, -2, 2,
+            1.0 / turret_groups, group=chr(65 + g))
+
+    # P04 TDS (MDR-0012): lateral anti-torpedo bulges on capitals only; geometry +
+    # compartment absorption layer — never intercepts underwater AP (kinetic channel).
+    if capital:
+        for side, (x0, x1) in enumerate(((-half_b - 0.6, -half_b + 0.6), (half_b - 0.6, half_b + 0.6))):
+            add(f"{name}_tds_{'port' if side == 0 else 'starboard'}", "AntiTorpedo",
+                mid_ids[len(mid_ids) // 2], disp * 0.02, 0,
+                -0.45 * half_l, 0.45 * half_l, keel, keel + draft * 0.7,
+                x0, x1, 1.0, group=None)
+            parts[-1]["hydroShockAbsorptionPct"] = 0.6
+
     if abs(buoyancy - 100) > 1:
         parts[-1]["buoyancySharePct"] = round(parts[-1]["buoyancySharePct"] + (100 - buoyancy), 2)
 

@@ -113,7 +113,8 @@
      "yMaxM": -2.3,
      "zMinM": -23.1,
      "zMaxM": -11.1,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_fletcher_mag_B",
@@ -253,8 +254,37 @@
      "yMaxM": 6.5,
      "zMinM": 34.9,
      "zMaxM": 44.9,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_fletcher_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_fletcher_mid1",
+     "hp": 4,
+     "crew": 0,
+     "xMinM": -2.5,
+     "xMaxM": 2.5,
+     "yMinM": 3.5,
+     "yMaxM": 9.0,
+     "zMinM": -8.5,
+     "zMaxM": -4.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_fletcher_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_fletcher_bow",
+     "hp": 6,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.3,
+     "yMaxM": 2.5,
+     "zMinM": 38.4,
+     "zMaxM": 41.4,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -407,7 +437,8 @@
      "yMaxM": -2.1,
      "zMinM": -21.9,
      "zMaxM": -9.9,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_sims_mag_B",
@@ -547,8 +578,37 @@
      "yMaxM": 6.2,
      "zMinM": 32.1,
      "zMaxM": 42.1,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_sims_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_sims_mid1",
+     "hp": 3,
+     "crew": 0,
+     "xMinM": -2.5,
+     "xMaxM": 2.5,
+     "yMinM": 3.2,
+     "yMaxM": 8.7,
+     "zMinM": -7.9,
+     "zMaxM": -3.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_sims_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_sims_bow",
+     "hp": 5,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.1,
+     "yMaxM": 2.2,
+     "zMinM": 35.6,
+     "zMaxM": 38.6,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -718,7 +778,8 @@
      "yMaxM": -2.6,
      "zMinM": -23.8,
      "zMaxM": -11.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_gearing_mag_B",
@@ -858,8 +919,37 @@
      "yMaxM": 7.0,
      "zMinM": 36.6,
      "zMaxM": 46.6,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_gearing_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_gearing_mid1",
+     "hp": 6,
+     "crew": 0,
+     "xMinM": -3.2,
+     "xMaxM": 3.2,
+     "yMinM": 4.0,
+     "yMaxM": 9.5,
+     "zMinM": -8.9,
+     "zMaxM": -4.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_gearing_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_gearing_bow",
+     "hp": 9,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.6,
+     "yMaxM": 3.0,
+     "zMinM": 40.1,
+     "zMaxM": 43.1,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -1030,7 +1120,8 @@
      "yMaxM": -2.7,
      "zMinM": -23.2,
      "zMaxM": -11.2,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_sumner_mag_B",
@@ -1170,8 +1261,37 @@
      "yMaxM": 7.0,
      "zMinM": 35.1,
      "zMaxM": 45.1,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_sumner_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_sumner_mid1",
+     "hp": 6,
+     "crew": 0,
+     "xMinM": -3.2,
+     "xMaxM": 3.2,
+     "yMinM": 4.0,
+     "yMaxM": 9.6,
+     "zMinM": -8.6,
+     "zMaxM": -4.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_sumner_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_sumner_bow",
+     "hp": 9,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.7,
+     "yMaxM": 3.0,
+     "zMinM": 38.6,
+     "zMaxM": 41.6,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -1333,7 +1453,8 @@
      "yMaxM": -2.3,
      "zMinM": -23.7,
      "zMaxM": -11.7,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_kagero_mag_B",
@@ -1473,8 +1594,37 @@
      "yMaxM": 6.4,
      "zMinM": 36.3,
      "zMaxM": 46.3,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_kagero_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_kagero_mid1",
+     "hp": 5,
+     "crew": 0,
+     "xMinM": -2.4,
+     "xMaxM": 2.4,
+     "yMinM": 3.4,
+     "yMaxM": 8.9,
+     "zMinM": -8.8,
+     "zMaxM": -4.8,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_kagero_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_kagero_bow",
+     "hp": 7,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.3,
+     "yMaxM": 2.4,
+     "zMinM": 39.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -1636,7 +1786,8 @@
      "yMaxM": -1.9,
      "zMinM": -23.2,
      "zMaxM": -11.2,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_fubuki_mag_B",
@@ -1776,8 +1927,37 @@
      "yMaxM": 5.9,
      "zMinM": 35.2,
      "zMaxM": 45.2,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_fubuki_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_fubuki_mid1",
+     "hp": 4,
+     "crew": 0,
+     "xMinM": -2.2,
+     "xMaxM": 2.2,
+     "yMinM": 2.9,
+     "yMaxM": 8.4,
+     "zMinM": -8.6,
+     "zMaxM": -4.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_fubuki_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_fubuki_bow",
+     "hp": 6,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -1.9,
+     "yMaxM": 1.9,
+     "zMinM": 38.8,
+     "zMaxM": 41.8,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -1929,7 +2109,8 @@
      "yMaxM": -2.5,
      "zMinM": -25.1,
      "zMaxM": -13.1,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "dkm_z23_mag_B",
@@ -2069,8 +2250,37 @@
      "yMaxM": 6.8,
      "zMinM": 39.4,
      "zMaxM": 49.4,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "dkm_z23_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "dkm_z23_mid1",
+     "hp": 5,
+     "crew": 0,
+     "xMinM": -3.0,
+     "xMaxM": 3.0,
+     "yMinM": 3.8,
+     "yMaxM": 9.3,
+     "zMinM": -9.5,
+     "zMaxM": -5.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "dkm_z23_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "dkm_z23_bow",
+     "hp": 8,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.5,
+     "yMaxM": 2.8,
+     "zMinM": 42.9,
+     "zMaxM": 45.9,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     }
    ],
@@ -2258,7 +2468,8 @@
      "yMaxM": -2.1,
      "zMinM": -23.2,
      "zMaxM": -11.2,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "rn_tribal_mag_B",
@@ -2398,8 +2609,37 @@
      "yMaxM": 6.2,
      "zMinM": 35.2,
      "zMaxM": 45.2,
-     "buoyancySharePct": 43.0,
+     "buoyancySharePct": 2.0,
      "open": true,
+     "turretGroup": "A"
+    },
+    {
+     "id": "rn_tribal_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "rn_tribal_mid1",
+     "hp": 4,
+     "crew": 0,
+     "xMinM": -2.6,
+     "xMaxM": 2.6,
+     "yMinM": 3.2,
+     "yMaxM": 8.7,
+     "zMinM": -8.6,
+     "zMaxM": -4.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rn_tribal_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "rn_tribal_bow",
+     "hp": 6,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -2.1,
+     "yMaxM": 2.2,
+     "zMinM": 38.8,
+     "zMaxM": 41.8,
+     "buoyancySharePct": 41.0,
      "turretGroup": "A"
     },
     {
@@ -2631,7 +2871,8 @@
      "yMaxM": -3.7,
      "zMinM": -30.8,
      "zMaxM": -18.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_atlanta_mag_B",
@@ -2645,7 +2886,8 @@
      "yMaxM": -3.7,
      "zMinM": 18.8,
      "zMaxM": 30.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_atlanta_boiler_1",
@@ -2787,9 +3029,97 @@
      "yMaxM": 8.5,
      "zMinM": 19.8,
      "zMaxM": 29.8,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_atlanta_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_atlanta_mid1",
+     "hp": 18,
+     "crew": 0,
+     "xMinM": -5.0,
+     "xMaxM": 5.0,
+     "yMinM": 5.5,
+     "yMaxM": 11.0,
+     "zMinM": -12.4,
+     "zMaxM": -8.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_atlanta_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_atlanta_mid2",
+     "hp": 18,
+     "crew": 0,
+     "xMinM": -5.0,
+     "xMaxM": 5.0,
+     "yMinM": 5.5,
+     "yMaxM": 11.0,
+     "zMinM": 12.4,
+     "zMaxM": 16.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_atlanta_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_atlanta_bow",
+     "hp": 26,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.7,
+     "yMaxM": 4.5,
+     "zMinM": 60.4,
+     "zMaxM": 63.4,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_atlanta_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_atlanta_mid1",
+     "hp": 26,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.7,
+     "yMaxM": 4.5,
+     "zMinM": 23.2,
+     "zMaxM": 26.2,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_atlanta_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_atlanta_mid2",
+     "hp": 176,
+     "crew": 0,
+     "xMinM": -8.6,
+     "xMaxM": -7.4,
+     "yMinM": -6.1,
+     "yMaxM": -1.8,
+     "zMinM": -37.1,
+     "zMaxM": 37.1,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_atlanta_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_atlanta_mid2",
+     "hp": 176,
+     "crew": 0,
+     "xMinM": 7.4,
+     "xMaxM": 8.6,
+     "yMinM": -6.1,
+     "yMaxM": -1.8,
+     "zMinM": -37.1,
+     "zMaxM": 37.1,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -3024,7 +3354,8 @@
      "yMaxM": -4.2,
      "zMinM": -33.8,
      "zMaxM": -21.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_brooklyn_mag_B",
@@ -3038,7 +3369,8 @@
      "yMaxM": -4.2,
      "zMinM": 21.8,
      "zMaxM": 33.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_brooklyn_boiler_1",
@@ -3180,9 +3512,97 @@
      "yMaxM": 9.3,
      "zMinM": 22.8,
      "zMaxM": 32.8,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_brooklyn_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_brooklyn_mid1",
+     "hp": 24,
+     "crew": 0,
+     "xMinM": -6.5,
+     "xMaxM": 6.5,
+     "yMinM": 6.3,
+     "yMaxM": 11.8,
+     "zMinM": -13.9,
+     "zMaxM": -9.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_brooklyn_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_brooklyn_mid2",
+     "hp": 24,
+     "crew": 0,
+     "xMinM": -6.5,
+     "xMaxM": 6.5,
+     "yMinM": 6.3,
+     "yMaxM": 11.8,
+     "zMinM": 13.9,
+     "zMaxM": 17.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_brooklyn_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_brooklyn_bow",
+     "hp": 36,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.2,
+     "yMaxM": 5.3,
+     "zMinM": 67.9,
+     "zMaxM": 70.9,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_brooklyn_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_brooklyn_mid1",
+     "hp": 36,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.2,
+     "yMaxM": 5.3,
+     "zMinM": 26.2,
+     "zMaxM": 29.2,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_brooklyn_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_brooklyn_mid2",
+     "hp": 240,
+     "crew": 0,
+     "xMinM": -10.1,
+     "xMaxM": -8.9,
+     "yMinM": -7,
+     "yMaxM": -2.1,
+     "zMinM": -41.6,
+     "zMaxM": 41.6,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_brooklyn_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_brooklyn_mid2",
+     "hp": 240,
+     "crew": 0,
+     "xMinM": 8.9,
+     "xMaxM": 10.1,
+     "yMinM": -7,
+     "yMaxM": -2.1,
+     "zMinM": -41.6,
+     "zMaxM": 41.6,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_brooklyn_turret_sec1",
@@ -3442,7 +3862,8 @@
      "yMaxM": -4.3,
      "zMinM": -36.8,
      "zMaxM": -24.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_baltimore_mag_B",
@@ -3456,7 +3877,8 @@
      "yMaxM": -4.3,
      "zMinM": 24.8,
      "zMaxM": 36.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_baltimore_boiler_1",
@@ -3598,9 +4020,97 @@
      "yMaxM": 9.5,
      "zMinM": 25.8,
      "zMaxM": 35.8,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_baltimore_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_baltimore_mid1",
+     "hp": 30,
+     "crew": 0,
+     "xMinM": -7.8,
+     "xMaxM": 7.8,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": -15.4,
+     "zMaxM": -11.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_baltimore_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_baltimore_mid2",
+     "hp": 30,
+     "crew": 0,
+     "xMinM": -7.8,
+     "xMaxM": 7.8,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": 15.4,
+     "zMaxM": 19.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_baltimore_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_baltimore_bow",
+     "hp": 45,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 75.4,
+     "zMaxM": 78.4,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_baltimore_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_baltimore_mid1",
+     "hp": 45,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 29.2,
+     "zMaxM": 32.2,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_baltimore_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_baltimore_mid2",
+     "hp": 300,
+     "crew": 0,
+     "xMinM": -11.4,
+     "xMaxM": -10.2,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -46.1,
+     "zMaxM": 46.1,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_baltimore_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_baltimore_mid2",
+     "hp": 300,
+     "crew": 0,
+     "xMinM": 10.2,
+     "xMaxM": 11.4,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -46.1,
+     "zMaxM": 46.1,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_baltimore_turret_sec1",
@@ -3860,7 +4370,8 @@
      "yMaxM": -4.1,
      "zMinM": -32.8,
      "zMaxM": -20.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_new_orleans_mag_B",
@@ -3874,7 +4385,8 @@
      "yMaxM": -4.1,
      "zMinM": 20.8,
      "zMaxM": 32.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_new_orleans_boiler_1",
@@ -4016,9 +4528,97 @@
      "yMaxM": 9.2,
      "zMinM": 21.8,
      "zMaxM": 31.8,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_new_orleans_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_new_orleans_mid1",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.4,
+     "xMaxM": 6.4,
+     "yMinM": 6.2,
+     "yMaxM": 11.7,
+     "zMinM": -13.4,
+     "zMaxM": -9.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_new_orleans_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_new_orleans_mid2",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.4,
+     "xMaxM": 6.4,
+     "yMinM": 6.2,
+     "yMaxM": 11.7,
+     "zMinM": 13.4,
+     "zMaxM": 17.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_new_orleans_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_new_orleans_bow",
+     "hp": 39,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.1,
+     "yMaxM": 5.2,
+     "zMinM": 65.6,
+     "zMaxM": 68.6,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_new_orleans_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_new_orleans_mid1",
+     "hp": 39,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.1,
+     "yMaxM": 5.2,
+     "zMinM": 25.3,
+     "zMaxM": 28.3,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_new_orleans_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_new_orleans_mid2",
+     "hp": 260,
+     "crew": 0,
+     "xMinM": -10.0,
+     "xMaxM": -8.8,
+     "yMinM": -6.9,
+     "yMaxM": -2.1,
+     "zMinM": -40.3,
+     "zMaxM": 40.3,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_new_orleans_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_new_orleans_mid2",
+     "hp": 260,
+     "crew": 0,
+     "xMinM": 8.8,
+     "xMaxM": 10.0,
+     "yMinM": -6.9,
+     "yMaxM": -2.1,
+     "zMinM": -40.3,
+     "zMaxM": 40.3,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_new_orleans_turret_sec1",
@@ -4269,7 +4869,8 @@
      "yMaxM": -3.8,
      "zMinM": -36.6,
      "zMaxM": -24.6,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_myoko_mag_B",
@@ -4283,7 +4884,8 @@
      "yMaxM": -3.8,
      "zMinM": 24.6,
      "zMaxM": 36.6,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "ijn_myoko_boiler_1",
@@ -4425,9 +5027,97 @@
      "yMaxM": 8.8,
      "zMinM": 25.6,
      "zMaxM": 35.6,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "ijn_myoko_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_myoko_mid1",
+     "hp": 29,
+     "crew": 0,
+     "xMinM": -6.8,
+     "xMaxM": 6.8,
+     "yMinM": 5.8,
+     "yMaxM": 11.3,
+     "zMinM": -15.3,
+     "zMaxM": -11.3,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_myoko_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "ijn_myoko_mid2",
+     "hp": 29,
+     "crew": 0,
+     "xMinM": -6.8,
+     "xMaxM": 6.8,
+     "yMinM": 5.8,
+     "yMaxM": 11.3,
+     "zMinM": 15.3,
+     "zMaxM": 19.3,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_myoko_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_myoko_bow",
+     "hp": 44,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.8,
+     "yMaxM": 4.8,
+     "zMinM": 75.0,
+     "zMaxM": 78.0,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_myoko_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "ijn_myoko_mid1",
+     "hp": 44,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.8,
+     "yMaxM": 4.8,
+     "zMinM": 29.1,
+     "zMaxM": 32.1,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "ijn_myoko_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_myoko_mid2",
+     "hp": 290,
+     "crew": 0,
+     "xMinM": -10.3,
+     "xMaxM": -9.2,
+     "yMinM": -6.4,
+     "yMaxM": -1.9,
+     "zMinM": -45.9,
+     "zMaxM": 45.9,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "ijn_myoko_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_myoko_mid2",
+     "hp": 290,
+     "crew": 0,
+     "xMinM": 9.2,
+     "xMaxM": 10.3,
+     "yMinM": -6.4,
+     "yMaxM": -1.9,
+     "zMinM": -45.9,
+     "zMaxM": 45.9,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "ijn_myoko_turret_sec1",
@@ -4687,7 +5377,8 @@
      "yMaxM": -3.7,
      "zMinM": -36.0,
      "zMaxM": -24.0,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_mogami_mag_B",
@@ -4701,7 +5392,8 @@
      "yMaxM": -3.7,
      "zMinM": 24.0,
      "zMaxM": 36.0,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "ijn_mogami_boiler_1",
@@ -4843,9 +5535,97 @@
      "yMaxM": 8.5,
      "zMinM": 25.0,
      "zMaxM": 35.0,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "ijn_mogami_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_mogami_mid1",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.0,
+     "xMaxM": 6.0,
+     "yMinM": 5.5,
+     "yMaxM": 11.0,
+     "zMinM": -15.0,
+     "zMaxM": -11.0,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_mogami_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "ijn_mogami_mid2",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.0,
+     "xMaxM": 6.0,
+     "yMinM": 5.5,
+     "yMaxM": 11.0,
+     "zMinM": 15.0,
+     "zMaxM": 19.0,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_mogami_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_mogami_bow",
+     "hp": 40,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.7,
+     "yMaxM": 4.5,
+     "zMinM": 73.5,
+     "zMaxM": 76.5,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_mogami_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "ijn_mogami_mid1",
+     "hp": 40,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.7,
+     "yMaxM": 4.5,
+     "zMinM": 28.5,
+     "zMaxM": 31.5,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "ijn_mogami_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_mogami_mid2",
+     "hp": 264,
+     "crew": 0,
+     "xMinM": -9.6,
+     "xMaxM": -8.4,
+     "yMinM": -6.1,
+     "yMaxM": -1.8,
+     "zMinM": -45.0,
+     "zMaxM": 45.0,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "ijn_mogami_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_mogami_mid2",
+     "hp": 264,
+     "crew": 0,
+     "xMinM": 8.4,
+     "xMaxM": 9.6,
+     "yMinM": -6.1,
+     "yMaxM": -1.8,
+     "zMinM": -45.0,
+     "zMaxM": 45.0,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "ijn_mogami_turret_sec1",
@@ -5105,7 +5885,8 @@
      "yMaxM": -4.3,
      "zMinM": -37.8,
      "zMaxM": -25.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "dkm_prinz_eugen_mag_B",
@@ -5119,7 +5900,8 @@
      "yMaxM": -4.3,
      "zMinM": 25.8,
      "zMaxM": 37.8,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "dkm_prinz_eugen_boiler_1",
@@ -5261,9 +6043,97 @@
      "yMaxM": 9.5,
      "zMinM": 26.8,
      "zMaxM": 36.8,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "dkm_prinz_eugen_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "dkm_prinz_eugen_mid1",
+     "hp": 36,
+     "crew": 0,
+     "xMinM": -8.0,
+     "xMaxM": 8.0,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": -15.9,
+     "zMaxM": -11.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "dkm_prinz_eugen_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "dkm_prinz_eugen_mid2",
+     "hp": 36,
+     "crew": 0,
+     "xMinM": -8.0,
+     "xMaxM": 8.0,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": 15.9,
+     "zMaxM": 19.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "dkm_prinz_eugen_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "dkm_prinz_eugen_bow",
+     "hp": 53,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 78.0,
+     "zMaxM": 81.0,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "dkm_prinz_eugen_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "dkm_prinz_eugen_mid1",
+     "hp": 53,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 30.3,
+     "zMaxM": 33.3,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "dkm_prinz_eugen_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "dkm_prinz_eugen_mid2",
+     "hp": 356,
+     "crew": 0,
+     "xMinM": -11.6,
+     "xMaxM": -10.4,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -47.7,
+     "zMaxM": 47.7,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "dkm_prinz_eugen_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "dkm_prinz_eugen_mid2",
+     "hp": 356,
+     "crew": 0,
+     "xMinM": 10.4,
+     "xMaxM": 11.6,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -47.7,
+     "zMaxM": 47.7,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "dkm_prinz_eugen_turret_sec1",
@@ -5483,7 +6353,8 @@
      "yMaxM": -3.8,
      "zMinM": -35.0,
      "zMaxM": -22.9,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "rn_edinburgh_mag_B",
@@ -5497,7 +6368,8 @@
      "yMaxM": -3.8,
      "zMinM": 22.9,
      "zMaxM": 35.0,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "rn_edinburgh_boiler_1",
@@ -5639,9 +6511,97 @@
      "yMaxM": 8.8,
      "zMinM": 23.9,
      "zMaxM": 34.0,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "rn_edinburgh_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "rn_edinburgh_mid1",
+     "hp": 23,
+     "crew": 0,
+     "xMinM": -6.7,
+     "xMaxM": 6.7,
+     "yMinM": 5.8,
+     "yMaxM": 11.3,
+     "zMinM": -14.5,
+     "zMaxM": -10.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rn_edinburgh_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "rn_edinburgh_mid2",
+     "hp": 23,
+     "crew": 0,
+     "xMinM": -6.7,
+     "xMaxM": 6.7,
+     "yMinM": 5.8,
+     "yMaxM": 11.3,
+     "zMinM": 14.5,
+     "zMaxM": 18.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rn_edinburgh_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "rn_edinburgh_bow",
+     "hp": 35,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.8,
+     "yMaxM": 4.8,
+     "zMinM": 70.9,
+     "zMaxM": 73.9,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "rn_edinburgh_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "rn_edinburgh_mid1",
+     "hp": 35,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.8,
+     "yMaxM": 4.8,
+     "zMinM": 27.4,
+     "zMaxM": 30.4,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "rn_edinburgh_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "rn_edinburgh_mid2",
+     "hp": 231,
+     "crew": 0,
+     "xMinM": -10.2,
+     "xMaxM": -9.1,
+     "yMinM": -6.4,
+     "yMaxM": -1.9,
+     "zMinM": -43.4,
+     "zMaxM": 43.4,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "rn_edinburgh_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "rn_edinburgh_mid2",
+     "hp": 231,
+     "crew": 0,
+     "xMinM": 9.1,
+     "xMaxM": 10.2,
+     "yMinM": -6.4,
+     "yMaxM": -1.9,
+     "zMinM": -43.4,
+     "zMaxM": 43.4,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -5873,7 +6833,8 @@
      "yMaxM": -4.3,
      "zMinM": -33.3,
      "zMaxM": -21.3,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_northampton_mag_B",
@@ -5887,7 +6848,8 @@
      "yMaxM": -4.3,
      "zMinM": 21.3,
      "zMaxM": 33.3,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_northampton_boiler_1",
@@ -6029,9 +6991,97 @@
      "yMaxM": 9.5,
      "zMinM": 22.3,
      "zMaxM": 32.3,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_northampton_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_northampton_mid1",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.4,
+     "xMaxM": 6.4,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": -13.7,
+     "zMaxM": -9.7,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_northampton_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_northampton_mid2",
+     "hp": 26,
+     "crew": 0,
+     "xMinM": -6.4,
+     "xMaxM": 6.4,
+     "yMinM": 6.5,
+     "yMaxM": 12.0,
+     "zMinM": 13.7,
+     "zMaxM": 17.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_northampton_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_northampton_bow",
+     "hp": 38,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 66.8,
+     "zMaxM": 69.8,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_northampton_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_northampton_mid1",
+     "hp": 38,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -4.3,
+     "yMaxM": 5.5,
+     "zMinM": 25.8,
+     "zMaxM": 28.8,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_northampton_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_northampton_mid2",
+     "hp": 256,
+     "crew": 0,
+     "xMinM": -10.0,
+     "xMaxM": -8.8,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -41.0,
+     "zMaxM": 41.0,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_northampton_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_northampton_mid2",
+     "hp": 256,
+     "crew": 0,
+     "xMinM": 8.8,
+     "xMaxM": 10.0,
+     "yMinM": -7.2,
+     "yMaxM": -2.2,
+     "zMinM": -41.0,
+     "zMaxM": 41.0,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_northampton_turret_sec1",
@@ -6251,7 +7301,8 @@
      "yMaxM": -3.2,
      "zMinM": -29.1,
      "zMaxM": -17.1,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "A"
     },
     {
      "id": "uss_penelope_mag_B",
@@ -6265,7 +7316,8 @@
      "yMaxM": -3.2,
      "zMinM": 17.1,
      "zMaxM": 29.1,
-     "buoyancySharePct": 7.0
+     "buoyancySharePct": 7.0,
+     "turretGroup": "B"
     },
     {
      "id": "uss_penelope_boiler_1",
@@ -6407,9 +7459,97 @@
      "yMaxM": 7.8,
      "zMinM": 18.1,
      "zMaxM": 28.1,
-     "buoyancySharePct": 42.0,
+     "buoyancySharePct": 1.0,
      "open": true,
      "turretGroup": "B"
+    },
+    {
+     "id": "uss_penelope_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_penelope_mid1",
+     "hp": 11,
+     "crew": 0,
+     "xMinM": -4.8,
+     "xMaxM": 4.8,
+     "yMinM": 4.8,
+     "yMaxM": 10.3,
+     "zMinM": -11.5,
+     "zMaxM": -7.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_penelope_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_penelope_mid2",
+     "hp": 11,
+     "crew": 0,
+     "xMinM": -4.8,
+     "xMaxM": 4.8,
+     "yMinM": 4.8,
+     "yMaxM": 10.3,
+     "zMinM": 11.5,
+     "zMaxM": 15.5,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_penelope_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_penelope_bow",
+     "hp": 17,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.2,
+     "yMaxM": 3.8,
+     "zMinM": 56.2,
+     "zMaxM": 59.2,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_penelope_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_penelope_mid1",
+     "hp": 17,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -3.2,
+     "yMaxM": 3.8,
+     "zMinM": 21.6,
+     "zMaxM": 24.6,
+     "buoyancySharePct": 0.5,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_penelope_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_penelope_mid2",
+     "hp": 114,
+     "crew": 0,
+     "xMinM": -8.3,
+     "xMaxM": -7.2,
+     "yMinM": -5.3,
+     "yMaxM": -1.6,
+     "zMinM": -34.6,
+     "zMaxM": 34.6,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_penelope_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_penelope_mid2",
+     "hp": 114,
+     "crew": 0,
+     "xMinM": 7.2,
+     "xMaxM": 8.3,
+     "yMinM": -5.3,
+     "yMaxM": -1.6,
+     "zMinM": -34.6,
+     "zMaxM": 34.6,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -6653,7 +7793,8 @@
      "yMaxM": -5.2,
      "zMinM": -32.7,
      "zMaxM": -20.7,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_nevada_mag_B",
@@ -6667,7 +7808,8 @@
      "yMaxM": -5.2,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_nevada_mag_C",
@@ -6681,7 +7823,8 @@
      "yMaxM": -5.2,
      "zMinM": 20.7,
      "zMaxM": 32.7,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_nevada_boiler_1",
@@ -6839,9 +7982,112 @@
      "yMaxM": 10.8,
      "zMinM": 21.7,
      "zMaxM": 31.7,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_nevada_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_nevada_mid1",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 7.8,
+     "yMaxM": 13.3,
+     "zMinM": -13.3,
+     "zMaxM": -9.3,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_nevada_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_nevada_mid2",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 7.8,
+     "yMaxM": 13.3,
+     "zMinM": 13.3,
+     "zMaxM": 17.4,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_nevada_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_nevada_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.2,
+     "yMaxM": 6.8,
+     "zMinM": 65.2,
+     "zMaxM": 68.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_nevada_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_nevada_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.2,
+     "yMaxM": 6.8,
+     "zMinM": 45.2,
+     "zMaxM": 48.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_nevada_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_nevada_mid1",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.2,
+     "yMaxM": 6.8,
+     "zMinM": 25.2,
+     "zMaxM": 28.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_nevada_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_nevada_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": -15.1,
+     "xMaxM": -13.9,
+     "yMinM": -8.7,
+     "yMaxM": -2.6,
+     "zMinM": -40.1,
+     "zMaxM": 40.1,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_nevada_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_nevada_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": 13.9,
+     "xMaxM": 15.1,
+     "yMinM": -8.7,
+     "yMaxM": -2.6,
+     "zMinM": -40.1,
+     "zMaxM": 40.1,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_nevada_turret_sec1",
@@ -7072,7 +8318,8 @@
      "yMaxM": -6.0,
      "zMinM": -33.8,
      "zMaxM": -21.8,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_pennsylvania_mag_B",
@@ -7086,7 +8333,8 @@
      "yMaxM": -6.0,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_pennsylvania_mag_C",
@@ -7100,7 +8348,8 @@
      "yMaxM": -6.0,
      "zMinM": 21.8,
      "zMaxM": 33.8,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_pennsylvania_boiler_1",
@@ -7258,9 +8507,112 @@
      "yMaxM": 12.0,
      "zMinM": 22.8,
      "zMaxM": 32.8,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_pennsylvania_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_pennsylvania_mid1",
+     "hp": 65,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": -13.9,
+     "zMaxM": -9.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_pennsylvania_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_pennsylvania_mid2",
+     "hp": 65,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": 13.9,
+     "zMaxM": 17.9,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_pennsylvania_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_pennsylvania_bow",
+     "hp": 97,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 67.9,
+     "zMaxM": 70.9,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_pennsylvania_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_pennsylvania_bow",
+     "hp": 97,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 47.1,
+     "zMaxM": 50.1,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_pennsylvania_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_pennsylvania_mid1",
+     "hp": 97,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 26.2,
+     "zMaxM": 29.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_pennsylvania_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_pennsylvania_mid2",
+     "hp": 648,
+     "crew": 0,
+     "xMinM": -16.6,
+     "xMaxM": -15.4,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -41.6,
+     "zMaxM": 41.6,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_pennsylvania_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_pennsylvania_mid2",
+     "hp": 648,
+     "crew": 0,
+     "xMinM": 15.4,
+     "xMaxM": 16.6,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -41.6,
+     "zMaxM": 41.6,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -7463,7 +8815,8 @@
      "yMaxM": -6.0,
      "zMinM": -34.5,
      "zMaxM": -22.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_new_mexico_mag_B",
@@ -7477,7 +8830,8 @@
      "yMaxM": -6.0,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_new_mexico_mag_C",
@@ -7491,7 +8845,8 @@
      "yMaxM": -6.0,
      "zMinM": 22.5,
      "zMaxM": 34.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_new_mexico_boiler_1",
@@ -7649,9 +9004,112 @@
      "yMaxM": 12.0,
      "zMinM": 23.5,
      "zMaxM": 33.5,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_new_mexico_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_new_mexico_mid1",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": -14.2,
+     "zMaxM": -10.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_new_mexico_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_new_mexico_mid2",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": 14.2,
+     "zMaxM": 18.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_new_mexico_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_new_mexico_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 69.8,
+     "zMaxM": 72.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_new_mexico_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_new_mexico_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 48.4,
+     "zMaxM": 51.4,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_new_mexico_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_new_mexico_mid1",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 27.0,
+     "zMaxM": 30.0,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_new_mexico_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_new_mexico_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": -16.6,
+     "xMaxM": -15.4,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_new_mexico_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_new_mexico_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": 15.4,
+     "xMaxM": 16.6,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -7895,7 +9353,8 @@
      "yMaxM": -5.6,
      "zMinM": -34.5,
      "zMaxM": -22.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_colorado_mag_B",
@@ -7909,7 +9368,8 @@
      "yMaxM": -5.6,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_colorado_mag_C",
@@ -7923,7 +9383,8 @@
      "yMaxM": -5.6,
      "zMinM": 22.5,
      "zMaxM": 34.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_colorado_boiler_1",
@@ -8081,9 +9542,112 @@
      "yMaxM": 11.4,
      "zMinM": 23.5,
      "zMaxM": 33.5,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_colorado_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_colorado_mid1",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -12.0,
+     "xMaxM": 12.0,
+     "yMinM": 8.4,
+     "yMaxM": 13.9,
+     "zMinM": -14.2,
+     "zMaxM": -10.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_colorado_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_colorado_mid2",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -12.0,
+     "xMaxM": 12.0,
+     "yMinM": 8.4,
+     "yMaxM": 13.9,
+     "zMinM": 14.2,
+     "zMaxM": 18.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_colorado_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_colorado_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.4,
+     "zMinM": 69.8,
+     "zMaxM": 72.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_colorado_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_colorado_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.4,
+     "zMinM": 48.4,
+     "zMaxM": 51.4,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_colorado_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_colorado_mid1",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.4,
+     "zMinM": 27.0,
+     "zMaxM": 30.0,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_colorado_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_colorado_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": -15.6,
+     "xMaxM": -14.4,
+     "yMinM": -9.3,
+     "yMaxM": -2.8,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_colorado_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_colorado_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": 14.4,
+     "xMaxM": 15.6,
+     "yMinM": -9.3,
+     "yMaxM": -2.8,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_colorado_turret_sec1",
@@ -8364,7 +9928,8 @@
      "yMaxM": -6.2,
      "zMinM": -39.3,
      "zMaxM": -27.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_north_carolina_mag_B",
@@ -8378,7 +9943,8 @@
      "yMaxM": -6.2,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_north_carolina_mag_C",
@@ -8392,7 +9958,8 @@
      "yMaxM": -6.2,
      "zMinM": 27.3,
      "zMaxM": 39.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_north_carolina_boiler_1",
@@ -8550,9 +10117,112 @@
      "yMaxM": 12.4,
      "zMinM": 28.3,
      "zMaxM": 38.3,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_north_carolina_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_north_carolina_mid1",
+     "hp": 90,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 9.4,
+     "yMaxM": 14.9,
+     "zMinM": -16.6,
+     "zMaxM": -12.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_north_carolina_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_north_carolina_mid2",
+     "hp": 90,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 9.4,
+     "yMaxM": 14.9,
+     "zMinM": 16.6,
+     "zMaxM": 20.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_north_carolina_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_north_carolina_bow",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 81.8,
+     "zMaxM": 84.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_north_carolina_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_north_carolina_bow",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 56.8,
+     "zMaxM": 59.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_north_carolina_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_north_carolina_mid1",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 31.8,
+     "zMaxM": 34.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_north_carolina_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_north_carolina_mid2",
+     "hp": 900,
+     "crew": 0,
+     "xMinM": -17.1,
+     "xMaxM": -15.9,
+     "yMinM": -10.4,
+     "yMaxM": -3.1,
+     "zMinM": -50.0,
+     "zMaxM": 50.0,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_north_carolina_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_north_carolina_mid2",
+     "hp": 900,
+     "crew": 0,
+     "xMinM": 15.9,
+     "xMaxM": 17.1,
+     "yMinM": -10.4,
+     "yMaxM": -3.1,
+     "zMinM": -50.0,
+     "zMaxM": 50.0,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_north_carolina_turret_sec1",
@@ -8824,7 +10494,8 @@
      "yMaxM": -6.2,
      "zMinM": -37.5,
      "zMaxM": -25.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_south_dakota_mag_B",
@@ -8838,7 +10509,8 @@
      "yMaxM": -6.2,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_south_dakota_mag_C",
@@ -8852,7 +10524,8 @@
      "yMaxM": -6.2,
      "zMinM": 25.5,
      "zMaxM": 37.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_south_dakota_boiler_1",
@@ -9010,9 +10683,112 @@
      "yMaxM": 12.4,
      "zMinM": 26.5,
      "zMaxM": 36.5,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_south_dakota_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_south_dakota_mid1",
+     "hp": 90,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 9.4,
+     "yMaxM": 14.9,
+     "zMinM": -15.8,
+     "zMaxM": -11.8,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_south_dakota_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_south_dakota_mid2",
+     "hp": 90,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 9.4,
+     "yMaxM": 14.9,
+     "zMinM": 15.8,
+     "zMaxM": 19.8,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_south_dakota_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_south_dakota_bow",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 77.2,
+     "zMaxM": 80.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_south_dakota_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_south_dakota_bow",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 53.6,
+     "zMaxM": 56.6,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_south_dakota_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_south_dakota_mid1",
+     "hp": 135,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.2,
+     "yMaxM": 8.4,
+     "zMinM": 30.0,
+     "zMaxM": 33.0,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_south_dakota_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_south_dakota_mid2",
+     "hp": 900,
+     "crew": 0,
+     "xMinM": -17.1,
+     "xMaxM": -15.9,
+     "yMinM": -10.4,
+     "yMaxM": -3.1,
+     "zMinM": -47.2,
+     "zMaxM": 47.2,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_south_dakota_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_south_dakota_mid2",
+     "hp": 900,
+     "crew": 0,
+     "xMinM": 15.9,
+     "xMaxM": 17.1,
+     "yMinM": -10.4,
+     "yMaxM": -3.1,
+     "zMinM": -47.2,
+     "zMaxM": 47.2,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_south_dakota_turret_sec1",
@@ -9284,7 +11060,8 @@
      "yMaxM": -6.8,
      "zMinM": -45.3,
      "zMaxM": -33.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_iowa_mag_B",
@@ -9298,7 +11075,8 @@
      "yMaxM": -6.8,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_iowa_mag_C",
@@ -9312,7 +11090,8 @@
      "yMaxM": -6.8,
      "zMinM": 33.3,
      "zMaxM": 45.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_iowa_boiler_1",
@@ -9470,9 +11249,112 @@
      "yMaxM": 13.2,
      "zMinM": 34.3,
      "zMaxM": 44.3,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_iowa_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_iowa_mid1",
+     "hp": 116,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 10.2,
+     "yMaxM": 15.7,
+     "zMinM": -19.6,
+     "zMaxM": -15.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_iowa_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_iowa_mid2",
+     "hp": 116,
+     "crew": 0,
+     "xMinM": -13.5,
+     "xMaxM": 13.5,
+     "yMinM": 10.2,
+     "yMaxM": 15.7,
+     "zMinM": 19.6,
+     "zMaxM": 23.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_iowa_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_iowa_bow",
+     "hp": 174,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.8,
+     "yMaxM": 9.2,
+     "zMinM": 96.8,
+     "zMaxM": 99.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_iowa_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_iowa_bow",
+     "hp": 174,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.8,
+     "yMaxM": 9.2,
+     "zMinM": 67.3,
+     "zMaxM": 70.3,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_iowa_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_iowa_mid1",
+     "hp": 174,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.8,
+     "yMaxM": 9.2,
+     "zMinM": 37.8,
+     "zMaxM": 40.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_iowa_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_iowa_mid2",
+     "hp": 1160,
+     "crew": 0,
+     "xMinM": -17.1,
+     "xMaxM": -15.9,
+     "yMinM": -11.3,
+     "yMaxM": -3.4,
+     "zMinM": -59.0,
+     "zMaxM": 59.0,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_iowa_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_iowa_mid2",
+     "hp": 1160,
+     "crew": 0,
+     "xMinM": 15.9,
+     "xMaxM": 17.1,
+     "yMinM": -11.3,
+     "yMaxM": -3.4,
+     "zMinM": -59.0,
+     "zMaxM": 59.0,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "uss_iowa_turret_sec1",
@@ -9703,7 +11585,8 @@
      "yMaxM": -6.0,
      "zMinM": -34.5,
      "zMaxM": -22.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "uss_california_mag_B",
@@ -9717,7 +11600,8 @@
      "yMaxM": -6.0,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "uss_california_mag_C",
@@ -9731,7 +11615,8 @@
      "yMaxM": -6.0,
      "zMinM": 22.5,
      "zMaxM": 34.5,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "uss_california_boiler_1",
@@ -9889,9 +11774,112 @@
      "yMaxM": 12.0,
      "zMinM": 23.5,
      "zMaxM": 33.5,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "uss_california_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "uss_california_mid1",
+     "hp": 71,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": -14.2,
+     "zMaxM": -10.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_california_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "uss_california_mid2",
+     "hp": 71,
+     "crew": 0,
+     "xMinM": -13.0,
+     "xMaxM": 13.0,
+     "yMinM": 9.0,
+     "yMaxM": 14.5,
+     "zMinM": 14.2,
+     "zMaxM": 18.2,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "uss_california_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "uss_california_bow",
+     "hp": 106,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 69.8,
+     "zMaxM": 72.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "uss_california_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "uss_california_bow",
+     "hp": 106,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 48.4,
+     "zMaxM": 51.4,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "uss_california_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "uss_california_mid1",
+     "hp": 106,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -6.0,
+     "yMaxM": 8.0,
+     "zMinM": 27.0,
+     "zMaxM": 30.0,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "uss_california_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_california_mid2",
+     "hp": 710,
+     "crew": 0,
+     "xMinM": -16.6,
+     "xMaxM": -15.4,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "uss_california_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "uss_california_mid2",
+     "hp": 710,
+     "crew": 0,
+     "xMinM": 15.4,
+     "xMaxM": 16.6,
+     "yMinM": -10,
+     "yMaxM": -3.0,
+     "zMinM": -42.8,
+     "zMaxM": 42.8,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     }
    ],
    "armorPlates": [
@@ -10146,7 +12134,8 @@
      "yMaxM": -5.8,
      "zMinM": -39.3,
      "zMaxM": -27.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_kongo_mag_B",
@@ -10160,7 +12149,8 @@
      "yMaxM": -5.8,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "ijn_kongo_mag_C",
@@ -10174,7 +12164,8 @@
      "yMaxM": -5.8,
      "zMinM": 27.3,
      "zMaxM": 39.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "ijn_kongo_boiler_1",
@@ -10332,9 +12323,112 @@
      "yMaxM": 11.7,
      "zMinM": 28.3,
      "zMaxM": 38.3,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "ijn_kongo_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_kongo_mid1",
+     "hp": 64,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 8.7,
+     "yMaxM": 14.2,
+     "zMinM": -16.6,
+     "zMaxM": -12.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_kongo_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "ijn_kongo_mid2",
+     "hp": 64,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 8.7,
+     "yMaxM": 14.2,
+     "zMinM": 16.6,
+     "zMaxM": 20.6,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_kongo_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_kongo_bow",
+     "hp": 96,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 81.8,
+     "zMaxM": 84.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_kongo_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "ijn_kongo_bow",
+     "hp": 96,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 56.8,
+     "zMaxM": 59.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "ijn_kongo_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "ijn_kongo_mid1",
+     "hp": 96,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 31.8,
+     "zMaxM": 34.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "ijn_kongo_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_kongo_mid2",
+     "hp": 640,
+     "crew": 0,
+     "xMinM": -15.1,
+     "xMaxM": -13.9,
+     "yMinM": -9.7,
+     "yMaxM": -2.9,
+     "zMinM": -50.0,
+     "zMaxM": 50.0,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "ijn_kongo_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_kongo_mid2",
+     "hp": 640,
+     "crew": 0,
+     "xMinM": 13.9,
+     "xMaxM": 15.1,
+     "yMinM": -9.7,
+     "yMaxM": -2.9,
+     "zMinM": -50.0,
+     "zMaxM": 50.0,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "ijn_kongo_turret_sec1",
@@ -10633,7 +12727,8 @@
      "yMaxM": -5.6,
      "zMinM": -38.2,
      "zMaxM": -26.2,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "ijn_nagato_mag_B",
@@ -10647,7 +12742,8 @@
      "yMaxM": -5.6,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "ijn_nagato_mag_C",
@@ -10661,7 +12757,8 @@
      "yMaxM": -5.6,
      "zMinM": 26.2,
      "zMaxM": 38.2,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "ijn_nagato_boiler_1",
@@ -10819,9 +12916,112 @@
      "yMaxM": 11.5,
      "zMinM": 27.2,
      "zMaxM": 37.2,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "ijn_nagato_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "ijn_nagato_mid1",
+     "hp": 80,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 8.5,
+     "yMaxM": 14.0,
+     "zMinM": -16.1,
+     "zMaxM": -12.1,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_nagato_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "ijn_nagato_mid2",
+     "hp": 80,
+     "crew": 0,
+     "xMinM": -11.5,
+     "xMaxM": 11.5,
+     "yMinM": 8.5,
+     "yMaxM": 14.0,
+     "zMinM": 16.1,
+     "zMaxM": 20.1,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "ijn_nagato_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "ijn_nagato_bow",
+     "hp": 120,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.5,
+     "zMinM": 79.1,
+     "zMaxM": 82.1,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "ijn_nagato_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "ijn_nagato_bow",
+     "hp": 120,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.5,
+     "zMinM": 54.9,
+     "zMaxM": 57.9,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "ijn_nagato_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "ijn_nagato_mid1",
+     "hp": 120,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.6,
+     "yMaxM": 7.5,
+     "zMinM": 30.8,
+     "zMaxM": 33.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "ijn_nagato_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_nagato_mid2",
+     "hp": 798,
+     "crew": 0,
+     "xMinM": -15.1,
+     "xMaxM": -13.9,
+     "yMinM": -9.4,
+     "yMaxM": -2.8,
+     "zMinM": -48.4,
+     "zMaxM": 48.4,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "ijn_nagato_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "ijn_nagato_mid2",
+     "hp": 798,
+     "crew": 0,
+     "xMinM": 13.9,
+     "xMaxM": 15.1,
+     "yMinM": -9.4,
+     "yMaxM": -2.8,
+     "zMinM": -48.4,
+     "zMaxM": 48.4,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "ijn_nagato_turret_sec1",
@@ -11109,7 +13309,8 @@
      "yMaxM": -5.8,
      "zMinM": -42.3,
      "zMaxM": -30.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "rn_renown_mag_B",
@@ -11123,7 +13324,8 @@
      "yMaxM": -5.8,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "rn_renown_mag_C",
@@ -11137,7 +13339,8 @@
      "yMaxM": -5.8,
      "zMinM": 30.3,
      "zMaxM": 42.3,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "rn_renown_boiler_1",
@@ -11295,9 +13498,112 @@
      "yMaxM": 11.7,
      "zMinM": 31.3,
      "zMaxM": 41.3,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "rn_renown_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "rn_renown_mid1",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -10.7,
+     "xMaxM": 10.7,
+     "yMinM": 8.7,
+     "yMaxM": 14.2,
+     "zMinM": -18.1,
+     "zMaxM": -14.1,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rn_renown_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "rn_renown_mid2",
+     "hp": 68,
+     "crew": 0,
+     "xMinM": -10.7,
+     "xMaxM": 10.7,
+     "yMinM": 8.7,
+     "yMaxM": 14.2,
+     "zMinM": 18.1,
+     "zMaxM": 22.1,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rn_renown_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "rn_renown_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 89.2,
+     "zMaxM": 92.2,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "rn_renown_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "rn_renown_bow",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 62.0,
+     "zMaxM": 65.0,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "rn_renown_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "rn_renown_mid1",
+     "hp": 102,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.8,
+     "yMaxM": 7.7,
+     "zMinM": 34.8,
+     "zMaxM": 37.8,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "rn_renown_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "rn_renown_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": -14.3,
+     "xMaxM": -13.1,
+     "yMinM": -9.7,
+     "yMaxM": -2.9,
+     "zMinM": -54.5,
+     "zMaxM": 54.5,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "rn_renown_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "rn_renown_mid2",
+     "hp": 680,
+     "crew": 0,
+     "xMinM": 13.1,
+     "xMaxM": 14.3,
+     "yMinM": -9.7,
+     "yMaxM": -2.9,
+     "zMinM": -54.5,
+     "zMaxM": 54.5,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "rn_renown_turret_sec1",
@@ -11589,7 +13895,8 @@
      "yMaxM": -5.9,
      "zMinM": -43.6,
      "zMaxM": -31.6,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "A"
     },
     {
      "id": "rms_bismarck_mag_B",
@@ -11603,7 +13910,8 @@
      "yMaxM": -5.9,
      "zMinM": -6.0,
      "zMaxM": 6.0,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "B"
     },
     {
      "id": "rms_bismarck_mag_C",
@@ -11617,7 +13925,8 @@
      "yMaxM": -5.9,
      "zMinM": 31.6,
      "zMaxM": 43.6,
-     "buoyancySharePct": 4.666666666666667
+     "buoyancySharePct": 4.666666666666667,
+     "turretGroup": "C"
     },
     {
      "id": "rms_bismarck_boiler_1",
@@ -11775,9 +14084,112 @@
      "yMaxM": 11.9,
      "zMinM": 32.6,
      "zMaxM": 42.6,
-     "buoyancySharePct": 41.67,
+     "buoyancySharePct": 0.6666666666666666,
      "open": true,
      "turretGroup": "C"
+    },
+    {
+     "id": "rms_bismarck_funnel_1",
+     "kind": "Funnel",
+     "sectionId": "rms_bismarck_mid1",
+     "hp": 96,
+     "crew": 0,
+     "xMinM": -15.0,
+     "xMaxM": 15.0,
+     "yMinM": 8.9,
+     "yMaxM": 14.4,
+     "zMinM": -18.8,
+     "zMaxM": -14.8,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rms_bismarck_funnel_2",
+     "kind": "Funnel",
+     "sectionId": "rms_bismarck_mid2",
+     "hp": 96,
+     "crew": 0,
+     "xMinM": -15.0,
+     "xMaxM": 15.0,
+     "yMinM": 8.9,
+     "yMaxM": 14.4,
+     "zMinM": 18.8,
+     "zMaxM": 22.8,
+     "buoyancySharePct": 0
+    },
+    {
+     "id": "rms_bismarck_hoist_A",
+     "kind": "Hoist",
+     "sectionId": "rms_bismarck_bow",
+     "hp": 144,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.9,
+     "yMaxM": 7.9,
+     "zMinM": 92.6,
+     "zMaxM": 95.6,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "A"
+    },
+    {
+     "id": "rms_bismarck_hoist_B",
+     "kind": "Hoist",
+     "sectionId": "rms_bismarck_bow",
+     "hp": 144,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.9,
+     "yMaxM": 7.9,
+     "zMinM": 64.4,
+     "zMaxM": 67.4,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "B"
+    },
+    {
+     "id": "rms_bismarck_hoist_C",
+     "kind": "Hoist",
+     "sectionId": "rms_bismarck_mid1",
+     "hp": 144,
+     "crew": 2,
+     "xMinM": -2,
+     "xMaxM": 2,
+     "yMinM": -5.9,
+     "yMaxM": 7.9,
+     "zMinM": 36.1,
+     "zMaxM": 39.1,
+     "buoyancySharePct": 0.3333333333333333,
+     "turretGroup": "C"
+    },
+    {
+     "id": "rms_bismarck_tds_port",
+     "kind": "AntiTorpedo",
+     "sectionId": "rms_bismarck_mid2",
+     "hp": 960,
+     "crew": 0,
+     "xMinM": -18.6,
+     "xMaxM": -17.4,
+     "yMinM": -9.9,
+     "yMaxM": -3.0,
+     "zMinM": -56.5,
+     "zMaxM": 56.5,
+     "buoyancySharePct": 1.0,
+     "hydroShockAbsorptionPct": 0.6
+    },
+    {
+     "id": "rms_bismarck_tds_starboard",
+     "kind": "AntiTorpedo",
+     "sectionId": "rms_bismarck_mid2",
+     "hp": 960,
+     "crew": 0,
+     "xMinM": 17.4,
+     "xMaxM": 18.6,
+     "yMinM": -9.9,
+     "yMaxM": -3.0,
+     "zMinM": -56.5,
+     "zMaxM": 56.5,
+     "buoyancySharePct": 39.0,
+     "hydroShockAbsorptionPct": 0.6
     },
     {
      "id": "rms_bismarck_turret_sec1",

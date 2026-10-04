@@ -34,7 +34,7 @@
    "file": "model_lod0.glb",
    "rigids": 240,
    "tris": 474182,
-   "bytes": 25068332
+   "bytes": 25068520
   },
   {
    "lod": 1,
@@ -42,7 +42,7 @@
    "file": "model_lod1.glb",
    "rigids": 206,
    "tris": 196365,
-   "bytes": 11297668
+   "bytes": 11297856
   },
   {
    "lod": 2,
@@ -50,7 +50,7 @@
    "file": "model_lod2.glb",
    "rigids": 58,
    "tris": 9343,
-   "bytes": 582620
+   "bytes": 582804
   },
   {
    "lod": 3,
@@ -58,7 +58,7 @@
    "file": "model_lod3.glb",
    "rigids": 6,
    "tris": 883,
-   "bytes": 68556
+   "bytes": 68700
   }
  ],
  "warnings": [

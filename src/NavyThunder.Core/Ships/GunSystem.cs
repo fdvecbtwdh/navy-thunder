@@ -60,6 +60,15 @@ public sealed class GunSystem : ISimulationSystem
 
     public string Name => "guns";
 
+    /// <summary>W7 maneuver accuracy penalty (P04-8): dispersion multiplier terms.
+    /// 1 + speedSelf×(self speed fraction) + 0.3 while the own rudder is hard over +
+    /// speedTarget×(target moving) — symmetric for player and AI (same code path).</summary>
+    public double MotionPenaltyPerSpeedFraction { get; init; } = 0.4;
+    public double MotionPenaltyHardTurn { get; init; } = 0.3;
+    public double MotionPenaltyTargetMoving { get; init; } = 0.3;
+    /// <summary>Target speed above this (m/s) counts as "moving" for the penalty.</summary>
+    public double TargetMovingThresholdMs { get; init; } = 5.0;
+
     public GunSystem(IReadOnlyDictionary<string, ShellDefinition> shells, BallisticsSystem ballistics)
     {
         _shells = shells;
@@ -251,8 +260,11 @@ public sealed class GunSystem : ISimulationSystem
                 VerticalMrad = gun.Definition.VerticalMrad,
                 // Phase 04 (W2): with the fire-control post destroyed the battery falls
                 // back to local laying — 50 % wider salvo (approximation, W2 band).
-                PenaltyMultiplier = gun.Ship.Parts.Values.Any(
-                    p => p.Definition.Kind == PartKind.FireControl && p.Destroyed) ? 1.5 : 1.0,
+                PenaltyMultiplier = (gun.Ship.Parts.Values.Any(
+                    p => p.Definition.Kind == PartKind.FireControl && p.Destroyed) ? 1.5 : 1.0)
+                    // Phase 04 (W7): own maneuver + target motion widen the salvo. Applied
+                    // before the dispersion draw, so player and AI share one path.
+                    * MotionPenalty(gun.Ship, order.TargetVelocity()),
             };
             var rng = world.Rng("guns");
 
@@ -345,6 +357,18 @@ public sealed class GunSystem : ISimulationSystem
     {
         deg %= 360.0;
         return deg < 0 ? deg + 360.0 : deg;
+    }
+
+    private double MotionPenalty(Ship ship, Vec3 targetVelocity)
+    {
+        // W7: own speed/turn + target motion widen the salvo. Symmetric — the AI fires
+        // through this exact path.
+        double selfFrac = Math.Clamp(ship.SpeedKnots / Math.Max(1.0, ship.Definition.MaxSpeedKnots), 0.0, 1.5);
+        double mult = 1.0
+                      + MotionPenaltyPerSpeedFraction * selfFrac
+                      + (Math.Abs(ship.RudderCommand) > 0.5 ? MotionPenaltyHardTurn : 0.0)
+                      + (targetVelocity.Length > TargetMovingThresholdMs ? MotionPenaltyTargetMoving : 0.0);
+        return mult;
     }
 
     private static double HorizontalDistance(Vec3 a, Vec3 b)

@@ -476,7 +476,10 @@ def build_glb(node_prims: list[tuple[str, list[dict]]],
     b = GlbBuilder()
     accessors, meshes, nodes = [], [], []
 
-    def bake(p: tuple[float, float, float], wtm) -> tuple[float, float, float]:
+    def bake(p: tuple[float, float, float], wtm, pivot=None) -> tuple[float, float, float]:
+        if pivot is not None:
+            # Rotatable node: re-anchor around its barbette (XZ); Y stays model-space.
+            p = (p[0] - pivot[0], p[1], p[2] - pivot[1])
         if wtm is None:
             return to_nt(p)
         x, y, z = p
@@ -492,7 +495,8 @@ def build_glb(node_prims: list[tuple[str, list[dict]]],
             used = sorted(set(prim["indices"]))
             remap = {old: new for new, old in enumerate(used)}
             wtm = prim.get("wtm")
-            npos = [bake(prim["pos"][i], wtm) for i in used]
+            pv = prim.get("pivot_wt")
+            npos = [bake(prim["pos"][i], wtm, pv) for i in used]
             nuv = [prim["uv"][i] for i in used] if prim.get("uv") else None
             nidx = [remap[i] for i in prim["indices"]]
             pv = b.add_view(b"".join(struct.pack("<3f", *p) for p in npos))
@@ -701,17 +705,12 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
         def collect(r: dict, pivot: tuple | None = None) -> list[dict]:
             """Decode + filter elems for one rigid.
 
-            pivot=None: bake the rigid's skeleton wtm into the vertices (static
-            hull parts). pivot=(R3x3, t): the rigid goes into a transform node
-            (rotatable turret) - its shared-buffer vertices are model-space, so
-            re-express them relative to the pivot (R^T (p - t)) and let the node
-            transform place them back; yawing the node then spins the part
-            around its own barbette instead of the world origin."""
-            # Shared-buffer vertices are MODEL-SPACE for every rigid (verified on
-            # Bismarck AND North Carolina: identity-wtm parts render correctly,
-            # transformed parts would fly if baked). Only pivot-local hierarchy
-            # parts (rotatable turrets) re-anchor their vertices.
-            wtm = None
+            Shared-buffer vertices are MODEL-SPACE for every rigid (verified on
+            Bismarck AND North Carolina: identity-wtm parts render correctly,
+            transformed parts would fly if baked). pivot=(px, pz) re-anchors the
+            emitted primitives for a rotatable node: the glb writer subtracts the
+            pivot from the vertices and the node translation puts it back, so the
+            node can yaw around its own barbette."""
             per_gvd: dict[int, dict] = {}
             for el in r["elems"]:
                 gi = el["gvd"]
@@ -779,33 +778,42 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
                 vdata = vcache[gi]
                 if not vdata["pos"]:
                     continue
-                if pivot is not None and not vdata.get("model_space", True):
-                    # local-space vertices: the node transform (wtm) places them;
-                    # keep vertices as-is and mark wtm so the glb writer bakes it.
-                    piv = vdata
-                    for _base_v, tri, mat_idx in blk["items"]:
-                        prims.append({"pos": piv["pos"], "uv": piv["uv"],
-                                      "indices": tri, "mat": mat_idx, "wtm": wtm})
-                    continue
-                if pivot is not None:
-                    (r00, r11_, r22_), (tx, ty, tz) = pivot
-                    inv = _invert_rigid((r00, r11_, r22_), (tx, ty, tz))
-                    piv_pos = []
-                    for (px, py, pz) in vdata["pos"]:
-                        lx = px - tx
-                        ly = py - ty
-                        lz = pz - tz
-                        piv_pos.append((inv[0][0] * lx + inv[0][1] * ly + inv[0][2] * lz,
-                                        inv[1][0] * lx + inv[1][1] * ly + inv[1][2] * lz,
-                                        inv[2][0] * lx + inv[2][1] * ly + inv[2][2] * lz))
-                    piv = {"pos": piv_pos, "uv": vdata["uv"]}
-                else:
-                    piv = vdata
                 for _base_v, tri, mat_idx in blk["items"]:
-                    # final indices are already resolved (baseVertex applied + culled)
-                    bake_wtm = None if (pivot or vdata.get("model_space", True)) else wtm
-                    prims.append({"pos": piv["pos"], "uv": piv["uv"],
-                                  "indices": tri, "mat": mat_idx, "wtm": bake_wtm})
+                    # Final indices are already resolved (baseVertex applied + culled).
+                    # Re-anchor: the glb writer shifts verts by -pivot before the NT
+                    # conversion and the node carries +pivot as its translation, so
+                    # yawing the node spins the part around its own barbette.
+                    entry = {"pos": vdata["pos"], "uv": vdata["uv"],
+                             "indices": tri, "mat": mat_idx, "wtm": None,
+                             "pivot_wt": None}
+                    if pivot is not None:
+                        # Per-triangle gate: rigids are material batches whose slabs can
+                        # span the whole beam; only triangles whose centroid sits within
+                        # 15 m of the barbette pivot belong to the rotating turret.
+                        rotating = []
+                        static = []
+                        for j in range(0, len(tri) - 2, 3):
+                            a, b, c = tri[j], tri[j + 1], tri[j + 2]
+                            # ALL three corners near the barbette: big deck triangles
+                            # straddle the pivot with a near-centroid and would sweep
+                            # the whole beam when yawed.
+                            near = all(abs(vdata["pos"][v][0] - pivot[0]) <= 12
+                                       and abs(vdata["pos"][v][2] - pivot[1]) <= 12
+                                       for v in (a, b, c))
+                            (rotating if near else static).extend((a, b, c))
+                        if rotating:
+                            entry["pivot_wt"] = pivot
+                            entry["indices"] = rotating
+                        if static:
+                            static_entry = dict(entry)
+                            static_entry["indices"] = static
+                            static_entry["pivot_wt"] = None
+                            prims.append(static_entry)
+                        if not rotating:
+                            entry = None
+                    if entry is not None and entry.get("indices"):
+                        prims.append(entry)
+            return prims
             return prims
 
         def nt_world(nd: dict) -> tuple[list[float], tuple]:
@@ -824,10 +832,19 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
         # transforms (always renders correctly); turret anchor positions live in
         # nodeMap.json and Phase 04 owns real turret articulation.
         turret_nodes: dict[str, dict] = {}
+        turret_pivots: dict[str, tuple[float, float]] = {}
         for tname, r in turret_rigids.items():
-            turret_nodes[tname] = {"name": tname, "prims": collect(r),
-                                   "translation": None, "rotation": None,
-                                   "children": [], "_rot": None, "_trans": None}
+            sk_node = skeleton_by_name.get(tname.lstrip("@"))
+            if sk_node is None:
+                continue
+            pivot = (sk_node["wtm"][12], sk_node["wtm"][14])  # XZ, WT axes
+            prims = collect(r, pivot)
+            trans = to_nt((pivot[0], 0.0, pivot[1]))
+            turret_nodes[tname] = {"name": tname, "prims": prims,
+                                   "translation": list(trans),
+                                   "rotation": None,
+                                   "children": [], "_rot": None,
+                                   "_trans": pivot}
             hierarchy.append(turret_nodes[tname])
             emitted.add(tname)
         for r in gun_rigids:
@@ -835,18 +852,20 @@ def convert_grp(grp_path: Path, out_dir: Path, lods: list[int] | None = None) ->
             if sk_node is None:
                 continue  # baked with the rest
             emitted.add(r["name"])
+            gun_sk = skeleton_by_name.get(r["name"].lstrip("@"))
+            gun_pivot = (gun_sk["wtm"][12], gun_sk["wtm"][14]) if gun_sk else None
+            prims = collect(r, gun_pivot)
             if not turret_nodes:
-                # Iowa-type: gun nodes are grouped under the scene root like the rest
-                hierarchy.append({"name": r["name"], "prims": collect(r),
-                                  "translation": None, "rotation": None,
-                                  "children": []})
+                # Iowa-type: gun nodes rotate themselves around their own barbette.
+                trans = to_nt((gun_pivot[0], 0.0, gun_pivot[1])) if gun_pivot else None
+                hierarchy.append({"name": r["name"], "prims": prims,
+                                  "translation": list(trans) if trans else None,
+                                  "rotation": None, "children": []})
                 continue
-            # nearest turret by translation distance (identity nodes in Phase 03;
-            # gun nodes are grouped for Phase 04 articulation)
+            # Nearest turret by skeleton position (the gun feeds that barbette).
             best = min(turret_nodes.values(),
-                       key=lambda t: sum((a - b) ** 2 for a, b in zip(t["_trans"] or (0, 0, 0),
-                                                                       (sk_node["wtm"][12], sk_node["wtm"][13], sk_node["wtm"][14]))))
-            best["children"].append({"name": r["name"], "prims": collect(r),
+                       key=lambda t: sum((a - b) ** 2 for a, b in zip(t["_trans"], gun_pivot or (0.0, 0.0))))
+            best["children"].append({"name": r["name"], "prims": prims,
                                      "translation": None, "rotation": None,
                                      "children": []})
 

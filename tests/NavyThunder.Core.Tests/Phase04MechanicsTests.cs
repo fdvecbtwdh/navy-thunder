@@ -36,6 +36,12 @@ public class Phase04MechanicsTests(ITestOutputHelper output)
         return src with { Parts = [.. src.Parts, tds] };
     }
 
+    /// <summary>Same hull with her TDS layers removed entirely (control ship).</summary>
+    private static ShipDefinition WithNoTds(ShipDefinition src) => src with
+    {
+        Parts = src.Parts.Where(p => p.Kind != PartKind.AntiTorpedo).ToArray(),
+    };
+
     private static DamageEvent HydroShockAt(Vec3 position, double amount, double radius) => new()
     {
         Channel = DamageChannel.HydroShock,
@@ -66,7 +72,7 @@ public class Phase04MechanicsTests(ITestOutputHelper output)
             .Where(p => p.Definition.Kind != PartKind.AntiTorpedo).Sum(p => p.Definition.Hp - p.Hp);
         double shieldedInterior = shielded.Parts.Values
             .Where(p => p.Definition.Kind != PartKind.AntiTorpedo).Sum(p => p.Definition.Hp - p.Hp);
-        var tdsPart = shielded.Parts.Values.Single(p => p.Definition.Kind == PartKind.AntiTorpedo);
+        var tdsPart = shielded.Parts.Values.First(p => p.Definition.Kind == PartKind.AntiTorpedo);
 
         output.WriteLine($"interior damage: plain={plainInterior:F0} shielded={shieldedInterior:F0}; " +
                          $"TDS hp loss={3000 - tdsPart.Hp:F0}");
@@ -80,33 +86,44 @@ public class Phase04MechanicsTests(ITestOutputHelper output)
     public void Destroyed_Tds_Protects_Nothing()
     {
         var repo = Repo();
-        var plain = ShipFactory.Create(repo.Ships["uss_north_carolina"], "plain");
-        var shielded = ShipFactory.Create(WithTds(repo.Ships["uss_north_carolina"], 0.6), "shielded");
+        // Control: identical hull with her TDS layers REMOVED (identical radial
+        // distribution over the interior parts).
+        var bare = ShipFactory.Create(WithNoTds(repo.Ships["uss_north_carolina"]), "bare");
+        var stock = ShipFactory.Create(repo.Ships["uss_north_carolina"], "stock");
+        var shielded = ShipFactory.Create(repo.Ships["uss_north_carolina"], "shielded");
 
-        var tds = shielded.Parts.Values.Single(p => p.Definition.Kind == PartKind.AntiTorpedo);
-        // Blown layer (W5 bugfix semantics): kill it through the damage path.
-        shielded.ApplyDamage(new DamageEvent
+        // Blown layers (W5 bugfix semantics): kill EVERY TDS layer at the blast point
+        // through the damage path (capital templates carry bulges on both sides).
+        foreach (var tds in shielded.Parts.Values.Where(p => p.Definition.Kind == PartKind.AntiTorpedo))
         {
-            Channel = DamageChannel.Kinetic,
-            SourceId = "test",
-            TargetId = shielded.TargetId,
-            Position = tds.Center,
-            Amount = tds.Definition.Hp * 10,
-            Tick = 0,
-            Time = 0,
-        });
-        Assert.True(tds.Destroyed, "TDS layer must be destroyed by the overload hit");
+            shielded.ApplyDamage(new DamageEvent
+            {
+                Channel = DamageChannel.Kinetic,
+                SourceId = "test",
+                TargetId = shielded.TargetId,
+                Position = tds.Center,
+                Amount = tds.Definition.Hp * 10,
+                Tick = 0,
+                Time = 0,
+            });
+            Assert.True(tds.Destroyed, "TDS layer must be destroyed by the overload hit");
+        }
 
         var point = new Vec3(shielded.Definition.BeamM / 2, -2.5, 0);
         double amount = 800;
-        plain.ApplyDamage(HydroShockAt(point, amount, 25) with { TargetId = plain.TargetId });
+        bare.ApplyDamage(HydroShockAt(point, amount, 25) with { TargetId = bare.TargetId });
+        stock.ApplyDamage(HydroShockAt(point, amount, 25) with { TargetId = stock.TargetId });
         shielded.ApplyDamage(HydroShockAt(point, amount, 25) with { TargetId = shielded.TargetId });
 
-        double plainInterior = plain.Parts.Values.Where(p => p.Definition.Kind != PartKind.AntiTorpedo)
+        double InteriorOf(Ship ship) => ship.Parts.Values
+            .Where(p => p.Definition.Kind != PartKind.AntiTorpedo)
             .Sum(p => p.Definition.Hp - p.Hp);
-        double shieldedInterior = shielded.Parts.Values.Where(p => p.Definition.Kind != PartKind.AntiTorpedo)
-            .Sum(p => p.Definition.Hp - p.Hp);
-        Assert.Equal(plainInterior, shieldedInterior, 1);
+
+        // Dead layers protect nothing: identical to having no TDS at all.
+        Assert.Equal(InteriorOf(bare), InteriorOf(shielded), 1);
+        // Living absorbing layers shield the interior (the whole point of a bulge).
+        Assert.True(InteriorOf(stock) < InteriorOf(shielded),
+            $"stock TDS must shield the interior (stock {InteriorOf(stock):F0} vs dead {InteriorOf(shielded):F0})");
     }
 
     [Fact]
@@ -276,5 +293,42 @@ public class Phase04MechanicsTests(ITestOutputHelper output)
         Assert.Equal(DcFlow.Extinguishing, priA[0]);
         Assert.Equal(DcFlow.Unwatering, priB[0]);
         Assert.Equal(DcFlow.Repair, priDefault[0]); // untouched ship keeps the default
+    }
+
+    [Fact]
+    public void Fire_Spreads_Turret_To_Hoist_To_Magazine()
+    {
+        var repo = Repo();
+        var fire = new NavyThunder.Core.Fire.FireSystem(repo.ToFireModel(), new DamageRegistry());
+        var flooding = new FloodingSystem(new DamageRegistry(), fire);
+        var ship = ShipFactory.Create(repo.Ships["uss_north_carolina"], "chain");
+        flooding.Ships.Add(ship);
+        var spread = new NavyThunder.Core.Fire.FireSpreadSystem(fire, flooding.Ships);
+        var world = new SimulationWorld(fixedDeltaTime: 0.02);
+
+        string turretId = $"{ship.TargetId}/{ship.Parts.Values.First(p => p.Definition.Kind == PartKind.Turret).Definition.Id}";
+        Assert.True(fire.TryIgnite(world, turretId, "turret", Vec3.Zero, 1e9), "chain test force-ignites the turret");
+
+        // Deterministic chain: roll every 30 s over 300 s; at least the hoist must catch
+        // (25 %/30 s -> ~92 % per trial). Trials over seeds keep the probabilistic test stable.
+        int hoistFires = 0;
+        for (int trial = 0; trial < 8; trial++)
+        {
+            var w = new SimulationWorld(fixedDeltaTime: 0.02, masterSeed: (ulong)(0xF17E + trial));
+            var f = new NavyThunder.Core.Fire.FireSystem(repo.ToFireModel(), new DamageRegistry());
+            var ships = new List<Ship>();
+            var sp = new NavyThunder.Core.Fire.FireSpreadSystem(f, ships);
+            var shp = ShipFactory.Create(repo.Ships["uss_north_carolina"], $"chain{trial}");
+            ships.Add(shp);
+            var tid = $"{shp.TargetId}/{shp.Parts.Values.First(p => p.Definition.Kind == PartKind.Turret).Definition.Id}";
+            f.TryIgnite(w, tid, "turret", Vec3.Zero, 1e9);
+            w.AddSystem(sp);
+            w.Run(300);
+
+            hoistFires += f.Fires.Count(x => x.HostId.Contains("hoist", StringComparison.OrdinalIgnoreCase));
+        }
+
+        output.WriteLine($"hoist fires across 8 trials: {hoistFires}");
+        Assert.True(hoistFires >= 1, "turret fire must reach a hoist within 300 s in at least one trial");
     }
 }

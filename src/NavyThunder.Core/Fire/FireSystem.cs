@@ -74,6 +74,10 @@ public sealed class FireSystem : ISimulationSystem
     /// <summary>A fire consumes its host's combustibles and dies after this long (s).</summary>
     public double MaxBurnTimeS { get; init; } = 240;
 
+    /// <summary>Exposes the base ignition probability so spread systems can normalize
+    /// their source multipliers to an exact chance (Phase 04 fire chain).</summary>
+    public double TryIgniteBaseProbability => _model.IgnitionBaseProbability;
+
     public bool TryIgnite(SimulationWorld world, string hostId, string hostKind, Vec3 position, double sourceMultiplier = 1.0)
     {
         RollCount++;
