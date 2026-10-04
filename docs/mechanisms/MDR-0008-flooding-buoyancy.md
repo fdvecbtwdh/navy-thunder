@@ -34,3 +34,7 @@ Leviathans 前后破口规则差异大（见 MDR-0007）；旧"不可修补破�
 
 - Phase 3：`FloodingSystem`（破口集合、水下判定、流量∝破口面积、泵）+ `BuoyancySolver`（分段体积法：吃水/横倾/纵倾，接口预留高保真 CFD 级替换）。
 - 全部流量/速率进 calibration（`approximation:true`）。
+
+## 历史变化
+
+- 2026-10-04（Phase 04）：破口三类化（MDR-0008 增补）：ShellSmall（仅最大口径动能，修补 5 s）/ BlastMedium（爆炸毁舱，12 s）/ TorpedoLarge（鱼雷，20 s），进水流量倍率 1 / 1.5 / 3（W5 修补档 5-20 s）。

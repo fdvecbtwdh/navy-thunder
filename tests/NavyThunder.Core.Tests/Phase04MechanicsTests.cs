@@ -13,6 +13,7 @@ namespace NavyThunder.Core.Tests;
 /// Phase 04 mechanics (PHASE_04 §9): TDS absorption (MDR-0012), breach classes
 /// (MDR-0008 addendum) and the 3-section unsinkability ruling (MDR-0007 addendum).
 /// </summary>
+    [Trait("Bucket", "Integration")]
 public class Phase04MechanicsTests(ITestOutputHelper output)
 {
     private static DataRepository Repo() =>

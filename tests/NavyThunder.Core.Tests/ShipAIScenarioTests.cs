@@ -13,6 +13,7 @@ namespace NavyThunder.Core.Tests;
 /// as threats evolve, and losses spread across the defeated side instead of piling onto
 /// whoever sits still.
 /// </summary>
+    [Trait("Bucket", "Slow")]
 public class ShipAIScenarioTests(ITestOutputHelper output)
 {
     private static BattleRunner MakeRunner()

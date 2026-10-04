@@ -6,6 +6,7 @@ using Xunit.Abstractions;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Fast")]
 public class VacuumBallisticsTests(ITestOutputHelper output)
 {
     private const double G = 9.80665;

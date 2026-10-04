@@ -12,6 +12,7 @@ namespace NavyThunder.Core.Tests;
 /// feedback, strike missions release torpedoes/bombs against ships, and loss of control
 /// ends in a crash.
 /// </summary>
+    [Trait("Bucket", "Integration")]
 public class AirDeliveryTests(ITestOutputHelper output)
 {
     private const string ScenarioFile = "air_strike.json";
@@ -111,10 +112,16 @@ public class AirDeliveryTests(ITestOutputHelper output)
         var repo = DataRepository.LoadFromDirectory(RepoLocator.FindDataDirectory());
         var scenario = BattleScenario.Load(Path.Combine(RepoLocator.FindRepoRoot()!, "scenarios", "bb_duel.json"));
 
+        // Phase 04 test-infra rework: two 240 s same-seed slices verify flight/release
+        // determinism (spawn -> approach -> release path all within the window); the
+        // FULL-battle determinism reference lives in GoldenFileTests.
         var a = new BattleRunner(repo, scenario);
         var b = new BattleRunner(repo, scenario);
-        a.Run();
-        b.Run();
+        for (int i = 0; i < 240 / a.World.FixedDeltaTime; i++)
+        {
+            a.World.Step();
+            b.World.Step();
+        }
 
         Assert.Equal(
             a.Aircraft.Select(ac => $"{ac.State}|{ac.WorldPosition.X:F1}|{ac.WorldPosition.Z:F1}"),

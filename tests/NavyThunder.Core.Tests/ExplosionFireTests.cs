@@ -11,6 +11,7 @@ using Xunit;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Integration")]
 public class ExplosionSystemTests
 {
     private static readonly ShellDefinition Mk13He = new()

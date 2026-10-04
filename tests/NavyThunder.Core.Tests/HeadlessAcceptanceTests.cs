@@ -13,6 +13,7 @@ namespace NavyThunder.Core.Tests;
 /// Deterministic per scenario seed; the naval duel carries the magazine-detonation bar
 /// (AP volume into magazine boxes needs time), the combined-arms battle carries AA.
 /// </summary>
+    [Trait("Bucket", "Acceptance")]
 public class HeadlessAcceptanceTests(ITestOutputHelper output)
 {
     [Fact]

@@ -19,6 +19,7 @@ namespace NavyThunder.Core.Tests;
 /// §10): a bow-only plate MUST stop being hittable by the same world ray once the ship
 /// turns away — only a real inverse-ShipTransform trace can pass.
 /// </summary>
+    [Trait("Bucket", "Fast")]
 public class GeometryRotationTests(ITestOutputHelper output)
 {
     private static ArmorTarget BowOnlyTarget()

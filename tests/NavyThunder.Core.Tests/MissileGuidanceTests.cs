@@ -7,6 +7,7 @@ using Xunit;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Fast")]
 public class MissileGuidanceTests
 {
     private static (MissileSystem Missiles, DamageRegistry Registry) Make()

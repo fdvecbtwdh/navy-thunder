@@ -16,6 +16,7 @@ namespace NavyThunder.Core.Tests;
 /// behind the plate, HE bursts fragment inside, the Critical-G spar rule and the kill /
 /// severe-damage tiers run (MDR-0013).
 /// </summary>
+    [Trait("Bucket", "Fast")]
 public class AirCombatTests(ITestOutputHelper output)
 {
     private static (DataRepository Repo, SimulationWorld World, AirRig Rig) Build()

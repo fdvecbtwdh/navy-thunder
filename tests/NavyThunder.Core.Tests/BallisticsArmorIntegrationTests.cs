@@ -11,6 +11,7 @@ namespace NavyThunder.Core.Tests;
 /// Shots start at y=100 so horizontal trajectories stay above ground; drop over the short
 /// test ranges is negligible (a few cm).
 /// </summary>
+    [Trait("Bucket", "Integration")]
 public class BallisticsArmorIntegrationTests
 {
     private static (SimulationWorld World, BallisticsSystem System) MakeWorld(params ArmorTarget[] targets)

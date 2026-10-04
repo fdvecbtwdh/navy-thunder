@@ -29,3 +29,7 @@
 
 - Phase 3：`HullSection { Hp, Role(Bow/Mid/Stern), Destroyed }` + `UnsinkabilityChecker`（中段≥2 或小艇任一段）。
 - 段 HP 按舰级参数化进舰船数据；校准以"击沉所需主炮弹数"行为锚点对表。
+
+## 历史变化
+
+- 2026-10-04（Phase 04 裁决落地）：丧失不沉性段数按官方 W4 原文改为 **3 段**（此前代码为 2 段）。战斗节奏差异由段 HP 吸收，6v6 击沉时长分布对照归 Phase 08 平衡 pass。

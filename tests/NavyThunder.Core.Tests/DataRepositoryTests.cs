@@ -5,6 +5,7 @@ using Xunit.Abstractions;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Fast")]
 public class DataRepositoryTests(ITestOutputHelper output)
 {
     [Fact]

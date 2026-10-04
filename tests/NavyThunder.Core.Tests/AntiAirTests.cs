@@ -12,6 +12,7 @@ using Xunit;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Fast")]
 public class VtProximityFuseTests
 {
     private static (SimulationWorld, BallisticsSystem, Aircraft) MakeRig()

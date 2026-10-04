@@ -103,6 +103,7 @@ public class DeMarreTests
     }
 }
 
+    [Trait("Bucket", "Fast")]
 public class ArmorResolverTests
 {
     private static ArmorHitResult Resolve(ShellDefinition shell, double thicknessMm, double angleDeg, ulong seed = 7)

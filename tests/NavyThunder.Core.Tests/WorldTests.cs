@@ -39,6 +39,7 @@ public sealed class CountingSystem : ISimulationSystem
     }
 }
 
+    [Trait("Bucket", "Fast")]
 public class SimulationWorldTests
 {
     [Fact]

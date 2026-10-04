@@ -92,6 +92,7 @@ public sealed class CombatHarness
     public IReadOnlyDictionary<string, NavyThunder.Core.Model.ShellDefinition> Shells { get; }
 }
 
+    [Trait("Bucket", "Integration")]
 public class ShipDataDrivenTests(ITestOutputHelper output)
 {
     private static DataRepository Repo() => DataRepository.LoadFromDirectory(RepoLocator.FindDataDirectory());
@@ -247,7 +248,7 @@ public class ShipDataDrivenTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void Destroyer_Loses_Unsinkability_From_Any_Section_Battleship_Needs_Two_Mid()
+    public void Destroyer_Loses_Unsinkability_From_Any_Section_Battleship_Needs_Three_Mid()
     {
         var repo = Repo();
         var harness = new CombatHarness(repo, ["test_destroyer", "test_battleship"]);
@@ -264,11 +265,15 @@ public class ShipDataDrivenTests(ITestOutputHelper output)
 
         bb.ForceSectionDestroyed("bb_mid1");
         bb.CheckUnsinkability();
-        Assert.False(bb.UnsinkabilityLost); // one mid section is not enough either
+        Assert.False(bb.UnsinkabilityLost); // one mid section is not enough
 
         bb.ForceSectionDestroyed("bb_mid2");
         bb.CheckUnsinkability();
-        Assert.True(bb.UnsinkabilityLost); // two mid sections: unsinkability lost
+        Assert.False(bb.UnsinkabilityLost); // Phase 04 ruling (MDR-0007): three, not two
+
+        bb.ForceSectionDestroyed("bb_mid3");
+        bb.CheckUnsinkability();
+        Assert.True(bb.UnsinkabilityLost); // three mid sections: unsinkability lost (W4)
     }
 
     [Fact]

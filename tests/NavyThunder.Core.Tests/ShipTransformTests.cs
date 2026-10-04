@@ -10,6 +10,7 @@ namespace NavyThunder.Core.Tests;
 /// sweep PHASE_01 requires. Conventions: local +Z bow / +X starboard / +Y up,
 /// heading 90° points the bow at world +X (matches ShipNavigationSystem integration).
 /// </summary>
+    [Trait("Bucket", "Fast")]
 public class ShipTransformTests
 {
     private const double PosEps = 1e-9;

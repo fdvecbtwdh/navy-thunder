@@ -330,6 +330,14 @@ Battle3D (Node3D)
 
 ---
 
+## 8.5 测试分层（权威：`tests/README.md`）
+
+测试按 `[Trait("Bucket", ...)]` 分六档：**Fast**(单元/局部机制,秒级,默认+PR CI)、
+**Integration**(≤300 s 短真实战斗,PR CI)、**Golden**(3600 s 确定性回归,Nightly)、
+**Acceptance**(AI 编队/r1 行为验收,Nightly)、**Performance**(预算门,Nightly+Release)、
+**Soak**(`tools/soak.sh`,Release 前)。禁止黑名单定义档位;禁止完整战斗进入 Fast;
+确定性由 Golden 一处背书 + 短切片双跑对比。规则与自检清单见 `tests/README.md`。
+
 ## 9. 真实舰船资产管线（三分离 §5.5 的资产侧）
 
 ### 9.1 现状（FACT）

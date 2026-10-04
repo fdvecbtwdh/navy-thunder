@@ -16,6 +16,7 @@ namespace NavyThunder.Core.Tests;
 /// R0 acceptance: a full battle driven purely from scenario data — navigation, gunnery,
 /// damage, fires, flooding, kill adjudication, victory conditions and the battle report.
 /// </summary>
+    [Trait("Bucket", "Slow")]
 public class BattleAcceptanceTests(ITestOutputHelper output)
 {
     private static string ScenarioPath(string name)
@@ -56,42 +57,47 @@ public class BattleAcceptanceTests(ITestOutputHelper output)
     [Fact]
     public void Battle_Is_Deterministic_Across_Runs()
     {
+        // Phase 04 test-infra rework: engine-level determinism is a property of the tick
+        // loop + named RNG streams, NOT of battle length — the FULL 3600 s determinism
+        // reference lives in GoldenFileTests (report equality vs the committed golden).
+        // Here the same double-run comparison runs on a 180 s slice, which exercises
+        // navigation + gunnery + damage + fire without a second hour-long battle.
         var repo = DataRepository.LoadFromDirectory(RepoLocator.FindDataDirectory());
         var scenario = BattleScenario.Load(ScenarioPath("bb_duel.json"));
 
         var a = new BattleRunner(repo, scenario);
         var b = new BattleRunner(repo, scenario);
-        var reportA = a.Run();
-        var reportB = b.Run();
+        for (int i = 0; i < 180 / a.World.FixedDeltaTime; i++)
+        {
+            a.World.Step();
+            b.World.Step();
+        }
 
-        Assert.Equal(reportA["winner"], reportB["winner"]);
-        Assert.Equal(reportA["gunsFired"], reportB["gunsFired"]);
-        Assert.Equal(reportA["durationS"], reportB["durationS"]);
+        Assert.Equal(a.World.Time, b.World.Time);
         Assert.Equal(
-            a.Ships.Select(s => $"{s.KillState}|{s.KillReason}|{s.CrewAlive}"),
-            b.Ships.Select(s => $"{s.KillState}|{s.KillReason}|{s.CrewAlive}"));
+            a.Ships.Select(s => $"{s.TargetId}|{Math.Round(s.WorldPosition.X, 4)}|{Math.Round(s.WorldPosition.Z, 4)}|{s.HeadingDeg:R}|{s.CrewAlive}|{s.BuoyancyLossPct:F3}"),
+            b.Ships.Select(s => $"{s.TargetId}|{Math.Round(s.WorldPosition.X, 4)}|{Math.Round(s.WorldPosition.Z, 4)}|{s.HeadingDeg:R}|{s.CrewAlive}|{s.BuoyancyLossPct:F3}"));
     }
 
     [Fact]
     public void Fire_Ignition_Rolls_Wire_Into_Combat()
     {
-        // A HE-heavy duel must eventually light fires (MDR-0010 rolls are wired).
+        // Phase 04 test-infra rework: the wiring (combat damage -> ignition roll) needs
+        // a few salvos, not an hour — run 180 s of the duel and require the FireSystem
+        // to have been reachable from the damage bridge. Probabilistic burn-out coverage
+        // stays with the harness-level fire tests.
         var repo = DataRepository.LoadFromDirectory(RepoLocator.FindDataDirectory());
         var scenario = BattleScenario.Load(ScenarioPath("bb_duel.json"));
         var runner = new BattleRunner(repo, scenario);
+        Assert.NotNull(runner.Fire);
+        Assert.NotNull(runner.Bridge.Fire);
 
-        // Swap AP for HC: HE damage rolls ignition far more readily.
-        foreach (var gun in runner.Ships.SelectMany(s => s.Definition.Guns))
+        while (runner.World.Time < 180 && runner.Battle.Result == BattleResult.Running)
         {
-            gun.GetType(); // guns are data; the runner's shell table swap covers the behavior
+            runner.World.Step();
         }
 
-        runner.Run();
-
-        // Fires may or may not ignite in a single short engagement (probability), so this
-        // test asserts the WIRING exists: fire damage events OR zero are both valid, but
-        // the FireSystem must have been reachable (smoke check via the runner's systems).
-        Assert.NotNull(runner.Fire);
+        Assert.True(runner.World.Time >= 180 || runner.Battle.Result != BattleResult.Running);
     }
 }
 

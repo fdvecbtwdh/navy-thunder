@@ -9,6 +9,7 @@ namespace NavyThunder.Core.Tests;
 /// summary is a stable fingerprint. Any engine change that alters battle outcomes shows
 /// up as a golden diff; regenerate intentionally with NT_UPDATE_GOLDENS=1.
 /// </summary>
+    [Trait("Bucket", "Slow")]
 public class GoldenFileTests
 {
     private static string GoldenPath()

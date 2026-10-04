@@ -3,10 +3,15 @@ name: ci
 on:
   push:
   pull_request:
+  schedule:
+    # Nightly extended gate (Golden + Acceptance + Performance), 02:30 UTC.
+    - cron: "30 2 * * *"
+  workflow_dispatch:
 
 jobs:
-  # Fast feedback: everything except the three dedicated scenario-battle gates.
-  unit-gates:
+  # PR fast gate: Bucket=Fast + Integration only (tests/README.md §2).
+  # No full battles: PR feedback must stay in minutes, not hours.
+  pr-fast-gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,10 +20,14 @@ jobs:
           dotnet-version: 10.0.x
       - name: Build
         run: dotnet build NavyThunder.slnx -c Release
-      - name: Unit and scenario tests (excl. perf/golden/acceptance gates)
+      - name: Fast tests (unit/mechanism, seconds)
         run: >-
           dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
-          --filter "FullyQualifiedName!~PerformanceBudget&FullyQualifiedName!~GoldenFile&FullyQualifiedName!~HeadlessAcceptance"
+          --filter "Bucket=Fast"
+      - name: Integration tests (short real battles <= 300 s sim)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "Bucket=Integration"
       - name: Data schema validation (full dataset load)
         run: dotnet run --project src/NavyThunder.ProtectionAnalysis -c Release -- summary
       - name: Calibration gate (stat-card regression)
@@ -55,3 +64,43 @@ jobs:
         run: >-
           dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
           --filter "FullyQualifiedName~GoldenFile"
+
+  # Nightly extended gate: full-battle determinism reference + behavior acceptance.
+  nightly-extended-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build NavyThunder.slnx -c Release
+      - name: Golden (full 3600 s bb_duel vs committed summary)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "Bucket=Golden"
+      - name: Acceptance (AI fleet battles + r1 full chain)
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "Bucket=Acceptance"
+      - name: Performance budget gate
+        run: >-
+          dotnet test tests/NavyThunder.Core.Tests -c Release --no-build
+          --filter "Bucket=Performance"
+
+  # Release gate: everything, including Soak and the Godot headless smoke.
+  release-full-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build NavyThunder.slnx -c Release
+      - name: Full test suite (all buckets, incl. Soak)
+        run: dotnet test tests/NavyThunder.Core.Tests -c Release --no-build

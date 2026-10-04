@@ -12,6 +12,7 @@ namespace NavyThunder.Core.Tests;
 /// iterates its minds, so removing the ship from the AI's ship list alone left the AI
 /// overwriting the player's helm every tick.
 /// </summary>
+    [Trait("Bucket", "Integration")]
 public class PlayerHandoverTests(ITestOutputHelper output)
 {
     [Fact]

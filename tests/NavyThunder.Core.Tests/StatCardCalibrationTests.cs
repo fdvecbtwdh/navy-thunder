@@ -11,6 +11,7 @@ namespace NavyThunder.Core.Tests;
 /// 0° columns gate the full chain (de Marre + knap + drag-integrated strike velocity);
 /// 30°/60° columns gate the angle model's upper bound.
 /// </summary>
+    [Trait("Bucket", "Fast")]
 public class StatCardCalibrationTests
 {
     private static double PenAtRange(NavyThunder.Core.Model.ShellDefinition shell, double rangeM)

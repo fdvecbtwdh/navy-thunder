@@ -17,6 +17,7 @@ namespace NavyThunder.Core.Tests;
 /// the simulation past real time, the test fails.
 /// Budget: 2400 s of simulated combat in under 2400 s wall time (≥1× real time).
 /// </summary>
+    [Trait("Bucket", "Performance")]
 public class PerformanceBudgetTests(ITestOutputHelper output)
 {
     [Fact]

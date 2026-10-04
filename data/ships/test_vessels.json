@@ -374,8 +374,15 @@
      "id": "bb_mid2",
      "role": "Mid",
      "hp": 30000,
-     "zMinM": -60,
+     "zMinM": -40,
      "zMaxM": -20
+    },
+    {
+     "id": "bb_mid3",
+     "role": "Mid",
+     "hp": 30000,
+     "zMinM": -60,
+     "zMaxM": -40
     },
     {
      "id": "bb_stern",

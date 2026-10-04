@@ -12,6 +12,7 @@ namespace NavyThunder.Core.Tests;
 /// no Godot types. The frontend fallback path (no assets → battle still runs)
 /// is covered by the headless smoke with NT_ASSET_ROOT pointing at an empty dir.
 /// </summary>
+    [Trait("Bucket", "Fast")]
 public class ShipAssetPipelineTests(ITestOutputHelper output)
 {
     private static string? FindModelsDir()

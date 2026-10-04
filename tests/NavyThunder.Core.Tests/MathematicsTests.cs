@@ -3,6 +3,7 @@ using Xunit;
 
 namespace NavyThunder.Core.Tests;
 
+    [Trait("Bucket", "Fast")]
 public class Vec3Tests
 {
     [Fact]
