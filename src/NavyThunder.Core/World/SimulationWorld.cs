@@ -93,14 +93,55 @@ public sealed class SimulationWorld
 
     public void Step()
     {
-        foreach (var system in _systems)
+        if (_profileSystems)
         {
-            system.Update(this, FixedDeltaTime);
+            foreach (var system in _systems)
+            {
+                long t0 = System.Diagnostics.Stopwatch.GetTimestamp();
+                system.Update(this, FixedDeltaTime);
+                _systemProfileTicks[system.Name] =
+                    _systemProfileTicks.GetValueOrDefault(system.Name) + (System.Diagnostics.Stopwatch.GetTimestamp() - t0);
+            }
+
+            _profileTicks++;
+            if (_profileTicks >= 300)
+            {
+                double totalMs = 0;
+                var lines = new System.Collections.Generic.List<string>();
+                foreach (var (name, ticks) in _systemProfileTicks)
+                {
+                    double ms = ticks * 1000.0 / System.Diagnostics.Stopwatch.Frequency / _profileTicks;
+                    totalMs += ms;
+                    lines.Add($"    {name,-16} {ms,8:0.00} ms/step");
+                }
+
+                lines.Sort();
+                Console.WriteLine($"SIM PROFILE ({_profileTicks} steps, total {totalMs:0.00} ms/step):");
+                foreach (var line in lines)
+                {
+                    Console.WriteLine(line);
+                }
+
+                _systemProfileTicks.Clear();
+                _profileTicks = 0;
+            }
+        }
+        else
+        {
+            foreach (var system in _systems)
+            {
+                system.Update(this, FixedDeltaTime);
+            }
         }
 
         Time += FixedDeltaTime;
         TickIndex++;
     }
+
+    private readonly bool _profileSystems =
+        Environment.GetEnvironmentVariable("NT_SIM_PROFILE") == "1";
+    private readonly System.Collections.Generic.Dictionary<string, long> _systemProfileTicks = new();
+    private long _profileTicks;
 
     /// <summary>Runs for at least <paramref name="durationSeconds"/> of simulated time.</summary>
     public void Run(double durationSeconds)

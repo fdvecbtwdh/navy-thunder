@@ -331,9 +331,18 @@ public sealed class GunSystem : ISimulationSystem
     /// target). Keeps long-range salvos from loosing while the turret slews.</summary>
     private const double FireGateToleranceM = 25.0;
 
+    /// <summary>Fire-control solution range quantization (m). Aim-only — see GunneryAt.</summary>
+    public const double FireControlRangeBucketM = 100.0;
+
     private Gunnery.GunnerySolution GunneryAt(ShellDefinition shell, Vec3 mount, double range)
     {
-        int bucket = Math.Max(0, (int)(range / 10));
+        // Fire-control range bucket: 100 m. The elevation solution feeds the AIM only —
+        // shells fly the same per-tick ballistics as before — and a 100 m quantization
+        // moves the aim point by at most tens of metres, far below the dispersion ellipse.
+        // The previous 10 m bucket re-solved a full RK4 trajectory on nearly every tick
+        // (ranges drift continuously while targets manoeuvre), which alone ate 20-30 ms
+        // per step in fleet battles (2026-10-04 profile).
+        int bucket = Math.Max(0, (int)(range / 100));
         int heightCm = (int)(mount.Y * 10);
         if (!_solutionsByMount.TryGetValue((shell.Id, heightCm, bucket), out var solution))
         {
@@ -345,7 +354,7 @@ public sealed class GunSystem : ISimulationSystem
             // origin is the gun), so a world aim height of AimHeightAboveWaterlineM from a
             // mount at world height mount.Y means crossingY = aim - mount.Y.
             solution = Gunnery.SolveFiringSolution(
-                shell.MuzzleVelocityMs, _ballistics.DragModel, bucket * 10.0 + 5,
+                shell.MuzzleVelocityMs, _ballistics.DragModel, bucket * FireControlRangeBucketM + FireControlRangeBucketM / 2,
                 crossingY: AimHeightAboveWaterlineM - mount.Y);
             _solutionsByMount[(shell.Id, heightCm, bucket)] = solution;
         }

@@ -23,7 +23,10 @@ namespace NavyThunder.Frontend;
 public partial class BattleScene3D : Node3D
 {
     private BattleRunner? _runner;
-    private double _simSpeed = 4.0;
+    // Normal GUI mode runs the battle at 1x real time (smooth rendering first — the
+    // sim budget cap bounds ticks per frame and catch-up spreads over frames).
+    // NT_FRONTEND_QUICK / SMOKE keep their accelerated paths (test harnesses only).
+    private double _simSpeed = 1.0;
     private double _smokeAccumulator;
     private double _nextReportAt = 30;
     private double _nextTimePrintAt = 10;
@@ -353,21 +356,35 @@ public partial class BattleScene3D : Node3D
         }
 
         bool smoke = OS.GetEnvironment("NT_FRONTEND_SMOKE") == "1";
+        long profFrameStart = _profil ? (long)Time.GetTicksUsec() : 0;
         double budget = OS.GetEnvironment("NT_FRONTEND_QUICK") == "1"
             ? delta * 200.0
             : smoke ? 0.25 : delta * _simSpeed;
+        // Phase 04 perf: the accumulator loop previously had NO per-frame cap — one slow
+        // frame inflates the next frame's budget into dozens of World.Step calls (death
+        // spiral). Normal GUI mode now simulates on a bounded budget; leftover time
+        // carries to the next frame (smooth rendering first, sim catch-up spread out).
+        int maxSteps = OS.GetEnvironment("NT_FRONTEND_QUICK") == "1" || smoke
+            ? int.MaxValue
+            : _maxStepsPerFrame;
+        long profSimStart = _profil ? (long)Time.GetTicksUsec() : 0;
+        int steps = 0;
         _smokeAccumulator += budget;
         while (_smokeAccumulator >= _runner.World.FixedDeltaTime
-               && _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.Running)
+               && _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.Running
+               && steps < maxSteps)
         {
             _runner.World.Step();
             _smokeAccumulator -= _runner.World.FixedDeltaTime;
+            steps++;
         }
+        long profSimEnd = _profil ? (long)Time.GetTicksUsec() : 0;
 
         ApplyHelm(delta);
         ApplyFireControl();
         ApplyShellToggle();
         CollectEffects();
+        long profEventEnd = _profil ? (long)Time.GetTicksUsec() : 0;
 
         if (_runner.World.Time >= _nextTimePrintAt)
         {
@@ -398,6 +415,11 @@ public partial class BattleScene3D : Node3D
         }
 
         _tracers.Sync(_runner.Ballistics.Projectiles, _runner.Torpedoes.DebugTorpedoes);
+        long profFrameEnd = _profil ? (long)Time.GetTicksUsec() : 0;
+        if (_profil)
+        {
+            ProfSample(delta, steps, profFrameStart, profSimEnd, profEventEnd, profFrameEnd);
+        }
 
         if (_playerShip is not null)
         {
@@ -497,6 +519,56 @@ public partial class BattleScene3D : Node3D
     }
 
     /// <summary>EventLog cursor → 3D FX + audio (extends the Phase R2 CollectEffects).</summary>
+    // ------------------------------------------------------------------ profiling (NT_FRONTEND_PROFIL=1)
+
+    private bool _profil = OS.GetEnvironment("NT_FRONTEND_PROFIL") == "1";
+    private int _maxStepsPerFrame = 4; // normal GUI cap: ~2x real time @60fps worst case
+    private double _profWindow;
+    private double _profFrames;
+    private double _profFrameMsSum, _profFrameMsMax;
+    private double _profSimMsSum;
+    private double _profEventMsSum, _profSyncMsSum;
+    private double _profStepsSum;
+    private long _profLastCpu;
+    private double _profNextPrint = 4.0;
+
+    private void ProfSample(double delta, int steps, long frameStart, long simEnd, long eventEnd, long frameEnd)
+    {
+        _profWindow += delta;
+        _profFrames++;
+        _profStepsSum += steps;
+        double frameMs = (frameEnd - frameStart) / 1000.0;
+        _profFrameMsSum += frameMs;
+        _profFrameMsMax = System.Math.Max(_profFrameMsMax, frameMs);
+        _profSimMsSum += (simEnd - frameStart) / 1000.0;
+        _profEventMsSum += (eventEnd - simEnd) / 1000.0;
+        _profSyncMsSum += (frameEnd - eventEnd) / 1000.0;
+
+        if (_profWindow < _profNextPrint)
+        {
+            return;
+        }
+
+        double wall = _profWindow;
+        var proc = System.Diagnostics.Process.GetCurrentProcess();
+        long cpuNow = proc.TotalProcessorTime.Ticks;
+        double cpuPct = _profLastCpu > 0 ? (cpuNow - _profLastCpu) / (double)System.Diagnostics.Stopwatch.Frequency / wall * 100.0 : 0;
+        _profLastCpu = cpuNow;
+        var vp = GetViewport();
+        int drawCalls = (int)vp.GetRenderInfo(Godot.Viewport.RenderInfoType.Visible, Godot.Viewport.RenderInfo.DrawCallsInFrame);
+        int objects = (int)vp.GetRenderInfo(Godot.Viewport.RenderInfoType.Visible, Godot.Viewport.RenderInfo.ObjectsInFrame);
+        double fps = Engine.GetFramesPerSecond();
+
+        GD.Print($"PROF simSpeed={_simSpeed:0.#} fps={fps:0} frameMs(avg)={_profFrameMsSum / _profFrames:0.0} " +
+                 $"frameMs(max)={_profFrameMsMax:0.0} simMs={_profSimMsSum / _profFrames:0.0} " +
+                 $"eventMs={_profEventMsSum / _profFrames:0.0} syncMs={_profSyncMsSum / _profFrames:0.0} " +
+                 $"steps/frame={_profStepsSum / _profFrames:0.0} cpu%={cpuPct:0} drawCalls={drawCalls} objects={objects}");
+        _profWindow = 0;
+        _profFrames = 0;
+        _profFrameMsSum = _profFrameMsMax = _profSimMsSum = _profEventMsSum = _profSyncMsSum = _profStepsSum = 0;
+        _profNextPrint = 4.0;
+    }
+
     private void CollectEffects()
     {
         if (_runner is null)
