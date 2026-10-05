@@ -180,10 +180,13 @@ def parse_bim2(data: bytes) -> dict:
         vdecl_ofs, vdecl_cnt = parse_tab(stream, o + 16)
         ipacked = ((bf1 >> 8) | ((bf2 >> 28) << 24)) if (flags & VDATA_PACKED_IB) else 0
         channels = [struct.unpack_from("<I", stream, vdecl_ofs + c * 4)[0] for c in range(vdecl_cnt)]
+        # DAE GlobalVertexData field order: vCnt | stride:8 + iPackedLo:24 |
+        # idxSz:28 + iPackedHi:4 | flags u16 + ??? u16 | iCnt | storageFormat u32.
+        storage_fmt, = struct.unpack_from("<I", stream, o + 20)
         gvd.append({
             "idx": i, "vcnt": vcnt, "stride": bf1 & 0xFF, "idxsize": bf2 & 0x0FFFFFFF,
             "ipacked": ipacked, "flags": flags, "lod": (flags & 0xF000) >> VDATA_LOD_SHIFT,
-            "channels": channels,
+            "channels": channels, "storage_fmt": storage_fmt,
         })
 
     o = mvhdr_sz
@@ -303,53 +306,49 @@ def decode_packed_ib(raw: bytes, count: int) -> list[int]:
 def decode_vertices(g: dict, bbox: tuple) -> dict:
     """Decode a GlobalVertexData blob.
 
-    Two v7 vertex layouts verified byte-exact on Bismarck (see PHASE_03 notes):
+    Layouts come from the Dagor-Asset-Explorer FORMATS table (storageFormat
+    field of the VdataHdr, cross-checked numerically on Fletcher + Bismarck
+    2026-10-05): every coordinate is an int16 in [-32768, 32767] lerped across
+    the MODEL bbox, NOT a normalized u32. The previous reading (u32 at [4..8)
+    etc.) cross-wired position with UV/padding channels and stretched
+    triangles across the whole hull on every ship.
 
-    Layout A - 5 channels [SHORT2, F1, F1, SHORT4N, F1], stride 24:
-        [0..4)   SHORT2  narrow-range packed color/AO
-        [4..8)   FLOAT1  X as u32 normalized across bbox
-        [8..10)  int16   Y as signed normalized (CMOD_SIGNED_PACK) + [10..12) = +1.0 pad
-        [12..16) 2x s16n UV0   [16..20) 2x s16n UV1 (lightmap)
-        [20..24) FLOAT1  Z as u32 normalized across bbox
-    Layout B - 3 channels [SHORT4N, F1, F1], stride 16:
-        [0..8)   4x s16n  signed-normalized XYZ (w = +1.0) across bbox
-        [8..12)  FLOAT1 u32 normalized UV.u  [12..16) FLOAT1 u32 normalized UV.v
+    storageFormat 5, stride 24 (naval LOD workhorse):
+        [0..4)   2x s16  UV (divisor 4096; v inverted)
+        [4..10)  3x s16  POSITION, each lerped across the bbox
+        [10..24) normals/AO/lightmap — ignored
+    storageFormat 3, stride 16:
+        [0..6)   3x s16  POSITION (bbox lerp)
+        [6..12)  padding
+        [12..16) 2x s16  UV (divisor 4096)
     """
-    chans = g["channels"]
-    types = [c >> 16 for c in chans]
     stride, vb, vcnt = g["stride"], g["vb"], g["vcnt"]
     (mnx, mny, mnz), (mxx, mxy, mxz) = bbox
     size = (mxx - mnx, mxy - mny, mxz - mnz)
     mn = (mnx, mny, mnz)
 
-    unpack_u32 = struct.Struct("<I").unpack_from
-    unpack_u16 = struct.Struct("<H").unpack_from
-    unpack_s16 = struct.Struct("<h").unpack_from
-    layout = None
-    if types == [T_SHORT2, T_FLOAT1, T_FLOAT1, T_SHORT4N, T_FLOAT1] and stride == 24:
-        layout = "A"
-    elif types == [T_SHORT4N, T_FLOAT1, T_FLOAT1] and stride == 16:
-        layout = "B"
+    fmt = g.get("storage_fmt")
+    if fmt == 5 and stride == 24:
+        pos_off, uv_off = 4, 0
+    elif fmt == 3 and stride == 16:
+        pos_off, uv_off = 0, 12
     else:
-        raise RuntimeError(f"gvd[{g['idx']}]: unsupported vDecl {[hex(c) for c in chans]}")
+        raise RuntimeError(
+            f"gvd[{g['idx']}]: unsupported storage format {fmt} stride {stride}")
 
+    unpack_s16 = struct.Struct("<h").unpack_from
     pos = []
     uv = []
     for v in range(vcnt):
         base = v * stride
-        if layout == "A":
-            px = unpack_u32(vb, base + 4)[0] / 4294967295.0
-            py = (unpack_s16(vb, base + 8)[0] + 32767) / 65534.0
-            pz = unpack_u32(vb, base + 20)[0] / 4294967295.0
-            u0 = unpack_s16(vb, base + 12)[0] / 32767.0
-            v0 = unpack_s16(vb, base + 14)[0] / 32767.0
-        else:
-            px = (unpack_s16(vb, base + 0)[0] + 32767) / 65534.0
-            py = (unpack_s16(vb, base + 2)[0] + 32767) / 65534.0
-            pz = (unpack_s16(vb, base + 4)[0] + 32767) / 65534.0
-            u0 = unpack_u32(vb, base + 8)[0] / 4294967295.0
-            v0 = unpack_u32(vb, base + 12)[0] / 4294967295.0
-        pos.append((mn[0] + px * size[0], mn[1] + py * size[1], mn[2] + pz * size[2]))
+        px, py, pz = unpack_s16(vb, base + pos_off), \
+            unpack_s16(vb, base + pos_off + 2)[0], unpack_s16(vb, base + pos_off + 4)[0]
+        px = px[0]
+        pos.append((mn[0] + (px / 32768.0 + 1.0) / 2.0 * size[0],
+                    mn[1] + (py / 32768.0 + 1.0) / 2.0 * size[1],
+                    mn[2] + (pz / 32768.0 + 1.0) / 2.0 * size[2]))
+        u0 = unpack_s16(vb, base + uv_off)[0] / 4096.0
+        v0 = unpack_s16(vb, base + uv_off + 2)[0] / 4096.0
         uv.append((u0, 1.0 - v0))
     return {"pos": pos, "uv": uv}
 
@@ -357,7 +356,14 @@ def decode_vertices(g: dict, bbox: tuple) -> dict:
 def decode_indices(g: dict) -> list[int]:
     count = g["idxsize"] // 2
     if g["ipacked"]:
-        return decode_packed_ib(g["ib"], count)
+        # Packed block layout (cross-checked against Dagor-Asset-Explorer mesh.py
+        # __processFaces__): [1B format marker 0xd0][LEB128 payload][4B zero
+        # trailer]. Decoding from byte 0 desyncs the delta stream by one symbol —
+        # every triangle then references wrong (but in-range) vertices, which
+        # stretched triangles across the whole hull on most ships. Bismarck's
+        # stream happened to resynchronise, hiding the bug during Phase 03.
+        raw = g["ib"][1:len(g["ib"]) - 4]
+        return decode_packed_ib(raw, count)
     return list(struct.unpack_from(f"<{count}H", g["ib"]))
 
 

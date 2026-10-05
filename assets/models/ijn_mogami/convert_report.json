@@ -34,23 +34,23 @@
    "file": "model_lod0.glb",
    "rigids": 168,
    "tris": 465087,
-   "bytes": 23304476
+   "bytes": 23376812
   },
   {
    "lod": 1,
    "range_m": 400.0,
    "file": "model_lod1.glb",
    "rigids": 162,
-   "tris": 209450,
-   "bytes": 11210572
+   "tris": 209474,
+   "bytes": 11234188
   },
   {
    "lod": 2,
    "range_m": 1300.0,
    "file": "model_lod2.glb",
    "rigids": 32,
-   "tris": 6622,
-   "bytes": 438252
+   "tris": 6718,
+   "bytes": 444720
   },
   {
    "lod": 3,
@@ -58,13 +58,9 @@
    "file": "model_lod3.glb",
    "rigids": 19,
    "tris": 1019,
-   "bytes": 100240
+   "bytes": 100204
   }
  ],
- "warnings": [
-  "lod1 rigid ex_decor_l_10 elem dropped: 54/72 indices out of range",
-  "lod2 rigid main_caliber_turret_04 elem dropped: 42/108 indices out of range",
-  "lod2 rigid flag elem dropped: 84/180 indices out of range"
- ],
+ "warnings": [],
  "node_map": "nodeMap.json"
 }

@@ -8,22 +8,22 @@
   "0": {
    "file": "model_lod0.glb",
    "range_m": 200.0,
-   "tris": 474182
+   "tris": 474206
   },
   "1": {
    "file": "model_lod1.glb",
    "range_m": 600.0,
-   "tris": 196365
+   "tris": 196383
   },
   "2": {
    "file": "model_lod2.glb",
    "range_m": 2000.0,
-   "tris": 9343
+   "tris": 9391
   },
   "3": {
    "file": "model_lod3.glb",
    "range_m": 13000.0,
-   "tris": 883
+   "tris": 919
   }
  },
  "node_map": "nodeMap.json",

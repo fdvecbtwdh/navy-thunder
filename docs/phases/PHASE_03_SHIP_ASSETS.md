@@ -72,6 +72,7 @@
 | 验收标准(PHASE_03 §10) | 结果 |
 |---|---|
 | Bismarck 转换产出 Godot 可加载 glTF,三角数与解析器一致 | ✅ LOD1 196,365 三角/GLB 结构由 ShipAssetPipelineTests 校验;Godot 实载 394 节点/60.8 万顶点(LOD0) |
+| **[2026-10-05 修复] 顶点布局与 packed IB 边界解错导致全舰队几何爆炸** | ✅ 根因=storageFormat 字段被忽略(fmt5/24: UV@s16×2+POS@s16×3 bbox-lerp; fmt3/16: POS@0)+packed IB 少跳 1B 头;23 舰×4 LOD 3800 万索引 0 窗口违规+8 舰光栅侧影核对+GUI 三舰实模型截图,详见 ASSET_PIPELINE_CURRENT §6.5 |
 | 30 舰映射舰 ≥27 艘成功转换 | ✅ 有映射 24 舰中 23 舰成功(uss_sims 的 grp 不在客户端),其余 6 舰无可信 WT 映射保持程序化(有清单 fleet_convert_summary.json),零转换失败 |
 | 每舰 nodeMap 含全部炮塔挂点,位置与 GunSystem.MountPosition 语义对应 | ✅ nodeMap.json 全 skeleton 节点(俾斯麦 771/北卡 1628);主炮塔(main_caliber_turret_NN)位置与 Core group 艏艉序一致(Antons z=+80…Dora z=-68);坐标为真实 WT 几何,与 Core 抽象 part 盒天然不同(语义=顺序与艏艉对应) |
 | LOD 生效(远档帧率对比记录入基线) | ✅ 4 级 LOD(200/600/2000/13000m)按相机距离切换(0.25s 周期);性能无回归迹象(6v6 GUI 正常运行),量化 FPS 对比列 Phase 08 优化项 |

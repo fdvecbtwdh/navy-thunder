@@ -33,48 +33,34 @@
    "range_m": 200.0,
    "file": "model_lod0.glb",
    "rigids": 454,
-   "tris": 470358,
-   "bytes": 25768448
+   "tris": 470638,
+   "bytes": 25822952
   },
   {
    "lod": 1,
    "range_m": 600.0,
    "file": "model_lod1.glb",
    "rigids": 414,
-   "tris": 176517,
-   "bytes": 10483596
+   "tris": 176925,
+   "bytes": 10513732
   },
   {
    "lod": 2,
    "range_m": 2000.0,
    "file": "model_lod2.glb",
    "rigids": 137,
-   "tris": 8323,
-   "bytes": 698312
+   "tris": 8371,
+   "bytes": 701108
   },
   {
    "lod": 3,
    "range_m": 13000.0,
    "file": "model_lod3.glb",
    "rigids": 15,
-   "tris": 767,
-   "bytes": 73456
+   "tris": 795,
+   "bytes": 78256
   }
  ],
- "warnings": [
-  "lod0 rigid aa_gun_05 elem dropped: 12/12 indices out of range",
-  "lod0 rigid aa_gun_07 elem dropped: 6/12 indices out of range",
-  "lod0 rigid aa_gun_38 elem dropped: 63/804 indices out of range",
-  "lod0 rigid aa_gun_38 elem dropped: 12/12 indices out of range",
-  "lod1 rigid ex_armor_l_04 elem dropped: 42/1140 indices out of range",
-  "lod1 rigid gun_barrel_03 elem dropped: 6/42 indices out of range",
-  "lod1 rigid gun_barrel_09 elem dropped: 42/42 indices out of range",
-  "lod2 rigid flag elem dropped: 72/144 indices out of range",
-  "lod3 rigid main_caliber_turret_01 elem dropped: 6/6 indices out of range",
-  "lod3 rigid main_caliber_turret_02 elem dropped: 6/6 indices out of range",
-  "lod3 rigid main_caliber_turret_03 elem dropped: 12/42 indices out of range",
-  "lod3 rigid main_caliber_turret_03 elem dropped: 6/6 indices out of range",
-  "lod3 rigid superstructure_01 elem dropped: 24/24 indices out of range"
- ],
+ "warnings": [],
  "node_map": "nodeMap.json"
 }

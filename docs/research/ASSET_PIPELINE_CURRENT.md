@@ -63,6 +63,28 @@ Ship.TargetId
 - 转换器矩阵版本：平移 `to_nt()`；旋转 `R_NT = P·R·Pᵀ`（`_mat_nt`）；glTF 节点四元数 `_quat_from_mat`。
 - 单位：米（WT 原生），无缩放。
 
+## 6.5 顶点/索引解码真相（2026-10-05 几何爆炸修复）
+
+> 用户在 GUI 中发现真实模型存在大量跨区域拉伸三角/尖刺。排查结论：**顶点布局与 packed IB 边界此前均解错**，
+> Phase 03 的"两种实测顶点布局"记载有误（当时以值域合理性代替了逐字节语义验证，Bismarck 恰好因值域
+> 饱和视觉上"接近正确"，掩盖了全舰队级缺陷）。两处根因均以 Dagor-Asset-Explorer 参考实现
+> （`_wt_audit/dae_ref/mesh.py`）交叉证实：
+
+1. **顶点布局 = storageFormat 表驱动**（VdataHdr 偏移 +0x20 的 u32 字段，此前被当作 vDecl 计数丢弃）：
+   - `fmt 5, stride 24`（舰船 LOD 主力布局）：`[0..4) 2×s16 UV（÷4096，v 翻转）| [4..10) 3×s16 位置
+     （每个 ÷32768 后对全模型 bbox lerp）| [10..24) 法线/AO/光照贴图，忽略`；
+   - `fmt 3, stride 16`：`[0..6) 3×s16 位置（bbox lerp）| [6..12) padding | [12..16) 2×s16 UV（÷4096）`。
+   - 旧解码把 `[4..8)` 当 u32 归一化 X、`[8..10)` 当 Y、`[20..24)` 当 Z——X/Y/Z 全部与 UV/padding 交叉错位。
+   - vDecl 的 FLOAT1 通道类型声明是**着色器逻辑类型**，不是存储类型；存储布局只看 storageFormat。
+2. **packed IB 块边界**：`[1B 格式标记 0xD0][LEB128 载荷][4B 零尾]`，有效载荷 = `ipacked - 5` 字节
+   （DAE `__processFaces__` 的 `seek(1)` + `pSz-5`）。从 0 字节开始解码使 delta 流错位一个符号，
+   索引系统性偏移（Bismarck 流恰好周期性重同步，Fletcher 完全乱）。
+
+**修复验证**（tools/validate_bim2_indices.py，不变量=引擎语义 `getVBMem(base_v, sv, numv)`）：
+修复前 packed IB 窗口违规 1.4–2.2%，修复后 **23 舰 × 4 LOD ≈ 3800 万索引全部 0 违规**；
+8 舰 LOD0 光栅侧影（Fletcher/俾斯麦/衣阿华/长门/金刚/欧根/北卡/巴尔的摩）逐舰人工核对正确；
+Godot GUI 实模型近景截图（Bismarck/Fletcher/Nagato）无拉伸三角。
+
 ## 7. 风险与已知限制（审计结论）
 
 1. Oodle DLL：转换器依赖本机 `daKernel-dev.dll`（ordinal 574）。探测顺序：`NT_OODLE_DLL` → `_wt_audit/dakernel/` → `%TEMP%/dk_try1.dll` → WT 客户端目录。**DLL 不入库**（LICENSE_AUDIT 假设③：用户自有客户端）。注意网络上流传的副本常有截断（`.reloc` 完整大小 2,353,664B 可作完整性判据）。

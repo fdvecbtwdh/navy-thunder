@@ -18,12 +18,12 @@
   "2": {
    "file": "model_lod2.glb",
    "range_m": 1300.0,
-   "tris": 8389
+   "tris": 8405
   },
   "3": {
    "file": "model_lod3.glb",
    "range_m": 11000.0,
-   "tris": 801
+   "tris": 826
   }
  },
  "node_map": "nodeMap.json",

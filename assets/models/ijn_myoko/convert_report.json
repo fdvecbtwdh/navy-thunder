@@ -33,8 +33,8 @@
    "range_m": 150.0,
    "file": "model_lod0.glb",
    "rigids": 249,
-   "tris": 387385,
-   "bytes": 20404972
+   "tris": 387445,
+   "bytes": 20441172
   },
   {
    "lod": 1,
@@ -42,29 +42,25 @@
    "file": "model_lod1.glb",
    "rigids": 213,
    "tris": 202947,
-   "bytes": 11254888
+   "bytes": 11272500
   },
   {
    "lod": 2,
    "range_m": 1300.0,
    "file": "model_lod2.glb",
    "rigids": 43,
-   "tris": 4581,
-   "bytes": 335816
+   "tris": 4633,
+   "bytes": 339624
   },
   {
    "lod": 3,
    "range_m": 11000.0,
    "file": "model_lod3.glb",
    "rigids": 14,
-   "tris": 583,
-   "bytes": 52308
+   "tris": 628,
+   "bytes": 56324
   }
  ],
- "warnings": [
-  "lod0 rigid gun_barrel_38 elem dropped: 81/84 indices out of range",
-  "lod2 rigid aircraft_02 elem dropped: 60/156 indices out of range",
-  "lod3 rigid superstructure_back elem dropped: 36/135 indices out of range"
- ],
+ "warnings": [],
  "node_map": "nodeMap.json"
 }

@@ -33,39 +33,34 @@
    "range_m": 150.0,
    "file": "model_lod0.glb",
    "rigids": 168,
-   "tris": 337897,
-   "bytes": 17918260
+   "tris": 338643,
+   "bytes": 17976744
   },
   {
    "lod": 1,
    "range_m": 400.0,
    "file": "model_lod1.glb",
    "rigids": 168,
-   "tris": 150806,
-   "bytes": 8472724
+   "tris": 150901,
+   "bytes": 8480396
   },
   {
    "lod": 2,
    "range_m": 1300.0,
    "file": "model_lod2.glb",
    "rigids": 43,
-   "tris": 7088,
-   "bytes": 520152
+   "tris": 7106,
+   "bytes": 519880
   },
   {
    "lod": 3,
    "range_m": 11000.0,
    "file": "model_lod3.glb",
    "rigids": 7,
-   "tris": 789,
-   "bytes": 67816
+   "tris": 801,
+   "bytes": 68640
   }
  ],
- "warnings": [
-  "lod0 rigid catapult_mount_02 elem dropped: 69/2238 indices out of range",
-  "lod1 rigid ex_decor_01 elem dropped: 48/285 indices out of range",
-  "lod2 rigid catapult_mount_02 elem dropped: 42/54 indices out of range",
-  "lod3 rigid ex_armor_r_04 elem dropped: 36/36 indices out of range"
- ],
+ "warnings": [],
  "node_map": "nodeMap.json"
 }

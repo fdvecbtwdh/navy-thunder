@@ -3,117 +3,117 @@
   {
    "id": "dkm_prinz_eugen",
    "lods": 4,
-   "tris": 675292
+   "tris": 675830
   },
   {
    "id": "ijn_fubuki",
    "lods": 4,
-   "tris": 401114
+   "tris": 401650
   },
   {
    "id": "ijn_kagero",
    "lods": 4,
-   "tris": 433550
+   "tris": 433670
   },
   {
    "id": "ijn_kongo",
    "lods": 4,
-   "tris": 741617
+   "tris": 741665
   },
   {
    "id": "ijn_mogami",
    "lods": 4,
-   "tris": 682178
+   "tris": 682298
   },
   {
    "id": "ijn_myoko",
    "lods": 4,
-   "tris": 595496
+   "tris": 595653
   },
   {
    "id": "ijn_nagato",
    "lods": 4,
-   "tris": 650778
+   "tris": 650850
   },
   {
    "id": "rms_bismarck",
    "lods": 4,
-   "tris": 680773
+   "tris": 680899
   },
   {
    "id": "rn_renown",
    "lods": 4,
-   "tris": 717466
+   "tris": 717534
   },
   {
    "id": "rn_tribal",
    "lods": 4,
-   "tris": 368937
+   "tris": 369096
   },
   {
    "id": "uss_atlanta",
    "lods": 4,
-   "tris": 435546
+   "tris": 435750
   },
   {
    "id": "uss_baltimore",
    "lods": 4,
-   "tris": 612723
+   "tris": 612764
   },
   {
    "id": "uss_brooklyn",
    "lods": 4,
-   "tris": 448245
+   "tris": 449229
   },
   {
    "id": "uss_colorado",
    "lods": 4,
-   "tris": 680226
+   "tris": 680570
   },
   {
    "id": "uss_fletcher",
    "lods": 4,
-   "tris": 384968
+   "tris": 385252
   },
   {
    "id": "uss_gearing",
    "lods": 4,
-   "tris": 439855
+   "tris": 441033
   },
   {
    "id": "uss_iowa",
    "lods": 4,
-   "tris": 644876
+   "tris": 645378
   },
   {
    "id": "uss_nevada",
    "lods": 4,
-   "tris": 619376
+   "tris": 619983
   },
   {
    "id": "uss_new_orleans",
    "lods": 4,
-   "tris": 565991
+   "tris": 566918
   },
   {
    "id": "uss_north_carolina",
    "lods": 4,
-   "tris": 655965
+   "tris": 656729
   },
   {
    "id": "uss_northampton",
    "lods": 4,
-   "tris": 496580
+   "tris": 497451
   },
   {
    "id": "uss_south_dakota",
    "lods": 4,
-   "tris": 633213
+   "tris": 633353
   },
   {
    "id": "uss_sumner",
    "lods": 4,
-   "tris": 447468
+   "tris": 447728
   }
  ],
  "no_mapping": [

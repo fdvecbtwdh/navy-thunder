@@ -33,24 +33,24 @@
    "range_m": 150.0,
    "file": "model_lod0.glb",
    "rigids": 134,
-   "tris": 298479,
-   "bytes": 15354860
+   "tris": 298623,
+   "bytes": 15388632
   },
   {
    "lod": 1,
    "range_m": 400.0,
    "file": "model_lod1.glb",
    "rigids": 134,
-   "tris": 129103,
-   "bytes": 7261552
+   "tris": 129115,
+   "bytes": 7265288
   },
   {
    "lod": 2,
    "range_m": 1300.0,
    "file": "model_lod2.glb",
    "rigids": 22,
-   "tris": 7229,
-   "bytes": 487632
+   "tris": 7277,
+   "bytes": 489960
   },
   {
    "lod": 3,
@@ -58,16 +58,9 @@
    "file": "model_lod3.glb",
    "rigids": 12,
    "tris": 735,
-   "bytes": 68640
+   "bytes": 68372
   }
  ],
- "warnings": [
-  "lod0 rigid gun_barrel_02 elem dropped: 57/84 indices out of range",
-  "lod0 rigid gun_mask_02 elem dropped: 60/348 indices out of range",
-  "lod1 rigid ex_decor_06 elem dropped: 12/12 indices out of range",
-  "lod1 rigid ex_decor_l_02 elem dropped: 6/12 indices out of range",
-  "lod1 rigid ex_decor_r_02 elem dropped: 12/12 indices out of range",
-  "lod2 rigid flag elem dropped: 72/144 indices out of range"
- ],
+ "warnings": [],
  "node_map": "nodeMap.json"
 }
