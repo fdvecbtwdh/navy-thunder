@@ -47,7 +47,7 @@
 | 1 | 主菜单（标题/版本/开始/退出） | `[DONE]` | `frontend/Godot/MenuView.cs`；选舰+设置已通 |
 | 2 | 选舰（从舰队数据） | `[DONE]` | 30 舰下拉框，`SessionState.SelectedShipId` → `BattleRunner(playerShipOverride)` |
 | 3 | 设置（音量/语言/键位/持久化） | `[DONE]` | Master/Effects/Ambient 音量+zh/en+键位重绑定（最小集）已通，settings.json 持久化（P05-9）；图像质量分级 Phase 08 |
-| 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立 + 真实舰船模型已接入**（Phase 02 骨架 + Phase 03 资产管线：23 舰 WT 模型 4 级 LOD、程序化双轨回退、nodeMap 挂点，见 PHASE_03）；贴图/击毁态归 Phase 04 尾 |
+| 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立 + 真实舰船模型已接入**（Phase 02 骨架 + Phase 03 资产管线：23 舰 WT 模型 4 级 LOD、程序化双轨回退、nodeMap 挂点，见 PHASE_03）；贴图/击毁态归 WS 资产 VA-2/VA-3（2026-10-05 修订去向） |
 | 5 | 玩家操舰（舵/油门） | `[PARTIAL]` | WASD 已通（R2.2；**P02 修复 AI 抢舵 bug**）；无油门档位 UI、无倒车 |
 | 6 | 瞄准与开火 | `[DONE]` | 两档火控（P05-2）：自动=锁定+试射修正（W7 AB 带，3 齐喷收敛）+提前量指示；手动=光标落点+滚轮调距；G 切换、T 锁定 |
 | 7 | 弹种切换 | `[DONE]` | R 键 AP/HE（R3） |
@@ -56,7 +56,7 @@
 | 10 | 战报页 | `[DONE]` | 胜负/时长/损失/逐舰存活，返回菜单（R2.6） |
 | 11 | 全 AI 观战 | `[PARTIAL]` | headless `SimRunner` 完整可跑 `[DONE]`；前端"观战模式"入口 `[PLANNED]` |
 | 12 | 战术地图 | `[DONE]` | 旧 2D 战场图降级为只读战术地图（P02，M 键切换），数据同源 Core |
-| 13 | 音效 | `[PARTIAL]` | 合成音效 6 种已生成并**已接入战斗事件**（P02：GunFired/ShellDetonation/MagazineDetonation/ShipDestroyed→播放）；音色为程序合成占位，真实声学归 Phase 03+ |
+| 13 | 音效 | `[PARTIAL]` | 合成音效 6 种已生成并**已接入战斗事件**（P02：GunFired/ShellDetonation/MagazineDetonation/ShipDestroyed→播放）；音色为程序合成占位，真实音源归 WS 资产 VA-7（2026-10-05 修订去向；播放机制可用、资产缺失，详见 §2.5） |
 | 14 | 小地图 | `[DONE]` | 战术地图兼任（P05-7 增强：玩家环+锁定标记+标签防重叠） |
 | 15 | 舰船建造器 | `[PLANNED]` | 无任何实现；设计见 §10 |
 | 16 | 舰船管理（收藏/导入/导出） | `[PLANNED]` | 无 |
@@ -64,10 +64,42 @@
 | 18 | 教程引导 | `[DONE]` | 开场渐隐提示卡；文案与两档瞄准/损管面板实现一致（P05-5/P05-10） |
 | 19 | 本地化 zh-CN/en | `[PARTIAL]` | UI 框架+菜单/HUD 双语已通；长文案待补 |
 | 20 | 战斗中暂停/退出 | `[DONE]` | ESC 菜单（继续/重开/回主菜单/退出，P05-8）；暂停=表现层停步进 |
-| 21 | 3D 渲染 | `[PLANNED]` | 当前 2D；Phase 02 |
-| 22 | 真实舰船资产 | `[DONE-P3]` | BIM2→glTF 转换器交付，23 舰批量转换（4 级 LOD+nodeMap 挂点），前端真实模型/程序化双轨；贴图管线（dxp）与击毁态 dmg 未做（Phase 04 尾/08） |
+| 21 | 3D 渲染 | `[DONE-灰模]` | Phase 02/03 已交付 3D 场景+真实舰船模型（无贴图）；贴图/海面/环境/特效升级归 WS 资产工作流 |
+| 22 | 真实舰船资产 | `[DONE-P3]` | BIM2→glTF 转换器交付，23 舰批量转换（4 级 LOD+nodeMap 挂点），前端真实模型/程序化双轨；贴图管线（dxp）与击毁态 dmg 未做（→ WS 资产 VA-2/VA-3，2026-10-05 修订去向）；P03.2 已修复全舰队几何解码错误 |
 | 23 | 飞机（玩家/AI 舰载机） | `[PARTIAL]` | AI 雷击/俯冲任务链 `[DONE]`（headless）；机型数据仅 1；航母系统 `[PLANNED]` |
 | 24 | 导弹 | `[BLOCKED]` | `MissileSystem` 制导代码+测试在库，**未接入 BattleRunner**，无数据集（MDR-0015 架构已定） |
+
+### 2.5 已知限制（2026-10-05 全仓核查，代码级验证）
+
+> 本节为现状核查结论的正式登记；逐项的承接任务见括号内去向。已完成 Phase 的历史结论不因此改动。
+
+**战斗机制静默失效（→ PHASE_04 §12 P04-13，最优先）**
+1. 炮弹最大口径动能小破口的进水路径断线（组装顺序缺陷，接了空引用）——爆炸/鱼雷破口正常；
+2. AI 动态损管优先级失效（同类型组装缺陷）——玩家手动损管不受影响；
+3. 防空挂载未设置雷达状态——防空命中恒按"无雷达"较差散布档；
+4. 战报 damageTaken/hits 两栏无写入方，恒为 0。
+
+**视觉/音频资产（→ WS_VISUAL_AUDIO_ASSETS）**
+5. 全部舰船模型无贴图（纯灰占位材质），贴图管线（dxp）未建；
+6. 击毁态 dmg 模型未接入；炮塔仅偏航无俯仰动画；副炮/防空静态；
+7. 海面=平面色块；岛屿=圆柱占位；飞机=体块占位；特效=发光渐隐球；
+8. 音效全部程序合成（播放机制可用、资产缺失）；无音乐/UI 音。
+
+**玩法/内容（→ WS_GAMEPLAY_COMPLETION）**
+9. 主菜单仅能进固定 1v1；3v3/6v6 场景与观战无入口；无"再战"按钮；
+10. GUI 固定 1x 实时无加速；当前平衡下 1v1 全 AI 常打满 60 分钟平局（黄金对局=双方存活）；
+11. 玩家无鱼雷（引擎机制在、舰载鱼雷管数据与玩家指令缺失）、无倒车/油门档位、无独立开火键、副炮不可独立指挥；
+12. 内容量：1 机型、1 型鱼雷、无航母、30 舰中 7 艘无真实模型。
+
+**AI（→ PHASE_07）**
+13. AI=单舰级基础可用（"会打但不太聪明"）：无编队协同/目标分配/集火，AI 水面舰不用鱼雷，飞机无空战格斗。
+
+**产品化（→ PHASE_08）**
+14. 1.0.0 安装包（2026-09-22）已落后 Phase 01–05 全部改动，须重新出包验证；
+15. 6v6 偶发长帧/GC 峰值/首次 GLB 同步加载 ~1s/艘（3v3 卡顿已由 P04.6 修复，不再列为问题）。
+
+**已解除的重大限制（历史记录）**
+- ~~全舰队模型几何爆炸（拉伸三角/顶点解码错误）~~——2026-10-05 P03.2 修复，回归门常态化（WS 资产 VA-1）。
 
 ---
 
@@ -245,7 +277,7 @@ FACT：现有运动学 = 节×航向平移积分，无惯性无浮态；`ListDeg
 ### 6.9 鱼雷 / 6.10 防空 / 6.11 飞机
 - **WT**：接触引信+可设深度（未确认冲突见 research §8）+hydroShock；防空 AI 炮手+VT；飞机三层任务。
 - **NT 现状**：直线雷+接触引信+hydroShock+空投包线（`TorpedoSystem`）；AA 挂载是**硬编码单 VT 座**（`BattleRunner` 注释自认 R1.4 半成品）；飞机 1 机型。
-- **NT 最终**：①TDS 正式实现（MDR-0012 几何+隔舱衰减，不拦水下 AP；WT 官方确认 TDS 为可摧毁实体，research §5）；②AA 挂载数据化（进 ShipDefinition，废硬编码）；③机型扩录（Phase 03 数据任务）；④鱼雷深度可调性用 blk 复核后定。
+- **NT 最终**：①TDS 正式实现（MDR-0012 几何+隔舱衰减，不拦水下 AP；WT 官方确认 TDS 为可摧毁实体，research §5）；②AA 挂载数据化（进 ShipDefinition，废硬编码）；③机型扩录（→ WS_GAMEPLAY GP-5，2026-10-05 修订去向）；④鱼雷深度可调性用 blk 复核后定。
 - **为什么**：TDS 是 RELEASE_CHECKLIST 修正后的明确欠账；AA 数据化是"数据驱动"原则的补课。
 
 ### 6.12 导弹
@@ -344,6 +376,7 @@ Battle3D (Node3D)
 - 原始资产在位：`D:\WarThunder\content\base\res\ships\` 598 个 .grp（3.9GB）；aces.vromfs 17.9MB；`_wt_audit/` 已解包 2,344 舰 blk + 382 炮 blk + DagorEngine 参考源码。
 - 工具链：GRP2 容器**完整解析**（`tools/extract_ship_model.py`）；**BIM2 v7 dynmodel 全链路已反序列化并交付**（`tools/convert_bim2_gltf.py`，2026-10-03：Oodle 解压/两种实测顶点布局/packed IB/GeomNodeTree+skinNodes 桥接/4 级 LOD/glTF 输出）；碰撞=量化 BVH（0xace50003）未解析（Phase 08 可选）。
 - 保底轨在役：`tools/generate_hull_obj.py` 程序化船体（32 舰 hull.obj，738 顶点/1360 面），前端已消费甲板轮廓。
+- **[2026-10-05]** P03.2 修复全舰队几何爆炸（顶点布局 storageFormat 表驱动 + packed IB 块边界）；23 舰×4 LOD 零索引违规+8 舰侧影核对。**管线已具备基础生产能力，但最终视觉资产质量未达发布目标**：贴图（dxp）未建=全灰模、dmg 击毁态未接入、7 艘无模型——缺口与 WT 资产可用性评估正式纳入 docs/phases/WS_VISUAL_AUDIO_ASSETS.md（含 LICENSE_AUDIT 许可边界）。
 
 ### 9.2 双轨策略
 
@@ -414,6 +447,7 @@ Godot Input（键鼠）
 ## 12. AI 设计
 
 - **现状（FACT）**：`SimpleNavalAISystem` 威胁加权选目标+四态机动+zigzag+停火纪律；飞机任务链+重定向；全部同接口无作弊。
+- **当前水平（2026-10-05 如实评级）**：**单舰级基础可用——"会打，但不太聪明"**。能航行/选目标/走位/按纪律开火，但无编队协同、无目标分配与集火、AI 水面舰不用鱼雷、飞机无空战；AI 动态损管因接线缺陷暂未生效（修复归 P04-13）。该评级是 Phase 07 的出发点，不是其验收结果。
 - **最终（Phase 07）**：单舰层保留；新增编队层（目标分配/占位阵型/鱼雷齐射角/集中火力）；损管优先级策略化；撤退/增援决策；难度=可调参数（瞄准误差/决策延迟）而非规则不对称。
 - **不变量**：AI 与玩家同一命令接口；AI 不读玩家不可知信息（现状已满足，保持）。
 
@@ -468,16 +502,22 @@ Godot Input（键鼠）
 详细设计在 `docs/phases/PHASE_00..08`（每份含 PASS/FAIL 可测断言）。依赖链：
 
 ```
-Phase 00 基础与文档统一
-   └→ Phase 01 Simulation Geometry（局部坐标命中）★地基
-         ├→ Phase 02 3D Gameplay Foundation（与 01 部分并行：3D 框架可先行，命中依赖 01）
-         │     └→ Phase 03 真实舰船资产（BIM2 目标轨 ∥ 程序化保底轨）
-         │           └→ Phase 04 完整海战 Gameplay（TDS/AA 数据化/破口三类/损管交互）
-         │                 └→ Phase 05 战术 UI / 玩家体验
-         │                       └→ Phase 06 舰船建造（依赖 04 的稳定 ShipDefinition + 01 几何）
+Phase 00 基础与文档统一 ✅
+   └→ Phase 01 Simulation Geometry（局部坐标命中）★地基 ✅
+         ├→ Phase 02 3D Gameplay Foundation ✅
+         │     └→ Phase 03 真实舰船资产 ✅(尾项→WS 资产)
+         │           └→ Phase 04 完整海战 Gameplay ✅大部分(收尾=P04-13 缺陷修复)
+         │                 └→ Phase 05 战术 UI / 玩家体验 ✅(2026-10-05)
+         │                       ├→ P04-13 战斗接线缺陷修复（当前最优先）
+         │                       ├→ WS_GAMEPLAY_COMPLETION 玩家体验补全 ∥
+         │                       └→ WS_VISUAL_AUDIO_ASSETS 视觉与音频资产 ∥
+         │                             ↓
+         │                       Phase 06 舰船建造（依赖 04 的稳定 ShipDefinition + 01 几何）
          │                             └→ Phase 07 AI / 大规模战斗
-         │                                   └→ Phase 08 性能 / 稳定性 / 产品化
+         │                                   └→ Phase 08 性能 / 稳定性 / 产品化（汇入 WS 两工作流产物）
 ```
+
+> [2026-10-05 增补] 两个 WS 工作流与 Phase 06/07 **并行**而非串行尾巴：直接影响当前观感/听感/节奏的里程碑（VA-2 贴图、VA-7 核心战斗音、GP-1 节奏、GP-2 模式选择）先行，装饰性与氛围项靠后，全部在 Phase 08 汇总验收。缺口按性质分流，不回填已完成 Phase。
 
 并行轨道：W3 数据扩录（持续）、W2 校准深化（依赖 Phase 01 场景输出）、BIM2 逆向研究（Phase 02 期间后台进行）。
 
@@ -492,3 +532,4 @@ Phase 00 基础与文档统一
 | 2026-10-03 | Phase 02 实施完成：§8 3D 前端结构落地（Battle3D 根 + ShipVisual/炮塔/弹丸/飞机/FX/相机/海面 + HUD + TacticalMap 降级复用）；Core→Godot 恒等坐标映射经冒烟同步断言与四航向截图验证；**修复既有 bug——玩家交接后 AI 仍经 mind 循环抢舵**（`SimpleNavalAISystem.ReleaseMind`，回归测试 `PlayerHandoverTests`）；产品结构表状态更新：#4 战斗场景 [PROTOTYPE]→3D 骨架 [DONE-占位资产]、#12 战术地图 [DONE]、#13 音效接线 [DONE-合成音] |
 | 2026-10-05 | **[插入] Phase 03 资产几何修复**：BIM2 顶点布局（storageFormat 字段驱动）与 packed IB 块边界（1B 头）双双解错导致全舰队模型出现跨区域拉伸三角；修复后 23 舰×4 LOD 3800 万索引 0 窗口违规 + 8 舰光栅侧影核对 + GUI 三舰截图；详见 `ASSET_PIPELINE_CURRENT.md` §6.5 |
 | 2026-10-05 | Phase 05 实施完成：§11 玩家操作链全量落地——`GameplayCommand` 命令对象化（`BattleRunner.Submit` 唯一入口，`ApplyHelm` 直写例外收编）、两档瞄准（自动=锁定+试射修正 W7 AB 带、手动=光标落点+滚轮调距）、图形 HUD/损伤面板/损管面板、五态命中反馈、暂停菜单、Ambient 音量+键位重绑定、全 UI 双语；测试分层契约新增自动审计（`BucketCoverageTests`）。产品结构表：#6 瞄准与开火 [PARTIAL→DONE-两档]、#9 玩家损管操作 [PLANNED→DONE]、#14 小地图 [PLANNED→DONE-战术地图兼任]、#20 暂停 [PLANNED→DONE]、#3 设置 [PARTIAL→DONE-键位+Ambient]、#18 教程 [PARTIAL→DONE-文案一致] |
+| 2026-10-05 | **现状核查与文档同步**：全仓代码级核查（玩家体验面/战斗机制/资产/数据/测试，Fast 136 全绿）后——README 按"项目现状说明"重写；§2 产品结构表修正 #21（3D 渲染 [PLANNED]→[DONE-灰模]，Phase 02/03 已交付而该行未同步）；新增 §2.5 已知限制 15 项（含 4 项战斗接线静默失效→P04-13）；§9 补 P03.2 几何修复与"管线有生产能力、资产质量未达发布目标"结论；§12 AI 如实评级"单舰级基础可用（会打但不太聪明）"；§15 依赖链纳入两个并行工作流（WS_VISUAL_AUDIO_ASSETS / WS_GAMEPLAY_COMPLETION）；PHASE_03（尾项去向）/PHASE_04（P04-13）/PHASE_07（AI 基线）/PHASE_08（性能基线+打包欠账）同步增补，ROADMAP 加指向横幅（1.0 历史不改） |

@@ -20,7 +20,7 @@
 ## 2. 执行命令
 
 ```bash
-# 开发日常(目标:秒级;实测 113 项 / ~2 s)
+# 开发日常(目标:秒级;实测 136 项 / ~1 s,2026-10-05)
 dotnet test tests/NavyThunder.Core.Tests --filter "Bucket=Fast"
 
 # PR CI(Fast + Integration,目标:分钟级)
@@ -76,7 +76,7 @@ dotnet test tests/NavyThunder.Core.Tests
 重构后实测(2026-10-04,Debug 构建):
 
 ```text
-FAST         113 项   ~2 s      最慢 659 ms(资产元数据扫描)
+FAST         136 项   ~1 s      (2026-10-05 实测,P04/P05 新增后)
 INTEGRATION   40 项   ~3-4 m    最慢 ~70 s(轰炸链 300 s 切片)
 GOLDEN         1 项   ~12 m     bb_duel 3600s
 ACCEPTANCE     5 项   ~40 m     6v6 2400s ×2 + r1 2400s + bb_duel 3600s

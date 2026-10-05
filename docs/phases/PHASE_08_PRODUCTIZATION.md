@@ -7,7 +7,11 @@
 把"功能齐"变成"产品稳"：性能达标、长期稳定、崩溃可溯、打包发布、平衡收敛。
 
 ## 2. 当前基础（Level A）
-headless 性能预算在 CI（6v6 ≥1× Release，实测 ~40×）；2h soak 714 轮 PASS（headless）；崩溃日志/user 目录（`AppEnv`）；打包脚本 `tools/package_release.sh`（1.0.0 已验证干净环境出包）；上一轮发布遗留：前端逐帧性能未验证、平衡 pass 未做、正式 tag 流程未走完（RELEASE_CHECKLIST RC2 未勾项）。
+headless 性能预算在 CI（6v6 ≥1× Release，实测 ~40×）；2h soak 714 轮 PASS（headless）；崩溃日志/user 目录（`AppEnv`）；打包脚本 `tools/package_release.sh`（1.0.0 已验证干净环境出包）；上一轮发布遗留：平衡 pass 未做、正式 tag 流程未走完（RELEASE_CHECKLIST RC2 未勾项）。
+**[2026-10-05 增补]**
+- **GUI 帧率基线（实测）**：3v3 ~148–180 FPS（P04.6 卡顿修复后，该问题**已解决，不再列为任务**）；6v6 稳态 80–154 FPS；**遗留**：偶发长帧、GC 峰值、首次 GLB 同步加载 ~1s/艘（异步加载+进度条）→ 并入 P08-1。
+- **打包欠账**：1.0.0 安装包（2026-09-22）已落后 Phase 01–05 全部改动——P08-6 须以当前代码重新出包并重跑干净环境全链路。
+- **画质分级**：设置界面目前只有音量/键位/语言；图像质量分级随 WS 资产 VA-8 交付后并入设置界面验收。
 
 ## 3. 外部参考
 PROJECT_DESIGN §13 测试体系；1.0 发布流程经验（ROADMAP R4/R5）。
@@ -19,7 +23,7 @@ PROJECT_DESIGN §13 测试体系；1.0 发布流程经验（ROADMAP R4/R5）。
 
 | # | 任务 | 验收要点 |
 |---|---|---|
-| P08-1 | **性能门禁** | 60fps @ 6v6+全武器+特效（Godot headless 基准+profile）；加载 <30s；不达标→优化轮（Instancing/LOD/粒子预算/模拟节流） |
+| P08-1 | **性能门禁** | 60fps @ 6v6+全武器+特效（Godot headless 基准+profile）；加载 <30s；**6v6 偶发长帧/GC 峰值/首次 GLB 异步加载+进度条**（基线见 §2 增补）；不达标→优化轮（Instancing/LOD/粒子预算/模拟节流） |
 | P08-2 | **3D Soak** | 2h 前端连续运行（复用 soak.sh 思路）：无泄漏（RSS 曲线）、无崩溃、帧率不衰减 |
 | P08-3 | **崩溃与日志** | 崩溃率与留痕复核（AppEnv crash/）；玩家可读错误弹窗（非静默退出） |
 | P08-4 | **平衡 pass** | AI 对战胜率/时长分布统计（批量 headless，战绩矩阵）；4 阵营同 BR 强度收敛；散布/段 HP/TDS 等 calibration 参数调平 |

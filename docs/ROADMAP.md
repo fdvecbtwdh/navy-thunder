@@ -3,6 +3,7 @@
 > **状态（2026-10-02）**：本路线图的 R0–R5 已走完 1.0.0 发布流程（commit `c95fa8e`），作为 1.0 阶段的历史记录保留。
 > 其中的状态标注与当时认知一致，已知失实项（如 TDS"完成"）已在 `docs/RELEASE_CHECKLIST.md` 与 `README.md` 中修正。
 > **后续开发不再按本文档推进**：以 `docs/PROJECT_DESIGN.md`（总体设计基准）+ `docs/phases/`（分阶段详细设计）为准。
+> **[2026-10-05 增补]** 现状核查后的新增缺口按性质分流进两个并行工作流：`docs/phases/WS_VISUAL_AUDIO_ASSETS.md`（视觉/音频资产）与 `docs/phases/WS_GAMEPLAY_COMPLETION.md`（玩家体验补全），战斗接线缺陷修复为 PHASE_04 §12（P04-13）；本文件保持 1.0 历史状态不变。当前进度速览见根目录 `README.md`。
 
 > **终点重定义**：本路线图的终点不再是"当前技术缺口补完"，而是 **Navy Thunder 1.0 正式发布**——
 > 一款机制完整、内容完整、AI 完整、UI 完整、性能稳定、新玩家可直接安装游玩的单机海战游戏。

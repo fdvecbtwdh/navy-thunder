@@ -1,6 +1,6 @@
 # Phase 03 — 真实舰船资产（BIM2→glTF 目标轨 + 程序化保底轨）
 
-> 状态：`[DONE 2026-10-03]`（P03-1/P03-3/P03-4/P03-6 完成；P03-2 贴图管线与 P03-5 dmg 击毁态未做 → Phase 04 尾+Phase 08）
+> 状态：`[DONE 2026-10-03]`（P03-1/P03-3/P03-4/P03-6 完成；P03-2 贴图管线与 P03-5 dmg 击毁态未做 → **WS_VISUAL_AUDIO_ASSETS（VA-2/VA-3）**，2026-10-05 增补修订去向）
 > 交付摘要：`tools/convert_bim2_gltf.py`（BIM2 v7 全解析，含 Oodle 三级降级/两种实测顶点布局/packed IB/GeomNodeTree 骨架/skinNodes 名字置换表/4 级 LOD/nodeMap 挂点）+ `tools/convert_fleet_models.py`（23 舰批量转换零失败）+ 前端 `ShipAssetRegistry`/`ShipVisualFactory`/`GlbLoader`（自研 GLB 读取）+ `ShipVisual` 真实模型/程序化双轨 + `scenarios/asset_visual.json` 视觉验收场景 + 资产一致性测试 3 项。格式逆向与实测细节见 `docs/research/ASSET_PIPELINE_CURRENT.md`。
 > 前置依赖：Phase 02（3D 框架消费资产）。**可行性已被 Phase 0 研究确定（`docs/research/DAGOR_ASSET_RESEARCH.md`：BIM2 破解约 95%，工作量 M）**，本阶段从"探索"升级为"实现"。
 
@@ -89,10 +89,13 @@
 
 ## 14. 未完成项(诚实清单)
 
+> [2026-10-05 增补] 去向修订：P03-2/P03-5 等遗留项的承接由 **`docs/phases/WS_VISUAL_AUDIO_ASSETS.md`（视觉与音频资产工作流）** 正式接管（原"Phase 04 尾/Phase 08"的笼统指向作废）；炮塔视觉偏航旋转已由 P04.4 交付。已完成历史（§12 验收对照）不变。
+
 | 项 | 状态 | 去向 |
 |---|---|---|
-| P03-2 贴图管线(dynModelDesc.bin 解析 + dxp→dds) | NOT DONE | Phase 04 尾(视觉质量)+ Phase 08 |
-| P03-5 dmg 击毁态模型(v6 头差异未验证) | NOT DONE | Phase 04(沉没表现升级) |
-| 炮塔视觉旋转(rigid=材质批,需部件归属) | PARTIAL(绑定+挂点完成,旋转暂停) | Phase 04 |
-| xray 轮廓模型 | NOT DONE | Phase 05(x-ray 命中相机) |
-| 量化 FPS 基线对比 | NOT DONE(定性无回归) | Phase 08 性能预算 |
+| P03-2 贴图管线(dynModelDesc.bin 解析 + dxp→dds) | NOT DONE | **WS 资产 VA-2**（最高优先） |
+| P03-5 dmg 击毁态模型(v6 头差异未验证) | NOT DONE | **WS 资产 VA-3** |
+| 炮塔视觉旋转 | **偏航 DONE(P04.4)**；俯仰 NOT DONE | 俯仰 → **WS 资产 VA-4** |
+| xray 轮廓模型 | NOT DONE | Phase 05+(x-ray 命中相机，随模块可视化再评) |
+| 量化 FPS 基线对比 | NOT DONE(定性无回归) | Phase 08 性能预算（2026-10-05 已有 GUI 实测基线：3v3 ~148-180fps / 6v6 稳态 80-154fps，见 PHASE_08 §2） |
+| [2026-10-05 已修复] 全舰队几何爆炸(顶点/索引解码错) | FIXED (P03.2) | 回归门常态化 → **WS 资产 VA-1** |
