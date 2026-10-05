@@ -48,6 +48,23 @@ public sealed class DataRepository
         Calibration = calibration;
     }
 
+    /// <summary>
+    /// Phase 06: registers a compiled builder ship so it participates in battles like a
+    /// historical one (PROJECT_DESIGN §1.3-3 — builder output rides the SAME data path;
+    /// no special-casing downstream). Throws on id collision with a historical ship.
+    /// </summary>
+    public void RegisterCompiled(ShipDefinition ship)
+    {
+        var dict = (Dictionary<string, ShipDefinition>)Ships;
+        if (dict.ContainsKey(ship.Id))
+        {
+            throw new InvalidOperationException(
+                $"ship id '{ship.Id}' collides with an existing (historical) ship; rename the design");
+        }
+
+        dict[ship.Id] = ship;
+    }
+
     public static DataRepository LoadFromDirectory(string dataDirectory)
     {
         if (!Directory.Exists(dataDirectory))

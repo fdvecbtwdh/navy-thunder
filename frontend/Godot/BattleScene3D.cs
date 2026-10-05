@@ -1,5 +1,6 @@
 using Godot;
 using NavyThunder.Core.Armor;
+using NavyThunder.Core.Builder;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Commands;
 using NavyThunder.Core.FireControl;
@@ -85,6 +86,29 @@ public partial class BattleScene3D : Node3D
         }
 
         var repo = DataRepository.LoadFromDirectory(Path.Combine(repoRoot, "data"));
+        // Phase 06 sea trial: compile + register the carried builder design (same data
+        // path as historical ships — the runner sees no difference).
+        if (SessionState.CompiledDesign is { } carried)
+        {
+            var compiled = ShipCompiler.Compile(carried);
+            if (compiled.Ok && compiled.Ship is not null)
+            {
+                repo.RegisterCompiled(compiled.Ship);
+                GD.Print($"P06 sea trial: '{compiled.Ship.Id}' compiled " +
+                         $"({compiled.Derived!.WeightT:0} t, draft {compiled.Derived.StaticDraftM:0.00} m)");
+            }
+            else
+            {
+                GD.Print("P06 sea trial: design failed to compile — falling back to scenario ships");
+                foreach (var issue in compiled.Issues)
+                {
+                    GD.Print($"  {issue}");
+                }
+            }
+
+            SessionState.CompiledDesign = null;
+        }
+
         string scenarioFile = OS.GetEnvironment("NT_FRONTEND_SCENARIO");
         if (scenarioFile.Length == 0)
         {

@@ -58,7 +58,7 @@
 | 12 | 战术地图 | `[DONE]` | 旧 2D 战场图降级为只读战术地图（P02，M 键切换），数据同源 Core |
 | 13 | 音效 | `[PARTIAL]` | 合成音效 6 种已生成并**已接入战斗事件**（P02：GunFired/ShellDetonation/MagazineDetonation/ShipDestroyed→播放）；音色为程序合成占位，真实音源归 WS 资产 VA-7（2026-10-05 修订去向；播放机制可用、资产缺失，详见 §2.5） |
 | 14 | 小地图 | `[DONE]` | 战术地图兼任（P05-7 增强：玩家环+锁定标记+标签防重叠） |
-| 15 | 舰船建造器 | `[PLANNED]` | 无任何实现；设计见 §10 |
+| 15 | 舰船建造器 | `[DONE-MVP]` | BuilderDesign v1+确定性编译器（Core.Builder）+BuilderScene（放置/撤销/CG-CoB/试航）；schema 见 `docs/BUILDER_DESIGN_SCHEMA.md`；参数编辑/镜像/装甲 UI 列 MVP+ |
 | 16 | 舰船管理（收藏/导入/导出） | `[PLANNED]` | 无 |
 | 17 | 存档/用户数据目录 | `[PARTIAL]` | `AppEnv` user://（logs/crash/saves/settings.json）已通；无战斗存档 |
 | 18 | 教程引导 | `[DONE]` | 开场渐隐提示卡；文案与两档瞄准/损管面板实现一致（P05-5/P05-10） |
@@ -531,5 +531,6 @@ Phase 00 基础与文档统一 ✅
 | 2026-10-02 | Phase 01 实施完成：§5 空间几何裁决落地（`Geometry/ShipTransform` + 局部坐标板 + 逆变换射线命中）；坐标约定 +Z=舰艏 已随数据迁移生效；新增 FACT——数据帧 = 船体局部（+X 右舷/+Y 上/+Z 舰艏），所有舰船/飞机数据与命中几何遵守；行为基线变化（对称编成出现合法平局）记录于 PHASE_01 §0 |
 | 2026-10-03 | Phase 02 实施完成：§8 3D 前端结构落地（Battle3D 根 + ShipVisual/炮塔/弹丸/飞机/FX/相机/海面 + HUD + TacticalMap 降级复用）；Core→Godot 恒等坐标映射经冒烟同步断言与四航向截图验证；**修复既有 bug——玩家交接后 AI 仍经 mind 循环抢舵**（`SimpleNavalAISystem.ReleaseMind`，回归测试 `PlayerHandoverTests`）；产品结构表状态更新：#4 战斗场景 [PROTOTYPE]→3D 骨架 [DONE-占位资产]、#12 战术地图 [DONE]、#13 音效接线 [DONE-合成音] |
 | 2026-10-05 | **[插入] Phase 03 资产几何修复**：BIM2 顶点布局（storageFormat 字段驱动）与 packed IB 块边界（1B 头）双双解错导致全舰队模型出现跨区域拉伸三角；修复后 23 舰×4 LOD 3800 万索引 0 窗口违规 + 8 舰光栅侧影核对 + GUI 三舰截图；详见 `ASSET_PIPELINE_CURRENT.md` §6.5 |
+| 2026-10-05 | Phase 06 实施（MVP）：§10 建造器数据流落地——`BuilderDesign` v1（版本号+迁移器从 day one）→ `ShipCompiler` 确定性编译（体积-高度阶梯吃水求逆、NA 密度公式、储备浮力生死池、校验错误/警告分级）→ `RegisterCompiled` 同构注入战斗；BuilderScene MVP（放置/旋转/删除/撤销重做/CG-CoB/吃水预览/存取/试航）。测试：恒等式/手算吃水/拒绝矩阵/字节确定性/端到端战斗/100 份随机批，22 项全绿。schema 权威文档 `docs/BUILDER_DESIGN_SCHEMA.md` |
 | 2026-10-05 | Phase 05 实施完成：§11 玩家操作链全量落地——`GameplayCommand` 命令对象化（`BattleRunner.Submit` 唯一入口，`ApplyHelm` 直写例外收编）、两档瞄准（自动=锁定+试射修正 W7 AB 带、手动=光标落点+滚轮调距）、图形 HUD/损伤面板/损管面板、五态命中反馈、暂停菜单、Ambient 音量+键位重绑定、全 UI 双语；测试分层契约新增自动审计（`BucketCoverageTests`）。产品结构表：#6 瞄准与开火 [PARTIAL→DONE-两档]、#9 玩家损管操作 [PLANNED→DONE]、#14 小地图 [PLANNED→DONE-战术地图兼任]、#20 暂停 [PLANNED→DONE]、#3 设置 [PARTIAL→DONE-键位+Ambient]、#18 教程 [PARTIAL→DONE-文案一致] |
 | 2026-10-05 | **现状核查与文档同步**：全仓代码级核查（玩家体验面/战斗机制/资产/数据/测试，Fast 136 全绿）后——README 按"项目现状说明"重写；§2 产品结构表修正 #21（3D 渲染 [PLANNED]→[DONE-灰模]，Phase 02/03 已交付而该行未同步）；新增 §2.5 已知限制 15 项（含 4 项战斗接线静默失效→P04-13）；§9 补 P03.2 几何修复与"管线有生产能力、资产质量未达发布目标"结论；§12 AI 如实评级"单舰级基础可用（会打但不太聪明）"；§15 依赖链纳入两个并行工作流（WS_VISUAL_AUDIO_ASSETS / WS_GAMEPLAY_COMPLETION）；PHASE_03（尾项去向）/PHASE_04（P04-13）/PHASE_07（AI 基线）/PHASE_08（性能基线+打包欠账）同步增补，ROADMAP 加指向横幅（1.0 历史不改） |

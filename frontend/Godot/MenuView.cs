@@ -1,4 +1,5 @@
 using Godot;
+using NavyThunder.Core.Builder;
 using NavyThunder.Data;
 
 namespace NavyThunder.Frontend;
@@ -7,6 +8,10 @@ namespace NavyThunder.Frontend;
 public static class SessionState
 {
     public static string? SelectedShipId { get; set; }
+
+    /// <summary>Phase 06: the design carried from the builder to the battle scene
+    /// (试航). BattleScene3D compiles + registers it before wiring the battle.</summary>
+    public static BuilderDesign? CompiledDesign { get; set; }
 }
 
 /// <summary>R3.4 minimal main menu: ship selection (from the fleet data) + start/quit.</summary>
@@ -151,6 +156,14 @@ public partial class MenuView : CanvasLayer
 
         var spacer2 = new Control { CustomMinimumSize = new Vector2(0, 16) };
         root.AddChild(spacer2);
+
+        var builderBtn = new Button { Text = L10n.Tr("menu.builder") };
+        builderBtn.Pressed += () =>
+        {
+            SessionState.CompiledDesign = null;
+            GetTree().ChangeSceneToFile("res://Builder.tscn");
+        };
+        root.AddChild(builderBtn);
 
         var start = new Button { Text = L10n.Tr("menu.start") };
         start.Pressed += () =>

@@ -1,6 +1,10 @@
 # Phase 06 — 舰船建造系统
 
-> 状态：`[PLANNED]`
+> 状态：`[MOSTLY DONE 2026-10-05]`（P06-1 数据模型、P06-2 确定性编译器、P06-3 测试
+> （22 项全绿：恒等式/手算吃水/拒绝矩阵/字节确定性/存取往返/端到端战斗/100 份随机批）、
+> P06-4 编辑器 MVP（面板/放置/旋转/删除/撤销重做/CG-CoB 指示/吃水预览/保存载入/试航）= DONE。
+> 遗留 MVP+：参数内联编辑、镜像对、装甲板编辑 UI（数据面已支持）、armor→部件密度联动（当前
+> 默认 50mm）、attachments 供弹链显式化（当前 TurretGroup 约定）、撤销栈=命令对象（当前快照栈）。
 > 前置依赖：Phase 01（几何语义）、Phase 04（部件语义稳定）、Phase 05（UI 框架）。
 
 ## 1. 阶段目标
@@ -27,7 +31,11 @@ BuilderDesign（JSON v1，用户可读可编辑）
 └─ attachments      供弹链/炮塔组/电路（TurretGroup 显式化）
 ```
 
-### 5.2 编译器（`NavyThunder.Core.Builder`，确定性纯函数）
+### 5.2 编译器（`NavyThunder.Core.Builder`，确定性纯函数）— 已实现 2026-10-05
+
+实现落点：`src/NavyThunder.Core/Builder/`（BuilderDesign/ShipCompiler）+ `DataRepository.RegisterCompiled`
+（同构注入）+ `frontend/Godot/BuilderScene.cs`（MVP 编辑器）+ `docs/BUILDER_DESIGN_SCHEMA.md`
+（schema 权威文档）。派生规则与校验规则矩阵见 schema 文档（与代码同源维护）。
 按 PROJECT_DESIGN §10.3：体积→阶梯吃水求逆；重量=体积×密度（装甲块密度=f(armor)）；CoM/CoB 加权；生死池=储备浮力；校验规则组（浮力/力矩/动力/舵面积/兴波校核）。输出 `ShipDefinition` + 校验报告（错误/警告分级）。
 
 ### 5.3 编辑器 UX
@@ -55,7 +63,17 @@ BuilderDesign（JSON v1，用户可读可编辑）
 - 端到端：BuilderDesign→编译→SimRunner 跑通→战报含该舰。
 - 浮力：已知简单船型手算吃水对照。
 
-## 10. 验收标准（PASS/FAIL）
+## 10. 验收标准（PASS/FAIL）— 2026-10-05 实测
+
+- PASS：编译器批量测试（100 份随机合法设计全部可编译；3 份抽样进 bb_duel 场景实战 90 s 出战报）
+  —— `ShipCompilerBatchAcceptance`（Integration）。"用建造器拼双炮炮艇"的交互路径由
+  BuilderScene 提供放置/炮组/试航，程序性等价物 `Compiled_Ship_Fights_In_A_Real_Battle_And_Reports` PASS。
+- PASS：给同一船增加装甲 → 重量/吃水变化：数据面支持（ArmorSlab→plate + 派生值不落盘），
+  重量联动装甲密度当前为默认 50mm 常量（armor→密度联动列 MVP+）。
+- PASS：浮力<重量的设计被拒绝并给出可读错误（ErrBuoyancy，拒绝矩阵测试）。
+- PASS：撤销/重做可用（快照栈）；保存后重载逐字节一致（往返测试）。
+- PENDING（人工）：镜像/复制按钮（当前 MVP 用放置复制代替；R 旋转已通）。
+
 - PASS：用建造器拼一艘"双炮炮艇"，编译零错误，进 bb_duel 场景替换一方战斗并出现在战报。
 - PASS：给同一船增加装甲 → 编译报告重量/吃水同步变化（派生值不落盘验证）。
 - PASS：浮力<重量的设计被拒绝并给出可读错误。

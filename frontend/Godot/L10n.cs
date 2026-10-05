@@ -73,6 +73,27 @@ public static class L10n
         ["dc.flow.extinguishing"] = ("灭火", "EXTINGUISH"),
         ["dc.flow.unwatering"] = ("排水", "UNWATER"),
 
+        // ship builder (P06)
+        ["menu.builder"] = ("舰船建造器", "SHIP BUILDER"),
+        ["builder.Compartment"] = ("舱室", "COMPARTMENT"),
+        ["builder.Engine"] = ("主机", "ENGINE"),
+        ["builder.Magazine"] = ("弹药库", "MAGAZINE"),
+        ["builder.Turret"] = ("炮塔", "TURRET"),
+        ["builder.Funnel"] = ("烟囱", "FUNNEL"),
+        ["builder.Steering"] = ("舵机", "STEERING"),
+        ["builder.weight"] = ("重量", "WEIGHT"),
+        ["builder.draft"] = ("吃水", "DRAFT"),
+        ["builder.reserve"] = ("储备浮力", "RESERVE"),
+        ["builder.length"] = ("舰长", "LENGTH"),
+        ["builder.invalid"] = ("设计无效（见错误）", "DESIGN INVALID (see errors)"),
+        ["builder.undo"] = ("撤销", "UNDO"),
+        ["builder.redo"] = ("重做", "REDO"),
+        ["builder.save"] = ("保存", "SAVE"),
+        ["builder.load"] = ("载入", "LOAD"),
+        ["builder.seatrial"] = ("试航", "SEA TRIAL"),
+        ["builder.saved"] = ("已保存：", "SAVED: "),
+        ["builder.menu"] = ("回主菜单", "MAIN MENU"),
+
         // pause menu (P05-8)
         ["pause.title"] = ("暂停", "PAUSED"),
         ["pause.resume"] = ("继续战斗", "RESUME"),
