@@ -19,6 +19,10 @@ public partial class CameraRig : Node3D
 
     public Camera3D Camera => _camera;
 
+    /// <summary>P05-2: while the player aims manually the wheel adjusts gun range, so
+    /// the rig's zoom wheel is suspended (set from BattleScene3D).</summary>
+    public bool WheelZoomEnabled { get; set; } = true;
+
     public override void _Ready()
     {
         if (OS.GetEnvironment("NT_FRONTEND_CAMDIST") is { } distEnv && float.TryParse(distEnv, out float d))
@@ -53,7 +57,7 @@ public partial class CameraRig : Node3D
 
     public override void _UnhandledInput(InputEvent e)
     {
-        if (e is InputEventMouseButton m && m.Pressed)
+        if (e is InputEventMouseButton m && m.Pressed && WheelZoomEnabled)
         {
             float factor = m.ButtonIndex switch
             {

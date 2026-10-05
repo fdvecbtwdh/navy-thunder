@@ -75,6 +75,7 @@ public class StatCardCalibrationTests
 /// penetrable at that angle, and materially thicker plates are not. WT publishes the
 /// normalization mechanism but not the multiplier table, so these are bounds (MDR-0004).
 /// </summary>
+[Trait("Bucket", "Fast")]
 public class AngleModelCalibrationTests
 {
     private static readonly PenetrationCalibration Calibration = new();

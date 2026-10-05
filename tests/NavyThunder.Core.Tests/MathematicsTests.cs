@@ -43,6 +43,7 @@ public class Vec3Tests
     }
 }
 
+[Trait("Bucket", "Fast")]
 public class DeterministicRandomTests
 {
     [Fact]

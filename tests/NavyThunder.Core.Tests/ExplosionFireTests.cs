@@ -190,6 +190,7 @@ public class ExplosionSystemTests
     }
 }
 
+[Trait("Bucket", "Fast")]
 public class FireSystemTests
 {
     private static (SimulationWorld, FireSystem, DamageRegistry) MakeWorld(double baseProbability = 0.05)

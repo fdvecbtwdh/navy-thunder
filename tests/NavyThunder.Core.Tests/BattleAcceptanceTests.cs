@@ -16,7 +16,7 @@ namespace NavyThunder.Core.Tests;
 /// R0 acceptance: a full battle driven purely from scenario data — navigation, gunnery,
 /// damage, fires, flooding, kill adjudication, victory conditions and the battle report.
 /// </summary>
-    [Trait("Bucket", "Slow")]
+    [Trait("Bucket", "Acceptance")]
 public class BattleAcceptanceTests(ITestOutputHelper output)
 {
     private static string ScenarioPath(string name)
@@ -53,6 +53,20 @@ public class BattleAcceptanceTests(ITestOutputHelper output)
             Assert.Contains(runner.Ships, s => s.CrewAlive < s.Definition.CrewTotal);
         }
     }
+
+}
+
+/// <summary>
+/// Short real-battle slices (tests/README.md: Integration = real BattleRunner, ≤ 300 s
+/// sim). Split out of the Acceptance class by the Phase 05 bucket audit — the whole
+/// file previously carried the legacy "Slow" label, which the Nightly Golden filter
+/// no longer matches.
+/// </summary>
+[Trait("Bucket", "Integration")]
+public class BattleShortSliceTests
+{
+    private static string ScenarioPath(string name)
+        => Path.Combine(RepoLocator.FindRepoRoot()!, "scenarios", name);
 
     [Fact]
     public void Battle_Is_Deterministic_Across_Runs()
@@ -101,6 +115,7 @@ public class BattleAcceptanceTests(ITestOutputHelper output)
     }
 }
 
+[Trait("Bucket", "Fast")]
 public class ShipNavigationTests
 {
     private static Ship MakeShip()

@@ -1,5 +1,8 @@
 using Godot;
+using NavyThunder.Core.Armor;
 using NavyThunder.Core.Ballistics;
+using NavyThunder.Core.Commands;
+using NavyThunder.Core.FireControl;
 using NavyThunder.Core.Mathematics;
 using NavyThunder.Core.Ships;
 using NavyThunder.Data;
@@ -37,6 +40,12 @@ public partial class BattleScene3D : Node3D
     private string _shotPath = "";
     private bool _playerHe;
     private bool _rHeld;
+    private bool _tHeld;
+    private bool _gHeld;
+    private bool _escHeld;
+    private bool _manualAiming;          // P05-2: false = auto tier (lock+lead), true = manual laying
+    private double _manualRangeOffsetM;  // P05-2: wheel-adjusted range bias on the cursor point
+    private Vec3? _manualAimPoint;       // live manual aim point (marker + order)
     private Ship? _aimTarget;
 
     private readonly Dictionary<string, ShipVisual> _shipVisuals = [];
@@ -53,6 +62,7 @@ public partial class BattleScene3D : Node3D
     private Node3D _aircraftRoot = null!;
     private HudPanel _hud = null!;
     private TacticalMap _tacticalMap = null!;
+    private PauseMenu _pauseMenu = null!;
     private AudioManager? _audio;
     private bool _reportShown;
 
@@ -107,12 +117,19 @@ public partial class BattleScene3D : Node3D
         _tacticalMap = new TacticalMap { Name = "TacticalMap" };
         AddChild(_tacticalMap);
         _tacticalMap.Bind(_runner);
+        // P05-3: the HUD reads the runner + player ship through Bind. This call had been
+        // missing since the Phase-02 3D port (the old text HUD silently never updated —
+        // the Phase-05 graphical panels made the latent bug visible).
+        _hud.Bind(_runner, _runner.Ships[0]);
+        _pauseMenu = new PauseMenu { Name = "PauseMenu" };
+        AddChild(_pauseMenu);
 
         _audio = new AudioManager();
         AddChild(_audio);
         var settings = UserSettings.Load();
+        KeyBinds.Load(settings);
         L10n.Language = settings.Language;
-        AudioManager.ApplyVolumes(settings.MasterVolume, settings.EffectsVolume, 0.6f);
+        AudioManager.ApplyVolumes(settings.MasterVolume, settings.EffectsVolume, settings.AmbientVolume);
         _audio.StartAmbient();
 
         _runner.HandControlToPlayer(_runner.Ships[0].TargetId);
@@ -214,46 +231,70 @@ public partial class BattleScene3D : Node3D
 
     public override void _UnhandledInput(InputEvent e)
     {
-        if (e is InputEventMouseButton m && m.Pressed &&
-            (m.ButtonIndex == MouseButton.WheelUp || m.ButtonIndex == MouseButton.WheelDown))
+        if (e is InputEventMouseButton m && m.Pressed && _manualAiming)
         {
-            // camera rig handles zoom itself; nothing here
+            // P05-2 manual tier: the wheel adjusts firing range (±100 m per notch);
+            // camera zoom is suspended while manual aiming (CameraRig.WheelZoomEnabled).
+            if (m.ButtonIndex == MouseButton.WheelUp)
+            {
+                _manualRangeOffsetM = System.Math.Min(2000, _manualRangeOffsetM + 100);
+            }
+            else if (m.ButtonIndex == MouseButton.WheelDown)
+            {
+                _manualRangeOffsetM = System.Math.Max(-2000, _manualRangeOffsetM - 100);
+            }
         }
     }
 
-    /// <summary>Per-frame helm input: W/S throttle, A/D rudder, X centers rudder (Phase R2 contract).</summary>
+    /// <summary>Per-frame helm input: W/S throttle, A/D rudder, X centers rudder.
+    /// P05-1: rates accumulate locally, then the intent travels through HelmCommand —
+    /// the frontend never writes Ship fields directly.</summary>
     private void ApplyHelm(double delta)
     {
-        if (_playerShip is null || !_playerShip.Alive)
+        if (_playerShip is null || !_playerShip.Alive || _runner is null)
         {
             return;
         }
 
         const double throttleRate = 0.25;
         const double rudderRate = 0.8;
-        if (Input.IsKeyPressed(Key.W))
+        double throttle = _playerShip.ThrottleCommand;
+        double rudder = _playerShip.RudderCommand;
+        bool changed = false;
+        if (KeyBinds.Down(KeyBinds.ThrottleUp))
         {
-            _playerShip.ThrottleCommand = System.Math.Min(1.0, _playerShip.ThrottleCommand + throttleRate * delta);
+            throttle = System.Math.Min(1.0, throttle + throttleRate * delta);
+            changed = true;
         }
-        if (Input.IsKeyPressed(Key.S))
+        if (KeyBinds.Down(KeyBinds.ThrottleDown))
         {
-            _playerShip.ThrottleCommand = System.Math.Max(0.0, _playerShip.ThrottleCommand - throttleRate * delta);
+            throttle = System.Math.Max(0.0, throttle - throttleRate * delta);
+            changed = true;
         }
-        if (Input.IsKeyPressed(Key.A))
+        if (KeyBinds.Down(KeyBinds.RudderPort))
         {
-            _playerShip.RudderCommand = System.Math.Max(-1.0, _playerShip.RudderCommand - rudderRate * delta);
+            rudder = System.Math.Max(-1.0, rudder - rudderRate * delta);
+            changed = true;
         }
-        if (Input.IsKeyPressed(Key.D))
+        if (KeyBinds.Down(KeyBinds.RudderStbd))
         {
-            _playerShip.RudderCommand = System.Math.Min(1.0, _playerShip.RudderCommand + rudderRate * delta);
+            rudder = System.Math.Min(1.0, rudder + rudderRate * delta);
+            changed = true;
         }
-        if (Input.IsKeyPressed(Key.X))
+        if (KeyBinds.Down(KeyBinds.RudderCenter))
         {
-            _playerShip.RudderCommand = 0;
+            rudder = 0;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            _runner.Submit(new HelmCommand(throttle, rudder));
         }
     }
 
-    /// <summary>R toggles the main battery between AP and HE for every player gun (R3 contract).</summary>
+    /// <summary>R toggles the main battery between AP and HE (R3 contract) — P05-1: via
+    /// ShellSelectCommand.</summary>
     private void ApplyShellToggle()
     {
         if (_playerShip is null || _runner is null)
@@ -261,30 +302,75 @@ public partial class BattleScene3D : Node3D
             return;
         }
 
-        bool rHeld = Input.IsKeyPressed(Key.R);
+        bool rHeld = KeyBinds.Down(KeyBinds.ShellToggle);
         if (rHeld && !_rHeld)
         {
             _playerHe = !_playerHe;
-            foreach (var gun in _playerShip.Definition.Guns)
-            {
-                string? shell = _playerHe ? gun.HeShellId : null;
-                if (shell is not null || !_playerHe)
-                {
-                    _runner.Guns.SetShell(_playerShip.TargetId, gun.Id, shell);
-                }
-            }
+            _runner.Submit(new ShellSelectCommand(_playerHe));
             _hud.SetShellSelection(_playerHe);
         }
 
         _rHeld = rHeld;
     }
 
-    /// <summary>Fire control: engage the enemy nearest the cursor ray, cease otherwise
-    /// (R2.3 contract ported from the 2D view to a 3D camera ray).</summary>
+    /// <summary>G toggles the two fire-control tiers (P05-2): auto = lock a target and
+    /// the battery solves lead with the spotter correction loop; manual = the player lays
+    /// direction (cursor sea point) + range (wheel) herself, no spotter.</summary>
+    private void ApplyAimModeToggle()
+    {
+        bool gHeld = KeyBinds.Down(KeyBinds.AimMode);
+        if (gHeld && !_gHeld)
+        {
+            _manualAiming = !_manualAiming;
+            _manualRangeOffsetM = 0;
+            _manualAimPoint = null;
+            if (_cameraRig is not null)
+            {
+                _cameraRig.WheelZoomEnabled = !_manualAiming;
+            }
+            _runner?.Submit(new GunCeaseFireCommand());
+            _hud?.SetAimMode(_manualAiming);
+            GD.Print($"P05 aim mode: {(_manualAiming ? "MANUAL (cursor+wheel)" : "AUTO (lock+lead)")}");
+        }
+
+        _gHeld = gHeld;
+    }
+
+    /// <summary>T locks/unlocks the currently hovered enemy (P05-2 auto tier keeps the
+    /// battery engaged when the cursor drifts off a locked target).</summary>
+    private void ApplyTargetLock()
+    {
+        if (_runner is null)
+        {
+            return;
+        }
+
+        bool tHeld = KeyBinds.Down(KeyBinds.Lock);
+        if (tHeld && !_tHeld)
+        {
+            string? hovered = _aimTarget?.TargetId;
+            string? current = _runner.PlayerLockedTargetId;
+            string? next = hovered is not null && hovered != current ? hovered : null;
+            _runner.Submit(new TargetAssignCommand(next));
+            GD.Print($"P05 lock: {next ?? "cleared"}");
+        }
+
+        _tHeld = tHeld;
+    }
+
+    /// <summary>Fire control (P05-2 two tiers):
+    /// auto — engage the enemy nearest the cursor ray (or the locked one);
+    /// manual — lay the battery on the cursor's sea point, wheel-adjusted range.</summary>
     private void ApplyFireControl()
     {
         if (_playerShip is null || !_playerShip.Alive || _runner is null)
         {
+            return;
+        }
+
+        if (_manualAiming)
+        {
+            ApplyManualAim();
             return;
         }
 
@@ -322,29 +408,54 @@ public partial class BattleScene3D : Node3D
             }
         }
 
-        _aimTarget = hover;
-        foreach (var gun in _playerShip.Definition.Guns)
+        // P05-2 auto tier: the hovered enemy wins; a T-locked target keeps the battery
+        // engaged when the cursor drifts off her.
+        Ship? effective = hover ?? LockedTargetShip();
+        _aimTarget = effective;
+        _manualAimPoint = null;
+        if (effective is null)
         {
-            if (hover is null)
-            {
-                _runner.Guns.CeaseFire(_playerShip.TargetId, gun.Id);
-                continue;
-            }
-
-            var victim = hover;
-            _runner.Guns.Engage(_playerShip.TargetId, gun.Id, new GunOrder
-            {
-                TargetId = victim.TargetId,
-                TargetPosition = () => victim.WorldPosition,
-                TargetVelocity = () => new Vec3(
-                    System.Math.Sin(victim.HeadingDeg * System.Math.PI / 180.0) * victim.SpeedKnots * 0.514444,
-                    0,
-                    System.Math.Cos(victim.HeadingDeg * System.Math.PI / 180.0) * victim.SpeedKnots * 0.514444),
-                TargetLengthM = () => victim.Definition.LengthM,
-                TargetHullAxisWorld = () => victim.WorldTransform.ToWorldDirection(new Vec3(0, 0, 1)),
-            });
+            _runner.Submit(new GunCeaseFireCommand());
+        }
+        else
+        {
+            _runner.Submit(new GunEngageCommand(effective.TargetId));
         }
     }
+
+    /// <summary>P05-2 manual tier: direction from the cursor's intersection with the sea
+    /// plane, fine range from the wheel offset. Submitted every frame the point exists.</summary>
+    private void ApplyManualAim()
+    {
+        var cam = _cameraRig.Camera;
+        var mouse = GetViewport().GetMousePosition();
+        var rayOrigin = cam.ProjectRayOrigin(mouse);
+        var rayNormal = cam.ProjectRayNormal(mouse);
+        var origin = new Vec3(rayOrigin.X, rayOrigin.Y, rayOrigin.Z);
+        var normal = new Vec3(rayNormal.X, rayNormal.Y, rayNormal.Z);
+        if (normal.Y >= -1e-3)
+        {
+            _manualAimPoint = null; // looking at the sky
+            _runner.Submit(new GunCeaseFireCommand());
+            return;
+        }
+
+        Vec3 point = origin + normal * (-origin.Y / normal.Y); // y = 0 sea plane
+        var rel = point - _playerShip.WorldPosition;
+        double range = System.Math.Sqrt(rel.X * rel.X + rel.Z * rel.Z);
+        double adjusted = System.Math.Max(200, range + _manualRangeOffsetM);
+        var dir = new Vec3(rel.X, 0, rel.Z).Normalized();
+        point = _playerShip.WorldPosition + dir * adjusted;
+
+        _manualAimPoint = point;
+        _aimTarget = null;
+        _runner.Submit(new GunManualAimCommand(point));
+    }
+
+    private Ship? LockedTargetShip() =>
+        _runner?.PlayerLockedTargetId is { } id
+            ? _runner.Ships.FirstOrDefault(s => s.TargetId == id && s.Alive)
+            : null;
 
     // ------------------------------------------------------------------ sim + fx
 
@@ -372,7 +483,8 @@ public partial class BattleScene3D : Node3D
         _smokeAccumulator += budget;
         while (_smokeAccumulator >= _runner.World.FixedDeltaTime
                && _runner.Battle.Result == NavyThunder.Core.Battle.BattleResult.Running
-               && steps < maxSteps)
+               && steps < maxSteps
+               && !_pauseMenu.Paused)
         {
             _runner.World.Step();
             _smokeAccumulator -= _runner.World.FixedDeltaTime;
@@ -380,10 +492,25 @@ public partial class BattleScene3D : Node3D
         }
         long profSimEnd = _profil ? (long)Time.GetTicksUsec() : 0;
 
-        ApplyHelm(delta);
-        ApplyFireControl();
-        ApplyShellToggle();
-        CollectEffects();
+        // P05-8: ESC toggles the pause overlay; a paused scene freezes the simulation
+        // (deterministic Core has no pause — the presentation loop just stops stepping).
+        bool escHeld = KeyBinds.Down(KeyBinds.Pause);
+        if (escHeld && !_escHeld && !_reportShown)
+        {
+            _pauseMenu.Toggle();
+        }
+
+        _escHeld = escHeld;
+
+        if (!_pauseMenu.Paused)
+        {
+            ApplyHelm(delta);
+            ApplyAimModeToggle();
+            ApplyFireControl();
+            ApplyTargetLock();
+            ApplyShellToggle();
+            CollectEffects();
+        }
         long profEventEnd = _profil ? (long)Time.GetTicksUsec() : 0;
 
         if (_runner.World.Time >= _nextTimePrintAt)
@@ -436,6 +563,7 @@ public partial class BattleScene3D : Node3D
                 _cameraRig.LockFocus(new Vector3(fx, 0, fz));
             }
         }
+        _hud.SetAimTarget(_aimTarget);
         _hud.UpdateHud(_runner.World.Time, _runner.Guns.ReloadRemainingOf(_playerShip?.TargetId ?? ""));
         _tacticalMap.PushEffects(_effects, _runner.World.Time, showFx: true);
 
@@ -485,6 +613,8 @@ public partial class BattleScene3D : Node3D
     }
 
     private MeshInstance3D? _aimMarker;
+    private MeshInstance3D? _leadMarker;   // P05-2: predicted aim point (auto tier)
+    private MeshInstance3D? _manualMarker; // P05-2: manual aim point on the sea
 
     private void UpdateAimMarker()
     {
@@ -511,12 +641,81 @@ public partial class BattleScene3D : Node3D
             _aimMarker.Scale = new Vector3(r, r, r);
             _aimMarker.Position = new Vector3(
                 (float)aim.WorldPosition.X, 2f, (float)aim.WorldPosition.Z);
+
+            // P05-2 lead indicator: where the ballistic solution expects the shells to
+            // arrive (FcsSolver iteration over muzzle speed + target velocity; read-only
+            // presentation math — the battery's own solution stays inside the Core).
+            double muzzle = _runner!.Guns.MuzzleSpeedOf(_playerShip!.TargetId);
+            if (muzzle > 0)
+            {
+                var solution = FcsSolver.SolveLead(
+                    _playerShip.WorldPosition, muzzle, aim.WorldPosition, TargetVelocityOf(aim));
+                _leadMarker ??= new MeshInstance3D
+                {
+                    Mesh = new SphereMesh { Radius = 1f, Height = 2f },
+                    MaterialOverride = new StandardMaterial3D
+                    {
+                        AlbedoColor = new Color(1f, 0.85f, 0.2f),
+                        EmissionEnabled = true,
+                        Emission = new Color(1f, 0.8f, 0.15f) * 1.6f,
+                        ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+                    },
+                };
+                if (_leadMarker.GetParent() is null)
+                {
+                    AddChild(_leadMarker);
+                }
+
+                _leadMarker.Visible = true;
+                _leadMarker.Position = new Vector3(
+                    (float)solution.AimPoint.X, 4f, (float)solution.AimPoint.Z);
+            }
         }
-        else if (_aimMarker is not null)
+        else
         {
-            _aimMarker.Visible = false;
+            if (_aimMarker is not null)
+            {
+                _aimMarker.Visible = false;
+            }
+
+            if (_leadMarker is not null)
+            {
+                _leadMarker.Visible = false;
+            }
+        }
+
+        if (_manualAimPoint is { } point)
+        {
+            _manualMarker ??= new MeshInstance3D
+            {
+                Mesh = new TorusMesh { InnerRadius = 0.8f, OuterRadius = 1f },
+                MaterialOverride = new StandardMaterial3D
+                {
+                    AlbedoColor = new Color(0.4f, 1f, 0.5f),
+                    EmissionEnabled = true,
+                    Emission = new Color(0.3f, 1f, 0.4f) * 1.4f,
+                    ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+                },
+            };
+            if (_manualMarker.GetParent() is null)
+            {
+                AddChild(_manualMarker);
+            }
+
+            _manualMarker.Visible = true;
+            _manualMarker.Scale = new Vector3(45f, 45f, 45f);
+            _manualMarker.Position = new Vector3((float)point.X, 2f, (float)point.Z);
+        }
+        else if (_manualMarker is not null)
+        {
+            _manualMarker.Visible = false;
         }
     }
+
+    private static Vec3 TargetVelocityOf(Ship ship) => new(
+        System.Math.Sin(ship.HeadingDeg * System.Math.PI / 180.0) * ship.SpeedKnots * 0.514444,
+        0,
+        System.Math.Cos(ship.HeadingDeg * System.Math.PI / 180.0) * ship.SpeedKnots * 0.514444);
 
     /// <summary>EventLog cursor → 3D FX + audio (extends the Phase R2 CollectEffects).</summary>
     // ------------------------------------------------------------------ profiling (NT_FRONTEND_PROFIL=1)
@@ -586,11 +785,23 @@ public partial class BattleScene3D : Node3D
                     _fx.Spawn(isSplash ? FxLayer.Kind.Splash : FxLayer.Kind.Explosion, d.Position);
                     _effects.Add((d.Position, d.Time, isSplash ? 0 : 1));
                     _audio?.PlayExplosion(d.Position, big: d.AfterPenetration);
+                    // P05-6: a player shell splashing short/long feeds the splash indicator.
+                    if (isSplash && d.ShooterId == _playerShip?.TargetId)
+                    {
+                        _hud.PushSplash();
+                    }
+
                     break;
                 }
                 case ProjectileArmorImpact impact:
                     _fx.Spawn(FxLayer.Kind.HitFlash, impact.Position);
                     _effects.Add((impact.Position, impact.Time, 1));
+                    // P05-6: five-state hit feedback for hits the player makes or takes.
+                    if (impact.ShooterId == _playerShip?.TargetId || impact.TargetId == _playerShip?.TargetId)
+                    {
+                        _hud.PushImpact(impact);
+                    }
+
                     break;
                 case GunFired gf:
                 {
@@ -658,19 +869,43 @@ public partial class BattleScene3D : Node3D
         if (GetNodeOrNull<ProjectileTracers>("Projectiles") is null) missing.Add("Projectiles(Node3D)");
         if (GetNodeOrNull<HudPanel>("Hud") is null) missing.Add("HUD(CanvasLayer)");
         if (GetNodeOrNull<TacticalMap>("TacticalMap") is null) missing.Add("TacticalMap(CanvasLayer)");
+        if (GetNodeOrNull<PauseMenu>("PauseMenu") is null) missing.Add("PauseMenu(CanvasLayer)");
         if (_shipVisuals.Count != _runner!.Ships.Count) missing.Add($"ShipVisual count {_shipVisuals.Count} != {_runner.Ships.Count}");
         if (_shipVisuals.Values.Any(v => v is not Node3D)) missing.Add("ShipVisual not Node3D");
         if (_runner!.World.FixedDeltaTime <= 0) missing.Add("Simulation not wired");
 
+        // P05-6: hit-feedback classifier mapping self-check (pure, five states).
+        string classifierFault = HitFeedbackSmokeCheck();
+        if (classifierFault.Length > 0)
+        {
+            missing.Add(classifierFault);
+        }
+
         _smokeStructureChecked = true;
         GD.Print(missing.Count == 0
             ? "P02 SMOKE STRUCT PASS: Battle3D root + Ocean/Environment + " +
-              $"{_shipVisuals.Count} ShipVisual + Camera3D + FX + Projectiles + HUD + TacticalMap"
+              $"{_shipVisuals.Count} ShipVisual + Camera3D + FX + Projectiles + HUD + TacticalMap + PauseMenu + hit feedback"
             : $"P02 SMOKE STRUCT FAIL: missing [{string.Join(", ", missing)}]");
         if (missing.Count > 0)
         {
             _syncFailures += missing.Count;
         }
+    }
+
+    /// <summary>P05-6 smoke: the event→icon mapping must be exactly these five states.</summary>
+    private static string HitFeedbackSmokeCheck()
+    {
+        static ProjectileArmorImpact Impact(PlateResolution outcome, bool fuze) => new()
+        {
+            Outcome = outcome, FuzeTriggered = fuze, Position = Vec3.Zero,
+        };
+
+        bool ok =
+            HitFeedback.Classify(Impact(PlateResolution.Penetrated, true)) == HitFeedback.Kind.Penetration &&
+            HitFeedback.Classify(Impact(PlateResolution.Penetrated, false)) == HitFeedback.Kind.OverPen &&
+            HitFeedback.Classify(Impact(PlateResolution.Ricocheted, false)) == HitFeedback.Kind.Ricochet &&
+            HitFeedback.Classify(Impact(PlateResolution.Stopped, false)) == HitFeedback.Kind.NoPen;
+        return ok ? "" : "HitFeedback classifier mapping broken";
     }
 
     /// <summary>PHASE_02 §34: Core position/heading must equal ShipVisual transform.</summary>

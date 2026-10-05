@@ -5,6 +5,7 @@ using NavyThunder.Core.Aviation;
 using NavyThunder.Core.Aviation;
 using NavyThunder.Core.Ballistics;
 using NavyThunder.Core.Battle;
+using NavyThunder.Core.Commands;
 using NavyThunder.Core.Damage;
 using NavyThunder.Core.Explosions;
 using NavyThunder.Core.Fire;
@@ -295,6 +296,130 @@ public sealed class BattleRunner
         NavalAi.Ships.Remove(ship);
         NavalAi.ReleaseMind(targetId); // Phase 02: the mind loop, not Ships, steers her
         PlayerShip = ship;
+    }
+
+    /// <summary>Target the player locked for engagement/markers (P05-1); null = none.</summary>
+    public string? PlayerLockedTargetId { get; private set; }
+
+    /// <summary>
+    /// P05-1: the ONE player-command entry (PROJECT_DESIGN §11). The frontend and (from
+    /// Phase 07) any orchestration layer state intent here; applying it touches only the
+    /// player ship. Commands targeting a dead player ship are ignored.
+    /// </summary>
+    public void Submit(GameplayCommand command)
+    {
+        var ship = PlayerShip;
+        switch (command)
+        {
+            case HelmCommand helm:
+                if (ship is { Alive: true })
+                {
+                    if (helm.Throttle is { } throttle)
+                    {
+                        ship.ThrottleCommand = Math.Clamp(throttle, 0.0, 1.0);
+                    }
+
+                    if (helm.Rudder is { } rudder)
+                    {
+                        ship.RudderCommand = Math.Clamp(rudder, -1.0, 1.0);
+                    }
+                }
+
+                break;
+
+            case GunEngageCommand engage:
+                if (ship is { Alive: true })
+                {
+                    var victim = Ships.FirstOrDefault(s => s.TargetId == engage.TargetId && s.Alive);
+                    if (victim is not null)
+                    {
+                        EngageGunsOn(ship, victim);
+                    }
+                }
+
+                break;
+
+            case GunManualAimCommand manual:
+                if (ship is { Alive: true })
+                {
+                    Vec3 point = manual.AimPoint;
+                    foreach (var gun in ship.Definition.Guns)
+                    {
+                        Guns.Engage(ship.TargetId, gun.Id, new GunOrder
+                        {
+                            TargetId = "",
+                            TargetPosition = () => point,
+                            TargetVelocity = () => Vec3.Zero,
+                        });
+                    }
+                }
+
+                break;
+
+            case GunCeaseFireCommand:
+                if (ship is not null)
+                {
+                    foreach (var gun in ship.Definition.Guns)
+                    {
+                        Guns.CeaseFire(ship.TargetId, gun.Id);
+                    }
+                }
+
+                break;
+
+            case ShellSelectCommand shell:
+                if (ship is not null)
+                {
+                    foreach (var gun in ship.Definition.Guns)
+                    {
+                        string? shellId = shell.HighExplosive ? gun.HeShellId : null;
+                        if (shellId is not null || !shell.HighExplosive)
+                        {
+                            Guns.SetShell(ship.TargetId, gun.Id, shellId);
+                        }
+                    }
+                }
+
+                break;
+
+            case DcOrderCommand dc:
+                if (ship is not null)
+                {
+                    DamageControl.SetOrders(ship.TargetId, dc.Mode, dc.Priority);
+                    if (dc.ManualFlow is { } flow)
+                    {
+                        DamageControl.ManualFlow = flow;
+                    }
+                }
+
+                break;
+
+            case TargetAssignCommand assign:
+                PlayerLockedTargetId = assign.TargetId;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Builds the live tracking order for one engagement (moved here from the frontend
+    /// in P05-1: the lambdas read Core state, so they belong beside the Core types).
+    /// </summary>
+    public void EngageGunsOn(Ship shooter, Ship victim)
+    {
+        foreach (var gun in shooter.Definition.Guns)
+        {
+            Guns.Engage(shooter.TargetId, gun.Id, new GunOrder
+            {
+                TargetId = victim.TargetId,
+                TargetPosition = () => victim.WorldPosition,
+                TargetVelocity = () => new Vec3(
+                    Math.Sin(victim.HeadingDeg * Math.PI / 180.0) * victim.SpeedKnots * 0.514444,
+                    0,
+                    Math.Cos(victim.HeadingDeg * Math.PI / 180.0) * victim.SpeedKnots * 0.514444),
+                TargetLengthM = () => victim.Definition.LengthM,
+                TargetHullAxisWorld = () => victim.WorldTransform.ToWorldDirection(new Vec3(0, 0, 1)),
+            });
+        }
     }
 
     private StrikeMission BuildStrikeMission(Ship targetShip, string missionKind)

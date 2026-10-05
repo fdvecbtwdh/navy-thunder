@@ -96,6 +96,7 @@ public class VtProximityFuseTests
     }
 }
 
+[Trait("Bucket", "Fast")]
 public class FireControlAndDispersionTests
 {
     [Fact]
@@ -143,6 +144,7 @@ public class FireControlAndDispersionTests
     }
 }
 
+[Trait("Bucket", "Integration")]
 public class AntiAircraftEngagementTests
 {
     private static (SimulationWorld, AntiAircraftSystem, Aircraft, BallisticsSystem) MakeRig(ulong seed = 42)

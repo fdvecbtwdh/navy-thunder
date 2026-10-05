@@ -15,12 +15,15 @@ public partial class MenuView : CanvasLayer
     private UserSettings _settings = new();
     private OptionButton? _shipPicker;
     private readonly List<string> _shipIds = [];
+    private string? _capturingAction; // P05-9: awaiting the next key press for a rebind
+    private readonly Dictionary<string, Button> _bindButtons = [];
 
     public override void _Ready()
     {
         AppEnv.Install();
         AppEnv.Info("menu booted");
         _settings = UserSettings.Load();
+        KeyBinds.Load(_settings);
         SessionState.SelectedShipId = _settings.LastShipId;
 
         var root = new VBoxContainer
@@ -72,7 +75,7 @@ public partial class MenuView : CanvasLayer
         {
             _settings.MasterVolume = (float)v;
             masterLabelUpdate();
-            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
+            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, _settings.AmbientVolume);
             _settings.Save();
         };
         masterLabelUpdate();
@@ -86,12 +89,48 @@ public partial class MenuView : CanvasLayer
         {
             _settings.EffectsVolume = (float)v;
             fxLabelUpdate();
-            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, 0.6f);
+            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, _settings.AmbientVolume);
             _settings.Save();
         };
         fxLabelUpdate();
         panel.AddChild(fxLabel);
         panel.AddChild(fx);
+
+        // P05-9: ambient volume — was hardcoded 0.6 until now.
+        var ambLabel = new Label();
+        var ambLabelUpdate = () => ambLabel.Text = $"{L10n.Tr("settings.ambient")} {_settings.AmbientVolume:0.00}";
+        var amb = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05, Value = _settings.AmbientVolume };
+        amb.ValueChanged += v =>
+        {
+            _settings.AmbientVolume = (float)v;
+            ambLabelUpdate();
+            AudioManager.ApplyVolumes(_settings.MasterVolume, _settings.EffectsVolume, _settings.AmbientVolume);
+            _settings.Save();
+        };
+        ambLabelUpdate();
+        panel.AddChild(ambLabel);
+        panel.AddChild(amb);
+
+        // P05-9 minimal key rebinding: click a key button, then press the new key.
+        panel.AddChild(new Label { Text = L10n.Tr("settings.keys") });
+        var keysGrid = new GridContainer { Columns = 2 };
+        keysGrid.AddThemeConstantOverride("h_separation", 12);
+        foreach (var action in KeyBinds.Actions)
+        {
+            var keyLabel = new Label { Text = L10n.Tr($"key.{action}") };
+            keyLabel.AddThemeFontSizeOverride("font_size", 13);
+            keysGrid.AddChild(keyLabel);
+            var bindBtn = new Button { Text = KeyBinds.LabelOf(action), CustomMinimumSize = new Vector2(90, 0) };
+            bindBtn.Pressed += () =>
+            {
+                _capturingAction = action;
+                bindBtn.Text = L10n.Tr("key.press");
+            };
+            _bindButtons[action] = bindBtn;
+            keysGrid.AddChild(bindBtn);
+        }
+
+        panel.AddChild(keysGrid);
 
         var lang = new OptionButton { };
         lang.AddItem("中文 zh-CN");
@@ -163,6 +202,26 @@ public partial class MenuView : CanvasLayer
                 GD.Print("menu shot saved: " + shot);
             };
         }
+    }
+
+    /// <summary>P05-9: while a rebind button is armed, the next key press becomes the binding.</summary>
+    public override void _UnhandledInput(InputEvent e)
+    {
+        if (_capturingAction is null || e is not InputEventKey { Pressed: true } key)
+        {
+            return;
+        }
+
+        if (key.Keycode is Key.Shift or Key.Ctrl or Key.Alt or Key.Meta)
+        {
+            return; // ignore bare modifiers
+        }
+
+        KeyBinds.Set(_capturingAction, key.Keycode);
+        _bindButtons[_capturingAction].Text = KeyBinds.LabelOf(_capturingAction);
+        AppEnv.Info($"rebind {_capturingAction} -> {key.Keycode}");
+        _capturingAction = null;
+        GetViewport().SetInputAsHandled();
     }
 
     private List<(string Id, string Name)> LoadFleetShips()

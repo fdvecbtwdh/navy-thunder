@@ -69,6 +69,25 @@ public sealed class GunSystem : ISimulationSystem
     /// <summary>Target speed above this (m/s) counts as "moving" for the penalty.</summary>
     public double TargetMovingThresholdMs { get; init; } = 5.0;
 
+    // P05-2 spotter model (W7 AB bracketing): the first salvo of an engagement fires at
+    // the rangefinder's biased range; each salvo fired shrinks the bias geometrically —
+    // ~3 salvos to lock the bracket. Manual laying skips it (the player is the spotter).
+    // Symmetric for AI and player (same code path, PROJECT_DESIGN §1.3-4).
+    public bool SpotCorrectionEnabled { get; init; } = true;
+    /// <summary>Fractional optical-rangefinder bias of the first salvo (W7 band approx).</summary>
+    public double InitialRangeErrorFraction { get; init; } = 0.04;
+    /// <summary>Multiplier applied to the remaining range bias after each salvo fired.</summary>
+    public double SpotCorrectionDecayPerSalvo { get; init; } = 0.35;
+
+    private sealed class SpotState
+    {
+        public string TargetId = "";
+        public double RangeErrorM;
+        public int SalvosFired;
+    }
+
+    private readonly Dictionary<(string ShipId, string GunId), SpotState> _spots = [];
+
     public GunSystem(IReadOnlyDictionary<string, ShellDefinition> shells, BallisticsSystem ballistics)
     {
         _shells = shells;
@@ -150,8 +169,31 @@ public sealed class GunSystem : ISimulationSystem
         return "";
     }
 
+    /// <summary>Muzzle speed of a ship's first gun's current shell (P05-2 lead indicator,
+    /// presentation read-only; 0 when unknown).</summary>
+    public double MuzzleSpeedOf(string shipId)
+    {
+        foreach (var gun in _guns)
+        {
+            if (gun.Ship.TargetId == shipId &&
+                _shells.TryGetValue(gun.ShellOverride ?? gun.Definition.ShellId, out var shell))
+            {
+                return shell.MuzzleVelocityMs;
+            }
+        }
+
+        return 0;
+    }
+
     public GunOrder? GetOrder(string shipId, string gunId) =>
         _orders.TryGetValue((shipId, gunId), out var order) ? order : null;
+
+    /// <summary>Read-only spotter-correction snapshot (P05-2 diagnostics/tests): null when
+    /// the gun has no spot loop (manual laying, never engaged).</summary>
+    public (string TargetId, double RangeErrorM, int SalvosFired)? SpotOf(string shipId, string gunId) =>
+        _spots.TryGetValue((shipId, gunId), out var spot)
+            ? (spot.TargetId, spot.RangeErrorM, spot.SalvosFired)
+            : null;
 
     /// <summary>
     /// Read-only per-gun snapshot for presentation layers (Phase 02): turret heading is
@@ -203,6 +245,33 @@ public sealed class GunSystem : ISimulationSystem
             // mounts swing with the bow instead of sliding on a translation-only offset).
             Vec3 worldMount = gun.Ship.WorldTransform.ToWorld(gun.MountPosition);
             Vec3 targetPos = order.TargetPosition();
+
+            // P05-2 spotter correction: bias the aim point along the shooting bearing by
+            // the remaining rangefinder error (decays per salvo fired). Manual laying
+            // (empty target id = player-laid water point) never enters the loop.
+            SpotState? spot = null;
+            if (SpotCorrectionEnabled && order.TargetId.Length > 0)
+            {
+                var spotKey = (gun.Ship.TargetId, gun.Definition.Id);
+                if (!_spots.TryGetValue(spotKey, out var existing) || existing.TargetId != order.TargetId)
+                {
+                    // New engagement or target change: reset the correction (P05-2).
+                    var spotRng = world.Rng("firecontrol");
+                    double trueRange = HorizontalDistance(worldMount, targetPos);
+                    existing = new SpotState
+                    {
+                        TargetId = order.TargetId,
+                        RangeErrorM =
+                            FcsSolver.RangefinderDistance(trueRange, InitialRangeErrorFraction, spotRng) - trueRange,
+                    };
+                    _spots[spotKey] = existing;
+                }
+
+                spot = existing;
+                double bearingToTarget = Math.Atan2(targetPos.X - worldMount.X, targetPos.Z - worldMount.Z);
+                targetPos += new Vec3(Math.Sin(bearingToTarget), 0, Math.Cos(bearingToTarget)) * spot.RangeErrorM;
+            }
+
             double range = Vec3.Distance(worldMount, targetPos);
             if (range > gun.Definition.RangeM)
             {
@@ -311,6 +380,12 @@ public sealed class GunSystem : ISimulationSystem
             }
 
             gun.ReloadRemainingS = 60.0 / Math.Max(0.1, gun.Definition.RoundsPerMinute) * reloadFactor;
+            if (spot is not null)
+            {
+                // Salvo observed: the spotter walks the aim onto the target (P05-2).
+                spot.RangeErrorM *= SpotCorrectionDecayPerSalvo;
+                spot.SalvosFired++;
+            }
             world.Record(new GunFired
             {
                 ShipId = gun.Ship.TargetId,

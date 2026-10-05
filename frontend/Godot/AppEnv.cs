@@ -92,9 +92,14 @@ public sealed class UserSettings
 {
     public float MasterVolume { get; set; } = 0.8f;
     public float EffectsVolume { get; set; } = 1.0f;
+    /// <summary>P05-9: was hardcoded 0.6 before — now a real setting with a slider.</summary>
+    public float AmbientVolume { get; set; } = 0.6f;
     public string Language { get; set; } = "zh-CN";
     public string? LastShipId { get; set; }
     public string? LastScenario { get; set; }
+
+    /// <summary>P05-9 minimal key rebinding: action name → Godot key name.</summary>
+    public Dictionary<string, string>? Keybinds { get; set; }
 
     private static string Path_ => System.IO.Path.Combine(AppEnv.UserDir, "settings.json");
 

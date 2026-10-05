@@ -82,6 +82,7 @@ public static class TestShells
     };
 }
 
+[Trait("Bucket", "Fast")]
 public class DeMarreTests
 {
     [Fact]
@@ -178,6 +179,7 @@ public class ArmorResolverTests
     }
 }
 
+[Trait("Bucket", "Fast")]
 public class ArmorPlateTests
 {
     [Fact]

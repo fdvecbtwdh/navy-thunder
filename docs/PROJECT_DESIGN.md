@@ -46,24 +46,24 @@
 |---|---|---|---|
 | 1 | 主菜单（标题/版本/开始/退出） | `[DONE]` | `frontend/Godot/MenuView.cs`；选舰+设置已通 |
 | 2 | 选舰（从舰队数据） | `[DONE]` | 30 舰下拉框，`SessionState.SelectedShipId` → `BattleRunner(playerShipOverride)` |
-| 3 | 设置（音量/语言/持久化） | `[PARTIAL]` | Master/Effects 音量+zh/en 已通；**Ambient 音量硬编码 0.6 无 UI**；无图像/键位设置 |
+| 3 | 设置（音量/语言/键位/持久化） | `[DONE]` | Master/Effects/Ambient 音量+zh/en+键位重绑定（最小集）已通，settings.json 持久化（P05-9）；图像质量分级 Phase 08 |
 | 4 | 战斗场景 | `[PARTIAL]` | **3D 骨架已立 + 真实舰船模型已接入**（Phase 02 骨架 + Phase 03 资产管线：23 舰 WT 模型 4 级 LOD、程序化双轨回退、nodeMap 挂点，见 PHASE_03）；贴图/击毁态归 Phase 04 尾 |
 | 5 | 玩家操舰（舵/油门） | `[PARTIAL]` | WASD 已通（R2.2；**P02 修复 AI 抢舵 bug**）；无油门档位 UI、无倒车 |
-| 6 | 瞄准与开火 | `[PARTIAL]` | 悬停自动交战已通；无玩家瞄准流程（测距/试射/修正）、无提前量指示（`FcsSolver` 在库未接） |
+| 6 | 瞄准与开火 | `[DONE]` | 两档火控（P05-2）：自动=锁定+试射修正（W7 AB 带，3 齐喷收敛）+提前量指示；手动=光标落点+滚轮调距；G 切换、T 锁定 |
 | 7 | 弹种切换 | `[DONE]` | R 键 AP/HE（R3） |
 | 8 | 损伤 HUD（分段血条/FIRE/FLOOD 标记） | `[PARTIAL]` | 文本面板已通（R2.4 简化版）；无图形化分段图、无模块 x-ray |
-| 9 | **玩家损管操作** | `[PLANNED]` | **不存在**：`DamageControlSystem` 全自动，前端零 DC 输入；教程卡文案"[FIRE]/[FLOOD] 需损管处置"与实现不符（2026-10-02 修正文档已记录） |
+| 9 | **玩家损管操作** | `[DONE]` | 损管面板（P05-5）：自动/手动模式、三优先级预设、手动单流程；经 DcOrderCommand 提交；教程卡文案已与实现一致 |
 | 10 | 战报页 | `[DONE]` | 胜负/时长/损失/逐舰存活，返回菜单（R2.6） |
 | 11 | 全 AI 观战 | `[PARTIAL]` | headless `SimRunner` 完整可跑 `[DONE]`；前端"观战模式"入口 `[PLANNED]` |
 | 12 | 战术地图 | `[DONE]` | 旧 2D 战场图降级为只读战术地图（P02，M 键切换），数据同源 Core |
 | 13 | 音效 | `[PARTIAL]` | 合成音效 6 种已生成并**已接入战斗事件**（P02：GunFired/ShellDetonation/MagazineDetonation/ShipDestroyed→播放）；音色为程序合成占位，真实声学归 Phase 03+ |
-| 14 | 小地图 | `[PLANNED]` | 无 |
+| 14 | 小地图 | `[DONE]` | 战术地图兼任（P05-7 增强：玩家环+锁定标记+标签防重叠） |
 | 15 | 舰船建造器 | `[PLANNED]` | 无任何实现；设计见 §10 |
 | 16 | 舰船管理（收藏/导入/导出） | `[PLANNED]` | 无 |
 | 17 | 存档/用户数据目录 | `[PARTIAL]` | `AppEnv` user://（logs/crash/saves/settings.json）已通；无战斗存档 |
-| 18 | 教程引导 | `[PARTIAL]` | 开场 18s 渐隐提示卡已通；第三行文案与损管实现不符 |
+| 18 | 教程引导 | `[DONE]` | 开场渐隐提示卡；文案与两档瞄准/损管面板实现一致（P05-5/P05-10） |
 | 19 | 本地化 zh-CN/en | `[PARTIAL]` | UI 框架+菜单/HUD 双语已通；长文案待补 |
-| 20 | 战斗中暂停/退出 | `[PLANNED]` | 无（ESC 无绑定） |
+| 20 | 战斗中暂停/退出 | `[DONE]` | ESC 菜单（继续/重开/回主菜单/退出，P05-8）；暂停=表现层停步进 |
 | 21 | 3D 渲染 | `[PLANNED]` | 当前 2D；Phase 02 |
 | 22 | 真实舰船资产 | `[DONE-P3]` | BIM2→glTF 转换器交付，23 舰批量转换（4 级 LOD+nodeMap 挂点），前端真实模型/程序化双轨；贴图管线（dxp）与击毁态 dmg 未做（Phase 04 尾/08） |
 | 23 | 飞机（玩家/AI 舰载机） | `[PARTIAL]` | AI 雷击/俯冲任务链 `[DONE]`（headless）；机型数据仅 1；航母系统 `[PLANNED]` |
@@ -490,3 +490,5 @@ Phase 00 基础与文档统一
 | 2026-10-02 | 初版：基于全仓调查 + WT/NavalArt/资产技术研究建立 |
 | 2026-10-02 | Phase 01 实施完成：§5 空间几何裁决落地（`Geometry/ShipTransform` + 局部坐标板 + 逆变换射线命中）；坐标约定 +Z=舰艏 已随数据迁移生效；新增 FACT——数据帧 = 船体局部（+X 右舷/+Y 上/+Z 舰艏），所有舰船/飞机数据与命中几何遵守；行为基线变化（对称编成出现合法平局）记录于 PHASE_01 §0 |
 | 2026-10-03 | Phase 02 实施完成：§8 3D 前端结构落地（Battle3D 根 + ShipVisual/炮塔/弹丸/飞机/FX/相机/海面 + HUD + TacticalMap 降级复用）；Core→Godot 恒等坐标映射经冒烟同步断言与四航向截图验证；**修复既有 bug——玩家交接后 AI 仍经 mind 循环抢舵**（`SimpleNavalAISystem.ReleaseMind`，回归测试 `PlayerHandoverTests`）；产品结构表状态更新：#4 战斗场景 [PROTOTYPE]→3D 骨架 [DONE-占位资产]、#12 战术地图 [DONE]、#13 音效接线 [DONE-合成音] |
+| 2026-10-05 | **[插入] Phase 03 资产几何修复**：BIM2 顶点布局（storageFormat 字段驱动）与 packed IB 块边界（1B 头）双双解错导致全舰队模型出现跨区域拉伸三角；修复后 23 舰×4 LOD 3800 万索引 0 窗口违规 + 8 舰光栅侧影核对 + GUI 三舰截图；详见 `ASSET_PIPELINE_CURRENT.md` §6.5 |
+| 2026-10-05 | Phase 05 实施完成：§11 玩家操作链全量落地——`GameplayCommand` 命令对象化（`BattleRunner.Submit` 唯一入口，`ApplyHelm` 直写例外收编）、两档瞄准（自动=锁定+试射修正 W7 AB 带、手动=光标落点+滚轮调距）、图形 HUD/损伤面板/损管面板、五态命中反馈、暂停菜单、Ambient 音量+键位重绑定、全 UI 双语；测试分层契约新增自动审计（`BucketCoverageTests`）。产品结构表：#6 瞄准与开火 [PARTIAL→DONE-两档]、#9 玩家损管操作 [PLANNED→DONE]、#14 小地图 [PLANNED→DONE-战术地图兼任]、#20 暂停 [PLANNED→DONE]、#3 设置 [PARTIAL→DONE-键位+Ambient]、#18 教程 [PARTIAL→DONE-文案一致] |

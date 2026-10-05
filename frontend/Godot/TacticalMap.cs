@@ -46,6 +46,7 @@ public partial class TacticalMap : CanvasLayer
                 return;
             }
 
+            var labels = new List<(Vector2 At, string Text, float Alpha)>();
             foreach (var ship in Runner.Ships)
             {
                 float alpha = 1f;
@@ -90,8 +91,39 @@ public partial class TacticalMap : CanvasLayer
                     DrawPolyline(hull.Append(hull[0]).ToArray(), new Color(0.8f, 0.2f, 0.1f, alpha), 1.2f);
                 }
 
-                DrawString(ThemeDB.FallbackFont, pos + new Vector2(6, -6),
-                    ship.TargetId, HorizontalAlignment.Left, -1, 10, new Color(1, 1, 1, 0.65f * alpha));
+                labels.Add((pos + new Vector2(6, -6), L10n.ShipMapLabel(ship), alpha));
+            }
+
+            // Draw labels after all ships with a simple de-overlap stagger: clustered
+            // ships used to overprint their name glyphs into an unreadable stack.
+            var usedRows = new List<float>();
+            foreach (var (at, text, alpha) in labels)
+            {
+                var where = at;
+                while (usedRows.Any(y => System.Math.Abs(y - where.Y) < 12f))
+                {
+                    where.Y += 12f;
+                }
+
+                usedRows.Add(where.Y);
+                DrawString(ThemeDB.FallbackFont, where, text, HorizontalAlignment.Left, -1, 10,
+                    new Color(1, 1, 1, 0.65f * alpha));
+            }
+
+            // P05-7: player ring + locked-target marker with a bearing line.
+            var player = Runner.PlayerShip;
+            if (player is { Alive: true })
+            {
+                var pPos = center + WorldToScreen(player.WorldPosition.X, player.WorldPosition.Z);
+                DrawArc(pPos, 14f, 0, Mathf.Tau, 24, new Color(1, 1, 1, 0.85f), 1.6f);
+
+                if (Runner.PlayerLockedTargetId is { } lockId &&
+                    Runner.Ships.FirstOrDefault(s => s.TargetId == lockId && s.Alive) is { } locked)
+                {
+                    var lPos = center + WorldToScreen(locked.WorldPosition.X, locked.WorldPosition.Z);
+                    DrawLine(pPos, lPos, new Color(1f, 0.55f, 0.1f, 0.55f), 1.2f);
+                    DrawArc(lPos, 16f, 0, Mathf.Tau, 24, new Color(1f, 0.55f, 0.1f), 2f);
+                }
             }
 
             if (ShowFx)
@@ -140,7 +172,7 @@ public partial class TacticalMap : CanvasLayer
 
     public override void _UnhandledInput(InputEvent e)
     {
-        if (e is InputEventKey { Pressed: true, Keycode: Key.M })
+        if (e is InputEventKey { Pressed: true } && KeyBinds.Down(KeyBinds.Map))
         {
             Visible = !Visible;
             if (Visible)
